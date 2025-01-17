@@ -5,5 +5,14 @@ export const Route = createFileRoute('/')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/"!</div>
+  return <div className="mx-auto w-full max-w-md">
+    <div className="card">
+      <div>
+        hello
+      </div>
+      <button onClick={() => { }} className="button">
+        hello
+      </button>
+    </div>
+  </div>
 }
