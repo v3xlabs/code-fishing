@@ -9,3 +9,10 @@ Wether you are a one man show or a zerg of freshspawns, [code.fishing](https://c
 - Choose from one or multiple code lists or bring your own
 - Distribute in batches with prefered size
 - View the codes youve guess in realtime
+
+## How to use
+
+1. Create a code list
+2. Invite your friends
+3. Start guessing
+4. Profit!
