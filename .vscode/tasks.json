@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run App",
+            "type": "shell",
+            "command": "cargo run",
+            "options": {
+                "cwd": "${workspaceFolder}/app"
+            },
+            "group": "build",
+            "problemMatcher": ["$rustc"]
+        },
+        {
+            "label": "Run Web",
+            "type": "shell",
+            "command": "pnpm dev",
+            "options": {
+                "cwd": "${workspaceFolder}/web"
+            },
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run All",
+            "dependsOrder": "parallel",
+            "dependsOn": [
+                "Run App",
+                "Run Web"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
