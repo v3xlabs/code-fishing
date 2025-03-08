@@ -1,0 +1,11 @@
+[package]
+name = "code-fishing"
+version = "0.0.1"
+authors = ["Luc <luc@v3x.email>"]
+edition = "2021"
+
+[dependencies]
+
+[build-dependencies]
+
+[dev-dependencies]
