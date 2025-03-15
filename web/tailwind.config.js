@@ -1,8 +1,17 @@
+/** @type {import('tailwindcss').Config} */
 export default {
     content: ['./src/**/*.{html,tsx}'],
     theme: {
         extend: {
+            backgroundColor: {
+                primary: '#3F3D3C',
+                secondary: '#53504D',
+                tertiary: '#2d2b29',
+            },
             colors: {
+                accent: '#CCC46A',
+                primary: '#F5F5F5',
+                secondary: '#858585'
                 // background: 'var(--theme-bg-color)',
                 // text: 'var(--theme-text-color)',
                 // hint: 'var(--theme-hint-color)',

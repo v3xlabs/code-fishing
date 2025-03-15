@@ -3,19 +3,14 @@
 @tailwind utilities;
 
 :root {
-    --background-color: #53504D;
-    --background-secondary-color: #3F3D3C;
-    --text-color: #F5F5F5;
 }
 
 html, body {
-    background-color: var(--background-color);
-    color: var(--text-color);
+    @apply bg-tertiary text-primary;
 }
 
 .card {
-    background-color: var(--background-secondary-color);
-    @apply rounded-sm;
+    @apply rounded-sm bg-secondary;
 }
 
 .card:not(:has(.no-padding)) {
@@ -23,7 +18,5 @@ html, body {
 }
 
 .button {
-    background-color: #53504D;
-    background-opacity: 0.5;
-    @apply px-2 py-1 rounded-sm;
+    @apply px-2 py-1 rounded-sm bg-primary;
 }
