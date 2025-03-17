@@ -306,7 +306,7 @@ impl OAuthApi {
         );
 
         // Send validation request to Steam
-        info!("Sending validation request to Steam");
+        info!("Sending validation request to Steam: {:?}", validation_params);
         let response = self
             .http_client
             .post(STEAM_OPENID_SERVER)

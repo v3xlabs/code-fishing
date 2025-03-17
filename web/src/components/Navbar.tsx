@@ -97,7 +97,7 @@ export const LoginModalContent: FC<{}> = () => {
             <div className="flex flex-col gap-2 sm:w-[calc(50%-1rem)]">
                 <h2>Sign in with Steam</h2>
                 <p className="text-secondary">Click here to sign in with your Steam account.</p>
-                <a href={`${baseUrl}/auth/oauth/steam`} className="button flex items-center justify-center gap-2">
+                <a href={`${baseUrl}auth/oauth/steam`} className="button flex items-center justify-center gap-2">
                     <FaSteam className="size-4" />
                     <span>Sign in with Steam</span>
                 </a>
