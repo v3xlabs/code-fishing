@@ -38,12 +38,12 @@ export const useUser = () => {
             }
         },
         // Use the user from auth context as initialData
-        initialData: user,
+        // initialData: user,
         // Only run query if we have a token
         enabled: !!token,
         // Reasonable refetch settings
         refetchOnMount: true,
         refetchOnWindowFocus: true,
-        staleTime: 30000, // Consider data stale after 30 seconds
+        staleTime: 3000, // Consider data stale after 3 seconds
     });
 };
