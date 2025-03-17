@@ -4,6 +4,9 @@ use serde::{Deserialize, Serialize};
 use sqids::Sqids;
 use rand::Rng;
 
+pub mod oauth;
+pub use oauth::OAuthApi;
+
 pub struct AuthApi;
 
 #[derive(Deserialize, Serialize, Object)]

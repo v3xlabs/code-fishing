@@ -1,3 +1,4 @@
 target/
 !www/
 www/*
+.env

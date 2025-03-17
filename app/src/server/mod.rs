@@ -16,7 +16,7 @@ use tracing::info;
 
 use crate::state::AppState;
 use tracing_mw::TraceId;
-use auth::AuthApi;
+use auth::{oauth::OAuthApi, AuthApi};
 
 // pub mod auth;
 // pub mod channel;
@@ -32,23 +32,25 @@ pub mod auth;
 pub mod tracing_mw;
 
 #[derive(Tags)]
-enum ApiTags {
+pub enum ApiTags {
     /// Party Related Operations
     Party,
     /// Maps Related Operations
     Maps,
     /// Auth Related Operations
     Auth,
+    /// OAuth Authentication
+    OAuth,
 }
 
-fn get_api() -> impl OpenApi {
-    (PartyApi, MapsApi, AuthApi)
+fn get_api(state: AppState) -> impl OpenApi {
+    (PartyApi, MapsApi, AuthApi, OAuthApi::new(state.clone()))
 }
 
 pub async fn start_http(state: AppState) {
     info!("Starting HTTP server");
     let api_service =
-        OpenApiService::new(get_api(), "Code Fishing", "0.0.1").server("http://localhost:3000/api");
+        OpenApiService::new(get_api(state.clone()), "Code Fishing", "0.0.1").server("http://localhost:3000/api");
 
     let spec = api_service.spec_endpoint();
 
