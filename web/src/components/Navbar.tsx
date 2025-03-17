@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 export const Navbar = () => {
     return (
         <div className="w-full bg-primary">
@@ -7,11 +9,11 @@ export const Navbar = () => {
                         <img src="/lock.code.png" alt="lock.code" className="w-full h-full object-contain" />
                     </div>
                 </div>
-                <a href="#" className="text-accent text-base hover:underline py-2 block">
+                <Link to="/" className="text-accent text-base hover:underline py-2 block">
                     <span>code</span>
                     <span className="text-secondary">.</span>
                     <span>fishing</span>
-                </a>
+                </Link>
             </div>
         </div>
     )

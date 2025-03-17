@@ -1,7 +1,11 @@
 // import { CodeListOrder } from '@/components/CodeListOrder'
 // import { PartyProgress } from '@/components/PartyProgress'
 // import { ServerFinder } from '@/components/ServerFinder'
-import { createFileRoute } from '@tanstack/react-router'
+import { usePartyCreate } from '@/api/party'
+import { CodeListOrder } from '@/components/party/codes/CodeListOrder'
+import { PartyProgress } from '@/components/party/codes/PartyProgress'
+import { ServerFinder } from '@/components/ServerFinder'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -34,7 +38,7 @@ function RouteComponent() {
       <div className="card flex-1 flex flex-col gap-1">
         <h2>Create a party</h2>
         <p className="text-secondary">Start a code raid</p>
-        <button className="button">Create</button>
+        <PartyCreateButton />
       </div>
       <div className="card flex-1 flex flex-col gap-1">
         <h2>Join a party</h2>
@@ -45,8 +49,21 @@ function RouteComponent() {
         </div>
       </div>
     </div>
-    {/* <CodeListOrder /> */}
-    {/* <PartyProgress /> */}
-    {/* <ServerFinder /> */}
   </div>
+}
+
+export const PartyCreateButton = () => {
+  const navigate = useNavigate();
+  const { mutate, isPending } = usePartyCreate({
+    onMutate() {
+      console.log('mutate')
+    },
+    onSuccess(data) {
+      console.log('success')
+      console.log(data)
+      navigate({ to: '/$partyId', params: { partyId: data.id } });
+    }
+  });
+
+  return <button className="button" onClick={() => mutate({})}>{isPending ? 'Creating...' : 'Create'}</button>
 }

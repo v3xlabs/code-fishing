@@ -4,6 +4,7 @@ use std::sync::Arc;
 // use info::InfoApi;
 // use media::MediaApi;
 use opentelemetry::global;
+use party::PartyApi;
 use poem::{
     endpoint::StaticFilesEndpoint, get, handler, listener::TcpListener,
     middleware::OpenTelemetryMetrics, EndpointExt, Route, Server,
@@ -26,25 +27,21 @@ use tracing_mw::TraceId;
 // pub mod redirect;
 // pub mod request;
 // pub mod stats;
+pub mod party;
 pub mod maps;
 pub mod tracing_mw;
 
 #[derive(Tags)]
 enum ApiTags {
-    /// User Related Operations
-    User,
-    /// Media Related Operations
-    Media,
-    /// Stats Related Operations
-    Stats,
-    /// Request Related Operations
-    Request,
-    /// Channel Related Operations
-    Channel,
+    /// Party Related Operations
+    Party,
+    /// Maps Related Operations
+    Maps,
 }
 
 fn get_api() -> impl OpenApi {
     (
+        PartyApi,
         MapsApi
     )
 }

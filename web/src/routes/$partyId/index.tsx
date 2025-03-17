@@ -1,3 +1,4 @@
+import { PartyInviteCard } from '@/components/party/management/PartyInvite';
 import { createFileRoute, useParams } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/$partyId/')({
@@ -7,5 +8,7 @@ export const Route = createFileRoute('/$partyId/')({
 function RouteComponent() {
   const { partyId } = Route.useParams();
 
-  return <div>Hello {partyId}</div>
+  return (<div className="p-2 grid grid-cols-1 gap-2">
+    <PartyInviteCard />
+  </div>);
 }

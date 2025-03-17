@@ -1,3 +1,6 @@
 import { createFetch } from "openapi-hooks";
+import { paths } from "./schema.gen";
 
-export const useApi = createFetch({ baseUrl: location.origin });
+const baseUrl = new URL('http://localhost:5173/api/');
+
+export const useApi = createFetch<paths>({ baseUrl });

@@ -91,6 +91,8 @@ opentelemetry-prometheus = "0.28.0"
 tracing-log = "0.2.0"
 tracing-futures = "0.2.5"
 opentelemetry-appender-tracing = { version = "0.28.1", features = ["tracing-opentelemetry"] }
+sqids = "0.4.2"
+rand = "0.9.0"
 
 [build-dependencies]
 build-info-build = "0.0.39"
