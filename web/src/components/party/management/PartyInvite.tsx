@@ -1,12 +1,61 @@
 import { FC, useState } from "react"
-import { LuClipboard, LuClipboardList, LuEye, LuEyeOff } from "react-icons/lu";
+import { LuClipboard, LuClipboardList, LuEye, LuEyeOff, LuClipboardX } from "react-icons/lu";
 import { QRCodeSVG } from 'qrcode.react';
 import { toast } from 'sonner';
+
+const copyToClipboard = async (text: string): Promise<boolean> => {
+    try {
+        // Try the modern Clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+        }
+
+        // Fallback for older browsers or non-HTTPS
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            textArea.remove();
+            return true;
+        } catch (err) {
+            textArea.remove();
+            return false;
+        }
+    } catch (err) {
+        return false;
+    }
+};
+
+const handleCopy = async () => {
+    const success = await copyToClipboard(partyId);
+
+    if (success) {
+        toast(<div className="flex gap-2 items-center">
+            <LuClipboardList className="text-secondary" />
+            <p className="text-secondary">Copied to clipboard</p>
+        </div>);
+    } else {
+        toast(<div className="flex gap-2 items-center">
+            <LuClipboardX className="text-red-500" />
+            <p className="text-secondary">Failed to copy. Please try selecting and copying manually.</p>
+        </div>, {
+            duration: 5000
+        });
+    }
+};
 
 export const PartyInviteCard: FC<{ partyId: string }> = ({ partyId }) => {
     const [hidden, setHidden] = useState(true);
 
-    return (<div className="card flex flex-col gap-2 max-w-sm">
+    return (<div className="card flex flex-col gap-2 sm:max-w-sm max-w-full w-full">
         <h2>Party Invite</h2>
         <p className="text-secondary">Share this link with your friends to invite them to the party.</p>
         <div className="flex justify-center gap-2 flex-col items-center">
@@ -16,14 +65,11 @@ export const PartyInviteCard: FC<{ partyId: string }> = ({ partyId }) => {
             </div>
         </div>
         <div className="flex gap-2 w-full flex-wrap justify-between">
-            <input type={hidden ? 'password' : 'text'} className="input flex-1" value={`${window.location.origin}/${partyId}`} disabled />
-            <button className="button flex-1" onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/${partyId}`);
-                toast(<div className="flex gap-2 items-center">
-                    <LuClipboardList className="text-secondary" />
-                    <p className="text-secondary">Copied to clipboard</p>
-                </div>);
-            }}>Copy</button>
+            <input type={hidden ? 'password' : 'text'} className="input flex-1 sm:w-[240px]" value={`${window.location.origin}/${partyId}`} disabled />
+            <button className="button flex-1 inline-flex items-center justify-center gap-2" onClick={handleCopy}>
+                <LuClipboard />
+                Copy
+            </button>
         </div>
         <button className="button flex gap-2 items-center" onClick={() => setHidden(!hidden)}>
             {hidden ? <><LuEye /> Show</> : <><LuEyeOff /> Hide</>}

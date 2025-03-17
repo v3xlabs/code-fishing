@@ -29,5 +29,5 @@ html, body {
 }
 
 input.input {
-    @apply px-2.5 py-1 rounded-sm bg-primary text-secondary outline-accent hover:border-none outline-offset-4;
+    @apply px-2.5 py-1 rounded-sm bg-primary text-secondary outline-accent hover:border-none outline-offset-4 max-w-full;
 }

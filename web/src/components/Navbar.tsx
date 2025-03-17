@@ -2,7 +2,8 @@ import { Link } from "@tanstack/react-router";
 
 export const Navbar = () => {
     return (
-        <div className="w-full bg-primary">
+        <>
+        <div className="w-full bg-primary fixed sm:relative">
             <div className="flex items-stretch gap-2 h-full">
                 <div className="px-1 max-h-full min-w-2 flex items-center gap-2 bg-secondary">
                     <div className="size-8 rounded-md">
@@ -15,6 +16,8 @@ export const Navbar = () => {
                     <span>fishing</span>
                 </Link>
             </div>
-        </div>
+            </div>
+            <div className="h-12 w-full sm:hidden" />
+        </>
     )
 };

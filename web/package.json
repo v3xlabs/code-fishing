@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "pnpm api-schema && vite",
+        "dev": "pnpm api-schema && vite --host",
         "build": "vite build && rm -rf ../app/www && cp -r dist ../app/www",
         "api-schema": "openapi-typescript http://localhost:3000/openapi.json --output ./src/api/schema.gen.ts"
     },
