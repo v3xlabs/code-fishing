@@ -46,10 +46,10 @@ export const UserProfile: FC<{}> = () => {
     }
 
     return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 text-ellipsis overflow-hidden">
             <div className="flex items-center gap-1">
                 <Avatar src={user?.avatar_url} seed={user?.user_id} />
-                <span>{user?.name}</span>
+                <span className="break-words block overflow-hidden text-ellipsis whitespace-nowrap">{user?.name}</span>
             </div>
             <button className="button flex items-center gap-1" onClick={logout}>
                 <LuLogOut className="size-4" />
