@@ -1,0 +1,8 @@
+User-agent: *
+
+Allow: /$
+Allow: /sitemap.xml$
+Allow: /og-preview.png
+Allow: /lock.code.png
+
+Disallow: /
