@@ -51,10 +51,15 @@ export const authStore = createStore({
       };
 
       // Notify listeners of state change
-      setTimeout(() => authEvents.notify(), 0);
-      queryClient.invalidateQueries({}).then(() => {
-        queryClient.refetchQueries({});
-      });
+      setTimeout(() => {
+        authEvents.notify();
+
+        console.log('invalidating queries');
+        queryClient.invalidateQueries({}).then(() => {
+          console.log('refetching queries');
+          queryClient.refetchQueries({});
+        });
+      }, 0);
 
       return result;
     },
@@ -70,9 +75,6 @@ export const authStore = createStore({
 
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
-      queryClient.invalidateQueries({}).then(() => {
-        queryClient.refetchQueries({});
-      });
 
       return result;
     },
@@ -86,9 +88,6 @@ export const authStore = createStore({
 
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
-      queryClient.invalidateQueries({}).then(() => {
-        queryClient.refetchQueries({});
-      });
 
       return result;
     }
@@ -172,3 +171,16 @@ export const useAuth = () => {
     }
   };
 };
+
+// subscribe to auth state changes and invalidate queries when user is logged in
+
+// authStore.subscribe(() => {
+//   // if (authStore.getSnapshot().context.token) {
+//    setTimeout(() => {
+//     queryClient.invalidateQueries({}).then(() => {
+//       queryClient.refetchQueries({});
+//     });
+//    }, 1000);
+// //  }
+// });
+

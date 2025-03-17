@@ -39,7 +39,10 @@ impl User {
 
     pub async fn authorize_by_guest_id(state: &AppState) -> Result<User> {
         let user_id = Self::get_next_guest_id(state, 0).await?;
-        let guest_name: String = fake::faker::name::en::Name().fake();
+        let guest_name: String = fake::faker::name::en::FirstName().fake();
+        let last_name: String = fake::faker::name::en::LastName().fake();
+        let first_char_of_last_name: String = last_name.chars().next().unwrap().to_string();
+        let guest_name = format!("{} {}.", guest_name, first_char_of_last_name);
 
         let user = sqlx::query_as!(
             User,
