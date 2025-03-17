@@ -12,12 +12,11 @@ use poem::{
 use poem_openapi::{payload::Html, OpenApi, OpenApiService, Tags};
 
 use maps::MapsApi;
-// use request::RequestApi;
-// use stats::{balance::BalanceApi, StatsApi};
 use tracing::info;
 
 use crate::state::AppState;
 use tracing_mw::TraceId;
+use auth::AuthApi;
 
 // pub mod auth;
 // pub mod channel;
@@ -29,6 +28,7 @@ use tracing_mw::TraceId;
 // pub mod stats;
 pub mod party;
 pub mod maps;
+pub mod auth;
 pub mod tracing_mw;
 
 #[derive(Tags)]
@@ -37,13 +37,12 @@ enum ApiTags {
     Party,
     /// Maps Related Operations
     Maps,
+    /// Auth Related Operations
+    Auth,
 }
 
 fn get_api() -> impl OpenApi {
-    (
-        PartyApi,
-        MapsApi
-    )
+    (PartyApi, MapsApi, AuthApi)
 }
 
 pub async fn start_http(state: AppState) {

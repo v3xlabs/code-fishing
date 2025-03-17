@@ -34,7 +34,7 @@ const copyToClipboard = async (text: string): Promise<boolean> => {
     }
 };
 
-const handleCopy = async () => {
+const handleCopy = async (partyId: string) => {
     const success = await copyToClipboard(partyId);
 
     if (success) {
@@ -66,7 +66,7 @@ export const PartyInviteCard: FC<{ partyId: string }> = ({ partyId }) => {
         </div>
         <div className="flex gap-2 w-full flex-wrap justify-between">
             <input type={hidden ? 'password' : 'text'} className="input flex-1 sm:w-[240px]" value={`${window.location.origin}/${partyId}`} disabled />
-            <button className="button flex-1 inline-flex items-center justify-center gap-2" onClick={handleCopy}>
+            <button className="button flex-1 inline-flex items-center justify-center gap-2" onClick={() => handleCopy(partyId)}>
                 <LuClipboard />
                 Copy
             </button>

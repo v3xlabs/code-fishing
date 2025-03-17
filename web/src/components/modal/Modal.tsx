@@ -1,6 +1,6 @@
 import { DialogClose, DialogContent, DialogOverlay, DialogPortal } from '@radix-ui/react-dialog';
 import { FC, PropsWithChildren } from 'react';
-import { LuCross, LuPlus } from 'react-icons/lu';
+import { LuPlus } from 'react-icons/lu';
 
 export const Modal: FC<PropsWithChildren<{size?: 'small' | 'medium' | 'large'}>> = ({ children, size = 'small' }) => {
   return (
@@ -10,10 +10,10 @@ export const Modal: FC<PropsWithChildren<{size?: 'small' | 'medium' | 'large'}>>
         {children}
 				<DialogClose asChild>
 					<button
-						className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-primary bg-tertiary hover:bg-primary hover:text-tertiary focus:shadow-[0_0_0_2px] focus:shadow-accent focus:outline-none"
+						className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full button"
 						aria-label="Close"
 					>
-						<LuPlus className="rotate-45" />
+						<LuPlus className="rotate-45 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" size={16} />
 					</button>
 				</DialogClose>
       </DialogContent>

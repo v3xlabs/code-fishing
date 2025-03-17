@@ -25,7 +25,10 @@ html, body {
 }
 
 .button {
-    @apply px-2 py-1 rounded-sm bg-primary text-secondary hover:bg-tertiary hover:text-primary;
+    @apply px-2 py-1 rounded-sm bg-primary text-primary hover:bg-tertiary hover:text-primary;
+}
+.button:disabled {
+    @apply bg-primary text-secondary line-through cursor-not-allowed;
 }
 
 input.input {
