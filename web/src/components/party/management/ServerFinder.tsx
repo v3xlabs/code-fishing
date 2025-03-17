@@ -10,8 +10,8 @@ export const ServerFinder = () => {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex gap-2">
-            <input type="text" placeholder="Server Name" className="input w-full" value={input} onChange={(e) => setInput(e.target.value)} />
-            <button className="button" onClick={() => setInput('')}>CLEAR</button>
+                <input type="text" placeholder="Server Name" className="input w-full" value={input} onChange={(e) => setInput(e.target.value)} />
+                <button className="button" onClick={() => setInput('')}>CLEAR</button>
             </div>
             <ul className="flex flex-col gap-4">
                 {data?.data.map((server) => (
@@ -27,11 +27,11 @@ export const ServerPreview = ({ server }: { server: ServerResult }) => {
 
     return (
         <li key={server.name} className="bg-secondary p-4 rounded-md flex gap-4 items-center font-mono hover:bg-primary hover:text-tertiary transition-colors">
-            {map && (
-                <div className="w-32 h-32 border border-accent rounded-sm">
+            <div className="w-32 h-32 border border-accent rounded-sm">
+                {map && (
                     <img src={map.data.thumbnail_url} className="aspect-square max-h-48 object-cover" />
-                </div>
-            )}
+                )}
+            </div>
             <div className="flex flex-col gap-1">
                 <h3 className="font-bold">{server.name}</h3>
                 <p className="text-secondary">{server.map_id}</p>
