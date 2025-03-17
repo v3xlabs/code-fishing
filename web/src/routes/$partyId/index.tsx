@@ -1,5 +1,6 @@
 import { Switch } from '@/components/input/Switch';
 import { Modal } from '@/components/modal/Modal';
+import { PartyProgress } from '@/components/party/codes/PartyProgress';
 import { PartyInviteCard } from '@/components/party/management/PartyInvite';
 import { ServerFinder } from '@/components/party/management/ServerFinder';
 import { PartyMembers } from '@/components/party/PartyMembers';
@@ -41,6 +42,7 @@ function RouteComponent() {
       </div>
       <PartyMembers />
     </div>
+    <PartyProgress />
   </div>);
 }
 
