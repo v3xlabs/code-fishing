@@ -1,7 +1,8 @@
-import { MutationOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { MutationOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { components } from "./schema.gen";
 import { useApi } from "./api";
 import { useAuth } from "@/hooks/auth";
+import { useEffect } from "react";
 
 export type GuestResponse = components['schemas']['GuestResponse'];
 export type User = components['schemas']['User'];
@@ -18,8 +19,8 @@ export const useGuestAuth = (extra?: Partial<MutationOptions<GuestResponse, unde
 }
 
 export const useUser = () => {
-    const { token } = useAuth();
-
+    const { token, user } = useAuth();
+    
     return useQuery({
         queryKey: ['user', token],
         queryFn: async () => {
@@ -28,10 +29,21 @@ export const useUser = () => {
                 return null;
             }
             
-            const response = await useApi('/auth/user', 'get', {})
-
-            return response.data;
+            try {
+                const response = await useApi('/auth/user', 'get', {})
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                return null;
+            }
         },
+        // Use the user from auth context as initialData
+        initialData: user,
+        // Only run query if we have a token
         enabled: !!token,
+        // Reasonable refetch settings
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        staleTime: 30000, // Consider data stale after 30 seconds
     });
 };

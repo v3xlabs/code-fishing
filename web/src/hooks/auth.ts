@@ -49,11 +49,10 @@ export const authStore = createStore({
         token: event.token,
         user: event.user
       };
-      
-      queryClient.invalidateQueries({});
 
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
+      queryClient.invalidateQueries({});
       
       return result;
     },
@@ -67,9 +66,9 @@ export const authStore = createStore({
         user: null
       };
 
-      queryClient.invalidateQueries({});
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
+      queryClient.invalidateQueries({});
       
       return result;
     },
@@ -81,9 +80,9 @@ export const authStore = createStore({
         user: event.user
       };
       
-      queryClient.invalidateQueries({});
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
+      queryClient.invalidateQueries({});
       
       return result;
     }
