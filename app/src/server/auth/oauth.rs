@@ -7,6 +7,7 @@ use poem::{web::Query, EndpointExt, Result, Route};
 use poem_openapi::payload::Response;
 use poem_openapi::{payload::Html, payload::PlainText, OpenApi, Tags};
 use reqwest::{Client, StatusCode};
+use reqwest::ClientBuilder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -85,11 +86,12 @@ impl OAuthApi {
             config.auth_return_url, config.auth_realm
         );
 
-        let client = Client::builder()
+        let client = ClientBuilder::new()
             .timeout(std::time::Duration::from_secs(10))
+            .use_rustls_tls()
             .build()
-            .unwrap_or_else(|_| {
-                warn!("Failed to build custom HTTP client, using default");
+            .unwrap_or_else(|e| {
+                warn!("Failed to build custom HTTP client with rustls: {}, using default", e);
                 Client::new()
             });
 
@@ -114,6 +116,7 @@ impl OAuthApi {
                 config.web_api_key
             );
 
+            // Ensure we're using the provided client that has rustls-tls configured
             match client.get(&test_url).send().await {
                 Ok(response) => {
                     let status = response.status();
