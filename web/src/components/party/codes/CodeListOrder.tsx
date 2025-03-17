@@ -83,7 +83,7 @@ export const CodeListOrder = () => {
       onDragEnd={handleDragEnd}
     >
       <div className="card space-y-2 p-4 h-fit w-full sm:max-w-xs">
-        <h3 className="">Arrange Lists</h3>
+        <h3>Arrange Lists</h3>
         <SortableContext items={list.map(item => item.name)} strategy={verticalListSortingStrategy}>
           {list.map((item) => (
             <SortableItem key={item.name} id={item.name} item={item} />
