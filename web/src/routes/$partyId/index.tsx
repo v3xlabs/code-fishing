@@ -15,8 +15,8 @@ function RouteComponent() {
 
   return (<div className="p-2 flex flex-wrap gap-2">
     <PartyInviteCard partyId={partyId} />
-    <div className="flex flex-col gap-2">
-      <div className="card p-4 h-fit flex flex-col gap-2 max-w-xs w-full">
+    <div className="flex flex-col gap-2 sm:max-w-xs w-full">
+      <div className="card p-4 h-fit flex flex-col gap-2 sm:max-w-xs w-full">
         <h3 className="">
           Settings
         </h3>
