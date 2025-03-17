@@ -10,15 +10,15 @@ export const PartyInviteCard: FC<{ partyId: string }> = ({ partyId }) => {
         <h2>Party Invite</h2>
         <p className="text-secondary">Share this link with your friends to invite them to the party.</p>
         <div className="flex justify-center gap-2 flex-col items-center">
-            <QRCode value={`${window.location.origin}/party/${partyId}`} hidden={hidden} />
+            <QRCode value={`${window.location.origin}/${partyId}`} hidden={hidden} />
             <div className="text-secondary">
                 Party Code: <span className="inline-flex font-bold bg-tertiary px-2 py-1">{hidden ? '*'.repeat(partyId.length) : partyId}</span>
             </div>
         </div>
         <div className="flex gap-2 w-full flex-wrap justify-between">
-            <input type={hidden ? 'password' : 'text'} className="input flex-1" value={`${window.location.origin}/party/${partyId}`} disabled />
+            <input type={hidden ? 'password' : 'text'} className="input flex-1" value={`${window.location.origin}/${partyId}`} disabled />
             <button className="button flex-1" onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/party/${partyId}`);
+                navigator.clipboard.writeText(`${window.location.origin}/${partyId}`);
                 toast(<div className="flex gap-2 items-center">
                     <LuClipboardList className="text-secondary" />
                     <p className="text-secondary">Copied to clipboard</p>
