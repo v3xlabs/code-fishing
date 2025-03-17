@@ -1,5 +1,6 @@
 import { CodeListOrder } from '@/components/CodeListOrder'
 import { PartyProgress } from '@/components/PartyProgress'
+import { ServerFinder } from '@/components/ServerFinder'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
@@ -26,5 +27,6 @@ function RouteComponent() {
     </div>
     <CodeListOrder />
     <PartyProgress />
+    <ServerFinder />
   </div>
 }
