@@ -133,7 +133,7 @@ impl OAuthApi {
                     }
                 }
                 Err(e) => {
-                    error!("Failed to test Steam API key: {}", e);
+                    error!("Failed to test Steam API key: {:?}", e);
                 }
             }
         });
