@@ -5,8 +5,15 @@
 :root {
 }
 
+@font-face {
+    font-family: 'Rust';
+    src: url('/Rust.ttf') format('truetype');
+}
+
 html, body {
     @apply bg-tertiary text-primary;
+    font-family: 'Rust', sans-serif;
+    letter-spacing: 0.06em;
 }
 
 .card {
@@ -18,5 +25,9 @@ html, body {
 }
 
 .button {
-    @apply px-2 py-1 rounded-sm bg-primary;
+    @apply px-2 py-1 rounded-sm bg-primary text-secondary hover:bg-tertiary hover:text-primary;
+}
+
+input.input {
+    @apply px-2.5 py-1 rounded-sm bg-primary text-secondary outline-accent hover:border-none outline-offset-4;
 }
