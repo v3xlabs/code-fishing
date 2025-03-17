@@ -9,6 +9,6 @@ function RouteComponent() {
   const { partyId } = Route.useParams();
 
   return (<div className="p-2 grid grid-cols-1 gap-2">
-    <PartyInviteCard />
+    <PartyInviteCard partyId={partyId} />
   </div>);
 }
