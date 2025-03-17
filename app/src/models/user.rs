@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use fake::Fake;
 use poem::Result;
 use poem_openapi::Object;
 use rand::Rng;
@@ -38,11 +39,13 @@ impl User {
 
     pub async fn authorize_by_guest_id(state: &AppState) -> Result<User> {
         let user_id = Self::get_next_guest_id(state, 0).await?;
+        let guest_name: String = fake::faker::name::en::Name().fake();
+
         let user = sqlx::query_as!(
             User,
             "INSERT INTO users (user_id, name) VALUES ($1, $2) RETURNING *",
             format!("guest:{}", user_id),
-            "Guest"
+            guest_name
         )
         .fetch_one(&state.database.pool)
         .await

@@ -53,7 +53,7 @@ export const UserProfile: FC<{}> = () => {
             </div>
             <button className="button flex items-center gap-1" onClick={logout}>
                 <LuLogOut className="size-4" />
-                <span>Logout</span>
+                <span className="hidden sm:block">Logout</span>
             </button>
         </div>
     );
