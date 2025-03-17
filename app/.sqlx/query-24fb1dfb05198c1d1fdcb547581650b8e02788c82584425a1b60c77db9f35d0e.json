@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO users (user_id, name, avatar_url, profile_url) VALUES ($1, $2, $3, $4) ON CONFLICT (user_id) DO UPDATE SET name = $2, avatar_url = $3, profile_url = $4 RETURNING *",
+  "query": "INSERT INTO users (user_id, name, avatar_url, profile_url) VALUES ($1, $2, $3, $4) ON CONFLICT (user_id) DO UPDATE SET name = $2, avatar_url = $3, profile_url = $4, updated_at = NOW() RETURNING *",
   "describe": {
     "columns": [
       {
@@ -51,5 +51,5 @@
       false
     ]
   },
-  "hash": "1f34b26b6c335856e9dc4df960f5a33619d8a4fbf0f017c5ea376bac6bbc0918"
+  "hash": "24fb1dfb05198c1d1fdcb547581650b8e02788c82584425a1b60c77db9f35d0e"
 }
