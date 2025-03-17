@@ -1,6 +1,8 @@
 import { FC, useState } from "react"
-import { LuEye, LuEyeOff } from "react-icons/lu";
+import { LuClipboard, LuClipboardList, LuEye, LuEyeOff } from "react-icons/lu";
 import { QRCodeSVG } from 'qrcode.react';
+import { toast } from 'sonner';
+
 export const PartyInviteCard: FC<{ partyId: string }> = ({ partyId }) => {
     const [hidden, setHidden] = useState(true);
 
@@ -15,8 +17,12 @@ export const PartyInviteCard: FC<{ partyId: string }> = ({ partyId }) => {
         </div>
         <div className="flex gap-2 w-full flex-wrap justify-between">
             <input type={hidden ? 'password' : 'text'} className="input flex-1" value={`${window.location.origin}/party/${partyId}`} disabled />
-            <button className="button" onClick={() => {
+            <button className="button flex-1" onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/party/${partyId}`);
+                toast(<div className="flex gap-2 items-center">
+                    <LuClipboardList className="text-secondary" />
+                    <p className="text-secondary">Copied to clipboard</p>
+                </div>);
             }}>Copy</button>
         </div>
         <button className="button flex gap-2 items-center" onClick={() => setHidden(!hidden)}>
