@@ -82,7 +82,7 @@ export const CodeListOrder = () => {
       collisionDetection={closestCenter} 
       onDragEnd={handleDragEnd}
     >
-      <div className="card space-y-2 p-4 h-fit">
+      <div className="card space-y-2 p-4 h-fit w-full sm:max-w-xs">
         <h3 className="">Arrange Lists</h3>
         <SortableContext items={list.map(item => item.name)} strategy={verticalListSortingStrategy}>
           {list.map((item) => (
