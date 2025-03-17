@@ -4,10 +4,11 @@ import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 import { Modal } from "./modal/Modal";
 import { FaSteam } from "react-icons/fa";
-import { useGuestAuth } from "@/api/auth";
+import { useGuestAuth, useUser } from "@/api/auth";
 import { Avatar } from "./auth/Avatar";
 import { LuLogOut } from "react-icons/lu";
 import { toast } from "sonner";
+import { baseUrl } from "@/api/api";
 
 export const Navbar = () => {
     return (
@@ -35,7 +36,8 @@ export const Navbar = () => {
 };
 
 export const UserProfile: FC<{}> = () => {
-    const { isAuthenticated, logout, user } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
+    const { data: user } = useUser();
 
     if (!isAuthenticated) {
         return (
@@ -46,7 +48,7 @@ export const UserProfile: FC<{}> = () => {
     return (
         <div className="flex items-center gap-1">
             <div className="flex items-center gap-1">
-                <Avatar src={user?.avatar} seed={user?.user_id} />
+                <Avatar src={user?.avatar_url} seed={user?.user_id} />
                 <span>{user?.name}</span>
             </div>
             <button className="button flex items-center gap-1" onClick={logout}>
@@ -95,10 +97,10 @@ export const LoginModalContent: FC<{}> = () => {
             <div className="flex flex-col gap-2 sm:w-[calc(50%-1rem)]">
                 <h2>Sign in with Steam</h2>
                 <p className="text-secondary">Click here to sign in with your Steam account.</p>
-                <button className="button flex items-center justify-center gap-2" disabled>
+                <a href={`${baseUrl}/auth/oauth/steam`} className="button flex items-center justify-center gap-2">
                     <FaSteam className="size-4" />
                     <span>Sign in with Steam</span>
-                </button>
+                </a>
             </div>
         </div>
     )

@@ -1,3 +1,4 @@
+import { queryClient } from '@/util/query';
 import { createStore } from '@xstate/store';
 import { useEffect, useState } from 'react';
 
@@ -49,6 +50,8 @@ export const authStore = createStore({
         user: event.user
       };
       
+      queryClient.invalidateQueries({});
+
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
       
@@ -63,7 +66,8 @@ export const authStore = createStore({
         token: null,
         user: null
       };
-      
+
+      queryClient.invalidateQueries({});
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
       
@@ -77,6 +81,7 @@ export const authStore = createStore({
         user: event.user
       };
       
+      queryClient.invalidateQueries({});
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
       
@@ -111,6 +116,32 @@ export const useAuth = () => {
   const [user, setUser] = useState<any | null>(authStore.getSnapshot().context.user);
   
   useEffect(() => {
+    // Check for token in URL query parameters
+    const checkUrlForToken = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const urlToken = params.get('token');
+        
+        if (urlToken) {
+          // Remove token from URL
+          params.delete('token');
+          const newUrl = window.location.pathname + 
+            (params.toString() ? `?${params.toString()}` : '') +
+            window.location.hash;
+          
+          // Update URL without causing a page reload
+          window.history.replaceState({}, document.title, newUrl);
+          
+          // Set the token in auth store
+          const currentUser = authStore.getSnapshot().context.user;
+          authStore.trigger.login({ token: urlToken, user: currentUser || {} });
+        }
+      }
+    };
+    
+    // Run once on component mount
+    checkUrlForToken();
+    
     // Setup subscription to auth state changes
     const unsubscribe = authEvents.subscribe(() => {
       const state = authStore.getSnapshot();

@@ -148,6 +148,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["User"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/oauth/steam": {
         parameters: {
             query?: never;
@@ -225,15 +259,7 @@ export interface components {
         /** GuestResponse */
         GuestResponse: {
             token: string;
-            user?: components["schemas"]["GuestUser"];
-        };
-        /**
-         * GuestUser
-         * @description * This is a guest user
-         */
-        GuestUser: {
-            user_id: string;
-            name: string;
+            user: components["schemas"]["User"];
         };
         /** MapData */
         MapData: {
@@ -299,6 +325,17 @@ export interface components {
             /** Format: uint16 */
             game_port: number;
             last_wipe_utc: string;
+        };
+        /** User */
+        User: {
+            user_id: string;
+            name: string;
+            avatar_url?: string;
+            profile_url?: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
         };
     };
     responses: never;

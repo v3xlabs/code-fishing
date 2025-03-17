@@ -22,11 +22,22 @@
             "problemMatcher": []
         },
         {
+            "label": "Run Docker Dev",
+            "type": "shell",
+            "command": "docker compose up",
+            "options": {
+                "cwd": "${workspaceFolder}/app"
+            },
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "Run All",
             "dependsOrder": "parallel",
             "dependsOn": [
                 "Run App",
-                "Run Web"
+                "Run Web",
+                "Run Docker Dev"
             ],
             "group": {
                 "kind": "build",

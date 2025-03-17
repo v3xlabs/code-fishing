@@ -12,24 +12,46 @@ pub struct SteamOAuthConfig {
     pub auth_realm: String,
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct DatabaseConfig {
+    pub url: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct JwtConfig {
+    pub secret: String,
+}
+
 pub struct AppStateInner {
     pub database: Database,
     pub steam_oauth_config: SteamOAuthConfig,
+    pub jwt: JwtConfig,
 }
 
 impl AppStateInner {
-    pub async fn init() -> Self {
-        let database = Database::init().await;
-        
+    pub async fn init() -> Self {        
         // Load configuration from environment variables
         let config = Figment::new()
             .merge(Env::prefixed("STEAM_"))
             .extract::<SteamOAuthConfig>()
             .expect("Failed to load Steam OAuth configuration");
 
+        let database_config = Figment::new()
+            .merge(Env::prefixed("DATABASE_"))
+            .extract::<DatabaseConfig>()
+            .expect("Failed to load database configuration");
+
+        let database = Database::init(&database_config).await;
+
+        let jwt = Figment::new()
+            .merge(Env::prefixed("JWT_"))
+            .extract::<JwtConfig>()
+            .expect("Failed to load JWT secret");
+
         Self { 
             database,
             steam_oauth_config: config,
+            jwt,
         }
     }
 }
