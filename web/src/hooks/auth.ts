@@ -12,10 +12,10 @@ const getInitialState = (): AuthState => {
   if (typeof window === 'undefined') {
     return { token: null, user: null };
   }
-  
+
   const storedToken = localStorage.getItem('auth_token');
   const storedUser = localStorage.getItem('auth_user');
-  
+
   return {
     token: storedToken,
     user: storedUser ? JSON.parse(storedUser) : null,
@@ -43,7 +43,7 @@ export const authStore = createStore({
     login: (context, event: { token: string; user: any }) => {
       localStorage.setItem('auth_token', event.token);
       localStorage.setItem('auth_user', JSON.stringify(event.user));
-      
+
       const result = {
         ...context,
         token: event.token,
@@ -52,14 +52,16 @@ export const authStore = createStore({
 
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
-      queryClient.invalidateQueries({});
-      
+      queryClient.invalidateQueries({}).then(() => {
+        queryClient.refetchQueries({});
+      });
+
       return result;
     },
     logout: (context) => {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
-      
+
       const result = {
         ...context,
         token: null,
@@ -68,22 +70,26 @@ export const authStore = createStore({
 
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
-      queryClient.invalidateQueries({});
-      
+      queryClient.invalidateQueries({}).then(() => {
+        queryClient.refetchQueries({});
+      });
+
       return result;
     },
     updateUser: (context, event: { user: any }) => {
       localStorage.setItem('auth_user', JSON.stringify(event.user));
-      
+
       const result = {
         ...context,
         user: event.user
       };
-      
+
       // Notify listeners of state change
       setTimeout(() => authEvents.notify(), 0);
-      queryClient.invalidateQueries({});
-      
+      queryClient.invalidateQueries({}).then(() => {
+        queryClient.refetchQueries({});
+      });
+
       return result;
     }
   }
@@ -113,44 +119,44 @@ export const useAuthToken = () => {
 export const useAuth = () => {
   const [token, setToken] = useState<string | null>(authStore.getSnapshot().context.token);
   const [user, setUser] = useState<any | null>(authStore.getSnapshot().context.user);
-  
+
   useEffect(() => {
     // Check for token in URL query parameters
     const checkUrlForToken = () => {
       if (typeof window !== 'undefined') {
         const params = new URLSearchParams(window.location.search);
         const urlToken = params.get('token');
-        
+
         if (urlToken) {
           // Remove token from URL
           params.delete('token');
-          const newUrl = window.location.pathname + 
+          const newUrl = window.location.pathname +
             (params.toString() ? `?${params.toString()}` : '') +
             window.location.hash;
-          
+
           // Update URL without causing a page reload
           window.history.replaceState({}, document.title, newUrl);
-          
+
           // Set the token in auth store
           const currentUser = authStore.getSnapshot().context.user;
           authStore.trigger.login({ token: urlToken, user: currentUser || {} });
         }
       }
     };
-    
+
     // Run once on component mount
     checkUrlForToken();
-    
+
     // Setup subscription to auth state changes
     const unsubscribe = authEvents.subscribe(() => {
       const state = authStore.getSnapshot();
       setToken(state.context.token);
       setUser(state.context.user);
     });
-    
+
     return () => unsubscribe();
   }, []);
-  
+
   return {
     token,
     user,
