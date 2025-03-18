@@ -404,7 +404,7 @@ export const MusicRadio: FC = () => {
             <div className="flex items-center gap-2">
                 <div className="h-full aspect-square bg-tertiary p-1 rounded-md size-16 flex items-center justify-center">
                     <div className={`h-full aspect-square relative ${isPlaying ? 'animate-zoom' : 'opacity-50'}`}>
-                        <img src="/public/speaker.png" alt="Radio" className="w-full h-full object-contain" />
+                        <img src="/speaker.png" alt="Radio" className="w-full h-full object-contain" />
                     </div>
                 </div>
                 <div className="flex-1">
