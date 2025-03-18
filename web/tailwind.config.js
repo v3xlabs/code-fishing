@@ -30,6 +30,7 @@ export default {
             },
             animation: {
                 'spin-slow': 'spin 9s linear infinite',
+                'zoom': 'zoom 1s ease-in-out infinite',
             }
         },
     },
