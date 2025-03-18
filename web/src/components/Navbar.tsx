@@ -27,12 +27,6 @@ export const Navbar = () => {
                         <span>fishing</span>
                     </Link>
                 </div>
-                <div className="flex items-center h-full">
-                    <Link to="/radio" className="flex items-center gap-1 px-3 py-2 hover:bg-secondary transition-colors">
-                        <BsMusicNoteBeamed className="size-4" />
-                        <span className="hidden sm:block">Radio</span>
-                    </Link>
-                </div>
                 <div className="flex items-center h-full gap-2 flex-1 justify-end">
                     <UserProfile />
                 </div>
