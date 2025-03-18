@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 import { Modal } from "./modal/Modal";
 import { FaSteam } from "react-icons/fa";
+import { BsMusicNoteBeamed } from "react-icons/bs";
 import { useGuestAuth, useUser } from "@/api/auth";
 import { Avatar } from "./auth/Avatar";
 import { LuLogOut } from "react-icons/lu";
@@ -24,6 +25,12 @@ export const Navbar = () => {
                         <span>code</span>
                         <span className="text-secondary">.</span>
                         <span>fishing</span>
+                    </Link>
+                </div>
+                <div className="flex items-center h-full">
+                    <Link to="/radio" className="flex items-center gap-1 px-3 py-2 hover:bg-secondary transition-colors">
+                        <BsMusicNoteBeamed className="size-4" />
+                        <span className="hidden sm:block">Radio</span>
                     </Link>
                 </div>
                 <div className="flex items-center h-full gap-2 flex-1 justify-end">

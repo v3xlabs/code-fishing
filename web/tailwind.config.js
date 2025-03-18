@@ -28,6 +28,9 @@ export default {
                 // 'subtitle-text': 'var(--theme-subtitle-text-color)',
                 // 'destructive-text': 'var(--theme-destructive-color)',
             },
+            animation: {
+                'spin-slow': 'spin 9s linear infinite',
+            }
         },
     },
     plugins: [],
