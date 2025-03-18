@@ -7,7 +7,7 @@
 
 @font-face {
     font-family: 'Rust';
-    src: url('/Rust.ttf') format('truetype');
+    src: url('/Rust.otf') format('opentype');
 }
 
 html, body {
