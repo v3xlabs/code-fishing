@@ -42,6 +42,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/party/{party_id}/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    cursor: string;
+                };
+                header?: never;
+                path: {
+                    party_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["PartyGetResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/maps/search": {
         parameters: {
             query?: never;
@@ -305,6 +343,51 @@ export interface components {
         PartyCreateResponse: {
             id: string;
             created_at: string;
+        };
+        /** PartyEntry */
+        PartyEntry: {
+            entry_id: string;
+            user_id: string;
+            created_at: string;
+            data: components["schemas"]["PartyEntryData"];
+        };
+        /** PartyEntryCodeSubmit */
+        PartyEntryCodeSubmit: {
+            codes: string[];
+        };
+        /** PartyEntryCursorUpdate */
+        PartyEntryCursorUpdate: {
+            codes: string[];
+        };
+        PartyEntryData: components["schemas"]["PartyEntryData_PartyEntryCursorUpdate"] | components["schemas"]["PartyEntryData_PartyEntryJoinLeave"] | components["schemas"]["PartyEntryData_PartyEntryCodeSubmit"];
+        PartyEntryData_PartyEntryCodeSubmit: {
+            /**
+             * @example CodeSubmit
+             * @enum {string}
+             */
+            type: "CodeSubmit";
+        } & components["schemas"]["PartyEntryCodeSubmit"];
+        PartyEntryData_PartyEntryCursorUpdate: {
+            /**
+             * @example CursorUpdate
+             * @enum {string}
+             */
+            type: "CursorUpdate";
+        } & components["schemas"]["PartyEntryCursorUpdate"];
+        PartyEntryData_PartyEntryJoinLeave: {
+            /**
+             * @example JoinLeave
+             * @enum {string}
+             */
+            type: "JoinLeave";
+        } & components["schemas"]["PartyEntryJoinLeave"];
+        /** PartyEntryJoinLeave */
+        PartyEntryJoinLeave: {
+            action: string;
+        };
+        /** PartyGetResponse */
+        PartyGetResponse: {
+            entries: components["schemas"]["PartyEntry"][];
         };
         /** SearchMeta */
         SearchMeta: {
