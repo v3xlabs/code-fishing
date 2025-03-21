@@ -2,8 +2,11 @@ use poem::{web::Data, Result};
 use poem_openapi::{param::Query, payload::Json, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 
-use crate::state::AppState;
 use crate::server::ApiTags;
+use crate::state::AppState;
+use reqwest::ClientBuilder;
+use reqwest::Client;
+use tracing::warn;
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct MapsApi;
@@ -91,9 +94,28 @@ pub struct MapData {
 #[OpenApi]
 impl MapsApi {
     #[oai(path = "/maps/search", method = "get", tag = "ApiTags::Maps")]
-    async fn search(&self, state: Data<&AppState>, search: Query<String>) -> Result<Json<SearchResponse>> {
-        let url = format!("https://api.rustmaps.com/internal/v1/servers/search?input={}", search.0);
-        let response = reqwest::get(url).await.unwrap();
+    async fn search(
+        &self,
+        state: Data<&AppState>,
+        search: Query<String>,
+    ) -> Result<Json<SearchResponse>> {
+        let url = format!(
+            "https://api.rustmaps.com/internal/v1/servers/search?input={}",
+            search.0
+        );
+
+        let client = ClientBuilder::new()
+            .timeout(std::time::Duration::from_secs(10))
+            .use_rustls_tls()
+            .build()
+            .unwrap_or_else(|e| {
+                warn!(
+                    "Failed to build custom HTTP client with rustls: {}, using default",
+                    e
+                );
+                Client::new()
+            });
+        let response = client.get(url).send().await.unwrap();
         let body = response.text().await.unwrap();
         tracing::info!("{}", body);
         let search_response: SearchResponse = serde_json::from_str(&body).unwrap();
@@ -101,9 +123,25 @@ impl MapsApi {
     }
 
     #[oai(path = "/maps/get", method = "get", tag = "ApiTags::Maps")]
-    async fn get(&self, state: Data<&AppState>, map_id: Query<String>) -> Result<Json<MapResponse>> {
+    async fn get(
+        &self,
+        state: Data<&AppState>,
+        map_id: Query<String>,
+    ) -> Result<Json<MapResponse>> {
         let url = format!("https://api.rustmaps.com/internal/v1/maps/{}", map_id.0);
-        let response = reqwest::get(url).await.unwrap();
+
+        let client = ClientBuilder::new()
+            .timeout(std::time::Duration::from_secs(10))
+            .use_rustls_tls()
+            .build()
+            .unwrap_or_else(|e| {
+                warn!(
+                    "Failed to build custom HTTP client with rustls: {}, using default",
+                    e
+                );
+                Client::new()
+            });
+        let response = client.get(url).send().await.unwrap();
         let body = response.text().await.unwrap();
         tracing::info!("{}", body);
         let map_response: MapResponse = serde_json::from_str(&body).unwrap();

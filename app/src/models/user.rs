@@ -4,7 +4,6 @@ use poem::Result;
 use poem_openapi::Object;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
-use sqids::Sqids;
 
 use crate::{server::auth::oauth::SteamUserProfile, state::AppState};
 

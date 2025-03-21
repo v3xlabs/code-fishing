@@ -1,13 +1,13 @@
 use poem::{web::Data, Result};
 use poem_openapi::param::Path;
-use poem_openapi::{Enum, NewType, Union};
+use poem_openapi::Union;
 use poem_openapi::{param::Query, payload::Json, Object, OpenApi};
+use rand::prelude::*;
 use serde::{Deserialize, Serialize};
 use sqids::Sqids;
-use rand::prelude::*;
 
-use crate::state::AppState;
 use crate::server::ApiTags;
+use crate::state::AppState;
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyApi;
@@ -76,7 +76,11 @@ pub enum PartyEntryData {
 #[OpenApi]
 impl PartyApi {
     #[oai(path = "/party/create", method = "post", tag = "ApiTags::Party")]
-    async fn create(&self, state: Data<&AppState>, body: Json<PartyCreateRequest>) -> Result<Json<PartyCreateResponse>> {
+    async fn create(
+        &self,
+        state: Data<&AppState>,
+        body: Json<PartyCreateRequest>,
+    ) -> Result<Json<PartyCreateResponse>> {
         tracing::info!("{:?}", body);
 
         let new_id = Sqids::default();
@@ -99,11 +103,14 @@ impl PartyApi {
     // }
 
     #[oai(path = "/party/:party_id/get", method = "get", tag = "ApiTags::Party")]
-    async fn get(&self, state: Data<&AppState>, party_id: Path<String>, cursor: Query<String>) -> Result<Json<PartyGetResponse>> {
+    async fn get(
+        &self,
+        state: Data<&AppState>,
+        party_id: Path<String>,
+        cursor: Query<String>,
+    ) -> Result<Json<PartyGetResponse>> {
         tracing::info!("{:?}", party_id.0);
 
-        Ok(Json(PartyGetResponse {
-            entries: vec![],
-        }))
+        Ok(Json(PartyGetResponse { entries: vec![] }))
     }
 }

@@ -1,7 +1,7 @@
 use crate::database::Database;
-use std::sync::Arc;
-use figment::{Figment, providers::{Env, Format, Serialized}};
+use figment::{providers::Env, Figment};
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 
 pub type AppState = Arc<AppStateInner>;
 
@@ -29,7 +29,7 @@ pub struct AppStateInner {
 }
 
 impl AppStateInner {
-    pub async fn init() -> Self {        
+    pub async fn init() -> Self {
         // Load configuration from environment variables
         let config = Figment::new()
             .merge(Env::prefixed("STEAM_"))
@@ -48,7 +48,7 @@ impl AppStateInner {
             .extract::<JwtConfig>()
             .expect("Failed to load JWT secret");
 
-        Self { 
+        Self {
             database,
             steam_oauth_config: config,
             jwt,
