@@ -24,6 +24,10 @@ export const useUser = () => {
     return useQuery({
         queryKey: ['user', token],
         queryFn: async () => {
+            if (!token) {
+                return null;
+            }
+
             try {
                 console.log('fetching user');
                 const response = await useApi('/auth/user', 'get', { fetchOptions: { cache: 'no-store', headers: { Authorization: `Bearer ${token}` } } })
