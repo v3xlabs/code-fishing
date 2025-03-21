@@ -345,8 +345,8 @@ export const MusicRadio: FC = () => {
     };
 
     return (
-        <div className="card w-full">
-            <div className="flex items-center justify-between mb-4">
+        <div className="card w-full flex flex-col gap-4">
+            <div className="flex items-center justify-between">
                 <h1 className="text-primary">Fishing Village Radio</h1>
                 <div className="flex items-center gap-2 flex-wrap justify-end">
                     <button
@@ -362,7 +362,7 @@ export const MusicRadio: FC = () => {
                 </div>
             </div>
 
-            <p className="text-secondary mb-2">
+            <p className="text-secondary grow">
                 {isIOS ? 'Tap Listen to start the radio' : 'Enjoy the tunes in sync with the party'}
             </p>
 

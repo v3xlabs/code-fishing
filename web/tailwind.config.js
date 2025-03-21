@@ -11,7 +11,10 @@ export default {
             colors: {
                 accent: '#CCC46A',
                 primary: '#F5F5F5',
+                primarybg: '#3F3D3C',
                 secondary: '#858585',
+                secondarybg: '#53504D',
+                tertiary: '#2d2b29',
                 rust: '#AA4735',
                 'rust-active': '#852E1E',
                 // background: 'var(--theme-bg-color)',

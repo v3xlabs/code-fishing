@@ -10,7 +10,7 @@ export const CodeEntryMod: FC<{}> = () => {
     const results = codes.slice(0, codeCount);
 
     return (
-        <div className="card h-fit w-full flex flex-col gap-2 !pb-2" style={{ gridColumn: '-2 / -1' }}>
+        <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumn: '-2 / -1' }}>
             <div className="flex items-center justify-between">
                 <h1 className="text-primary">Code Entry (WIP)</h1>
                 <div className="flex items-center gap-1">
@@ -22,7 +22,7 @@ export const CodeEntryMod: FC<{}> = () => {
                     </ToolTip>
                 </div>
             </div>
-            <div className="w-full -mx-4 px-4 box-content bg-primary py-2">
+            <div className="w-full -mx-4 px-4 box-content bg-primary py-2 grow">
                 <ul className="space-y-1">
                     {
                         results.map((code) => (

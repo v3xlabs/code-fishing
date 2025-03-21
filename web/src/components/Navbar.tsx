@@ -7,10 +7,17 @@ import { FaSteam } from "react-icons/fa";
 import { BsMusicNoteBeamed } from "react-icons/bs";
 import { useGuestAuth, useUser } from "@/api/auth";
 import { Avatar } from "./auth/Avatar";
-import { LuLogOut } from "react-icons/lu";
+import { LuLogOut, LuSettings } from "react-icons/lu";
 import { toast } from "sonner";
 import { baseUrl } from "@/api/api";
 import { useApp } from '@/hooks/context';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@radix-ui/react-dropdown-menu";
+import { NotImplemented } from "./modal/NotImplemented";
 
 export const Navbar = () => {
     return (
@@ -49,27 +56,47 @@ export const UserProfile: FC<{}> = () => {
 
     return (
         <div className="flex items-center gap-1 text-ellipsis overflow-hidden">
-            <div className="flex items-center gap-1">
-                <Avatar src={user?.avatar_url} seed={user?.user_id} />
-                <span className="break-words block overflow-hidden text-ellipsis whitespace-nowrap">{user?.name}</span>
-            </div>
-            <button className="button flex items-center gap-1" onClick={logout}>
-                <LuLogOut className="size-4" />
-                <span className="hidden sm:block">Logout</span>
-            </button>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-1 cursor-pointer outline-none px-3 mr-2 button border-b border-b-primarybg">
+                        <Avatar src={user?.avatar_url} seed={user?.user_id} />
+                        <span className="break-words block overflow-hidden text-ellipsis whitespace-nowrap">{user?.name}</span>
+                    </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    align="end"
+                    sideOffset={5}
+                    className="bg-primary border border-tertiary rounded-md p-2 shadow-md z-50 min-w-[200px]"
+                >
+                    <DropdownMenuItem className="focus:outline-none focus:bg-secondary rounded-md">
+                        <NotImplemented>
+                            <button className="button flex items-center gap-2 w-full">
+                                <LuSettings className="size-4" />
+                                <span>Preferences</span>
+                            </button>
+                        </NotImplemented>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="focus:outline-none focus:bg-secondary rounded-md">
+                        <button className="button button-rust flex items-center gap-2 w-full" onClick={logout}>
+                            <LuLogOut className="size-4" />
+                            <span>Logout</span>
+                        </button>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
     );
 };
 
 export const LoginModal: FC = () => {
     const { isLoginOpen, closeLogin, openLogin } = useApp();
-    
+
     return (
         <Dialog open={isLoginOpen} onOpenChange={closeLogin}>
             {/* <DialogTrigger asChild> */}
-                <button className="button" onClick={openLogin}>
-                    <span>Login</span>
-                </button>
+            <button className="button" onClick={openLogin}>
+                <span>Login</span>
+            </button>
             {/* </DialogTrigger> */}
             <Modal size="medium">
                 <LoginModalContent />
