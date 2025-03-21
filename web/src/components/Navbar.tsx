@@ -10,6 +10,7 @@ import { Avatar } from "./auth/Avatar";
 import { LuLogOut } from "react-icons/lu";
 import { toast } from "sonner";
 import { baseUrl } from "@/api/api";
+import { useApp } from '@/hooks/context';
 
 export const Navbar = () => {
     return (
@@ -60,14 +61,16 @@ export const UserProfile: FC<{}> = () => {
     );
 };
 
-export const LoginModal: FC<{}> = () => {
+export const LoginModal: FC = () => {
+    const { isLoginOpen, closeLogin, openLogin } = useApp();
+    
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <button className="button">
+        <Dialog open={isLoginOpen} onOpenChange={closeLogin}>
+            {/* <DialogTrigger asChild> */}
+                <button className="button" onClick={openLogin}>
                     <span>Login</span>
                 </button>
-            </DialogTrigger>
+            {/* </DialogTrigger> */}
             <Modal size="medium">
                 <LoginModalContent />
             </Modal>

@@ -1,11 +1,13 @@
 // import { CodeListOrder } from '@/components/CodeListOrder'
 // import { PartyProgress } from '@/components/PartyProgress'
 // import { ServerFinder } from '@/components/ServerFinder'
+import { useUser } from '@/api/auth'
 import { usePartyCreate } from '@/api/party'
 import { CodeListOrder } from '@/components/party/codes/CodeListOrder'
 import { PartyProgress } from '@/components/party/codes/PartyProgress'
-import { ServerFinder } from '@/components/ServerFinder'
+import { useApp } from '@/hooks/context'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -43,10 +45,7 @@ function RouteComponent() {
       <div className="card flex-1 flex flex-col gap-1">
         <h2>Join a party</h2>
         <p className="text-secondary">Enter party code to join a party.</p>
-        <div className="flex gap-2 w-full flex-wrap">
-          <input type="text" placeholder="Party code" className="input" />
-          <button className="button grow h-full">Join</button>
-        </div>
+        <PartyJoinButton />
       </div>
     </div>
   </div>
@@ -54,6 +53,7 @@ function RouteComponent() {
 
 export const PartyCreateButton = () => {
   const navigate = useNavigate();
+  const { data: user } = useUser();
   const { mutate, isPending } = usePartyCreate({
     onMutate() {
       console.log('mutate')
@@ -65,5 +65,62 @@ export const PartyCreateButton = () => {
     }
   });
 
-  return <button className="button" onClick={() => mutate({})}>{isPending ? 'Creating...' : 'Create'}</button>
+  const { openLogin } = useApp();
+  const isSignedIn = !!user;
+
+  return (
+    <button className="button" onClick={() => {
+      if (isSignedIn) {
+        mutate({});
+      } else {
+        openLogin();
+      }
+    }}>{isPending ? 'Creating...' : 'Create'}</button>
+  );
 }
+
+export const PartyJoinButton = () => {
+  const navigate = useNavigate();
+  const { data: user } = useUser();
+  const { openLogin } = useApp();
+  const isSignedIn = !!user;
+  const [partyCode, setPartyCode] = useState('');
+  const validInput = partyCode.trim().length > 0;
+
+  // const { mutate, isPending } = usePartyJoin({
+  //   onSuccess(data) {
+  //     navigate({ to: '/$partyId', params: { partyId: data.id } });
+  //   }
+  // });
+
+  const handleJoin = () => {
+    if (!partyCode.trim()) return;
+
+    if (isSignedIn) {
+      // mutate({ partyCode });
+      navigate({ to: '/$partyId', params: { partyId: partyCode } });
+    } else {
+      openLogin();
+    }
+  };
+
+  return (
+    <div className="flex gap-2 w-full flex-wrap">
+      <input
+        type="text"
+        placeholder="Party code"
+        className="input"
+        value={partyCode}
+        onChange={(e) => setPartyCode(e.target.value)}
+      />
+      <button
+        className="button grow h-full"
+        onClick={handleJoin}
+        disabled={!validInput}
+      >
+        {/* {isPending ? 'Joining...' : 'Join'} */}
+        Join
+      </button>
+    </div>
+  );
+};

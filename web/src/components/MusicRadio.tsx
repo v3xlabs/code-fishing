@@ -345,7 +345,7 @@ export const MusicRadio: FC = () => {
     };
 
     return (
-        <div className="card h-fit w-full sm:max-w-md">
+        <div className="card w-full">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-primary">Fishing Village Radio</h1>
                 <div className="flex items-center gap-2 flex-wrap justify-end">

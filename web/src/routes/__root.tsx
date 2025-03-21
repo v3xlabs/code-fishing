@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { Navbar } from '@/components/Navbar'
 import { Toaster } from 'sonner'
+import { AppWrapper } from '@/hooks/context'
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -9,10 +10,10 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <React.Fragment>
+    <AppWrapper>
       <Navbar />
       <Outlet />
-      <Toaster expand={true} theme="dark" visibleToasts={9} mobileOffset={{top: 48}} toastOptions={{
+      <Toaster expand={true} theme="dark" visibleToasts={9} mobileOffset={{ top: 48 }} toastOptions={{
         style: {
           backgroundColor: '#2d2b29',
           color: '#F5F5F5',
@@ -24,6 +25,6 @@ function RootComponent() {
           boxShadow: 'none',
         }
       }} />
-    </React.Fragment>
+    </AppWrapper>
   )
 }
