@@ -1,6 +1,6 @@
 import { Switch } from '@/components/input/Switch';
 import { Modal } from '@/components/modal/Modal';
-import { MusicRadio } from '@/components/MusicRadio';
+import { MusicRadio } from '@/components/party/fun/MusicRadio';
 import { CodeEntryMod } from '@/components/party/codes/CodeEntryMod';
 import { CodeListOrder } from '@/components/party/codes/CodeListOrder';
 import { PartyProgress } from '@/components/party/codes/PartyProgress';
@@ -9,6 +9,7 @@ import { ServerFinder } from '@/components/party/management/ServerFinder';
 import { PartyMembers } from '@/components/party/PartyMembers';
 import { Dialog, DialogContent, DialogTrigger } from '@radix-ui/react-dialog';
 import { createFileRoute, useParams } from '@tanstack/react-router'
+import { PartyChat } from '@/components/party/fun/PartyChat';
 
 export const Route = createFileRoute('/$partyId/')({
   component: RouteComponent,
@@ -20,7 +21,7 @@ function RouteComponent() {
   // auto columns 300w min
   return (<div className="p-2 grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(321px, 1fr))' }}>
     <PartyInviteCard partyId={partyId} />
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full text">
       <div className="card p-4 h-fit flex flex-col gap-2 w-full">
         <h3 className="">
           Settings
@@ -49,6 +50,7 @@ function RouteComponent() {
     <CodeListOrder />
     <MusicRadio />
     <CodeEntryMod />
+    <PartyChat />
     <PartyProgress />
   </div>);
 }

@@ -10,6 +10,44 @@
     src: url('/Rust.otf') format('opentype');
 }
 
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/Roboto/static/Roboto_Condensed-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/Roboto/static/Roboto_Condensed-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+*[data-font="roboto"] {
+    .text {
+        font-family: 'Roboto Condensed', sans-serif;
+        font-weight: 500;
+        font-size-adjust: 0.6;
+    }
+    
+    .text h3, h3.text, .text h2, h2.text {
+        font-family: 'Roboto Condensed', sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    
+    .bold-text {
+        font-family: 'Roboto Condensed', sans-serif;
+        font-weight: 700;
+    }
+    
+    .medium-text {
+        font-family: 'Roboto Condensed', sans-serif;
+        font-weight: 500;
+    }
+}
+
 html, body {
     @apply bg-tertiary text-primary;
     font-family: 'Rust', sans-serif;
@@ -33,6 +71,10 @@ html, body {
 
 .button-rust {
     @apply bg-rust text-primary hover:bg-rust-active active:brightness-125;
+}
+
+.button-primary {
+    @apply bg-[#70844E] text-primary hover:bg-[#536335] hover:text-primary;
 }
 
 input.input {

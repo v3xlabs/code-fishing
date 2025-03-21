@@ -38,7 +38,7 @@ export const ToolTip: FC<ToolTipProps> = ({
         </RadixTooltip.Trigger>
         <RadixTooltip.Portal>
           <RadixTooltip.Content 
-            className="bg-secondary border border-secondary text-primary p-2 rounded-md max-w-sm z-50 text-sm"
+            className="bg-secondary border border-secondary text-primary p-2 rounded-md max-w-sm z-50 text-sm text"
             side={side}
             align={align}
             sideOffset={5}

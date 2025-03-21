@@ -18,6 +18,7 @@ import {
     DropdownMenuTrigger
 } from "@radix-ui/react-dropdown-menu";
 import { NotImplemented } from "./modal/NotImplemented";
+import { FontSwitch } from "./helpers/FontSwitch";
 
 export const Navbar = () => {
     return (
@@ -36,6 +37,7 @@ export const Navbar = () => {
                     </Link>
                 </div>
                 <div className="flex items-center h-full gap-2 flex-1 justify-end">
+                    <FontSwitch />
                     <UserProfile />
                 </div>
             </div>

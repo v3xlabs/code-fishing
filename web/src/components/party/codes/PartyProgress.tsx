@@ -108,7 +108,7 @@ export const PartyProgress = () => {
     ]);
 
     return (
-        <div className="card w-full flex flex-col gap-2" style={{ gridColumn: '1 / -1' }}>
+        <div className="card w-full flex flex-col gap-2 text" style={{ gridColumn: '1 / -1' }}>
             <div className="flex items-center justify-between">
                 <h3>Raid Progress</h3>
                 <ToolTip>

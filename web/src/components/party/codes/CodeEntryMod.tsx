@@ -12,7 +12,7 @@ export const CodeEntryMod: FC<{}> = () => {
     return (
         <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumn: '-2 / -1' }}>
             <div className="flex items-center justify-between">
-                <h1 className="text-primary">Code Entry (WIP)</h1>
+                <h3 className="text-primary text">Code Entry (WIP)</h3>
                 <div className="flex items-center gap-1">
                     <input type="number" className="input grow-0 w-fit" min={1} max={10} value={codeCount} onChange={(e) => setCodeCount(parseInt(e.target.value))} />
                     <ToolTip>
