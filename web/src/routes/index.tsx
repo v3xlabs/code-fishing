@@ -3,50 +3,60 @@
 // import { ServerFinder } from '@/components/ServerFinder'
 import { useUser } from '@/api/auth'
 import { usePartyCreate } from '@/api/party'
-import { CodeListOrder } from '@/components/party/codes/CodeListOrder'
-import { PartyProgress } from '@/components/party/codes/PartyProgress'
 import { useApp } from '@/hooks/context'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { LuGithub, LuHeart } from 'react-icons/lu'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div className="mx-auto w-full max-w-4xl flex flex-wrap gap-4 pt-8 px-2">
-    <div className="card flex-1 flex flex-col gap-1">
-      <h1 className="">Let&apos;s fish some base codes!</h1>
-      <p className="text-secondary">Code raiding is the age-old process of endlessly trying codes on your enemies base until you find one that works.</p>
-      <h2 className="text-accent pt-4">How-to Code Raid:</h2>
-      <p className="text-secondary">
-        Code raiding generally involves three steps:
-      </p>
-      <ul>
-        <li>
-          - Place bags
-        </li>
-        <li>
-          - Try codes
-        </li>
-        <li>
-          - Profit
-        </li>
-      </ul>
-      <h2 className="text-accent pt-4">Let&apos;s go!</h2>
-      <p className="text-secondary">Use this site to coordinate with ur group. And profit efficiently.</p>
+  return <div className="mx-auto w-full max-w-4xl pt-8 px-2 space-y-4">
+    <div className="flex flex-wrap gap-4">
+      <div className="card flex-1 flex flex-col gap-1">
+        <h1 className="">Let&apos;s fish some base codes!</h1>
+        <p className="text-secondary">Code raiding is the age-old process of endlessly trying codes on your enemies base until you find one that works.</p>
+        <h2 className="text-accent pt-4">How-to Code Raid:</h2>
+        <p className="text-secondary">
+          Code raiding generally involves three steps:
+        </p>
+        <ul>
+          <li>
+            - Place bags
+          </li>
+          <li>
+            - Try codes
+          </li>
+          <li>
+            - Profit
+          </li>
+        </ul>
+        <h2 className="text-accent pt-4">Let&apos;s go!</h2>
+        <p className="text-secondary">Use this site to coordinate with ur group. And profit efficiently.</p>
+      </div>
+      <div className="flex h-fit gap-4 flex-col w-full sm:max-w-sm">
+        <div className="card flex-1 flex flex-col gap-1">
+          <h2>Create a party</h2>
+          <p className="text-secondary">Start a code raid</p>
+          <PartyCreateButton />
+        </div>
+        <div className="card flex-1 flex flex-col gap-1">
+          <h2>Join a party</h2>
+          <p className="text-secondary">Enter party code to join a party.</p>
+          <PartyJoinButton />
+        </div>
+      </div>
     </div>
-    <div className="flex h-fit gap-4 flex-col w-full sm:max-w-sm">
-      <div className="card flex-1 flex flex-col gap-1">
-        <h2>Create a party</h2>
-        <p className="text-secondary">Start a code raid</p>
-        <PartyCreateButton />
+    <div className="w-full flex items-center justify-center text-secondary gap-4 text-sm">
+      <div className="flex items-center gap-1">
+        Made with <LuHeart className="size-4" /> by <a href="https://v3x.company" className="text-accent" target="_blank">v3xlabs</a>
       </div>
-      <div className="card flex-1 flex flex-col gap-1">
-        <h2>Join a party</h2>
-        <p className="text-secondary">Enter party code to join a party.</p>
-        <PartyJoinButton />
-      </div>
+      <a href="https://github.com/v3xlabs/code-fishing" className="hover:text-accent transition-colors flex items-center gap-1" target="_blank">
+        <LuGithub className="size-4" />
+        <span>Contribute</span>
+      </a>
     </div>
   </div>
 }
