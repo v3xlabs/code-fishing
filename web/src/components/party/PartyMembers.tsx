@@ -6,7 +6,7 @@ export const PartyMembers = () => {
     const { data: user } = useUser();
     const members: User[] = [];
 
-    return <div className="flex flex-col gap-2 card w-full sm:max-w-xs h-fit">
+    return <div className="flex flex-col gap-2 card w-full h-full">
         <div className="flex items-center justify-between">
             <h3>Members</h3>
             <span className="text-secondary">

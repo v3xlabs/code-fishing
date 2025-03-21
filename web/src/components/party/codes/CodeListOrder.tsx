@@ -18,6 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ToolTip } from "@/components/helpers/ToolTip";
 
 const SortableItem = ({ item, id }: { item: CodeList; id: string }) => {
   const {
@@ -39,9 +40,8 @@ const SortableItem = ({ item, id }: { item: CodeList; id: string }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex justify-between items-center p-3 mb-2 cursor-move bg-primary border border-secondary rounded-md ${
-        isDragging ? "z-10 shadow-md" : ""
-      }`}
+      className={`flex justify-between items-center p-3 mb-2 cursor-move bg-primary border border-secondary rounded-md ${isDragging ? "z-10 shadow-md" : ""
+        }`}
       {...attributes}
       {...listeners}
     >
@@ -65,25 +65,33 @@ export const CodeListOrder = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (over && active.id !== over.id) {
       setList((items) => {
         const oldIndex = items.findIndex((item) => item.name === active.id);
         const newIndex = items.findIndex((item) => item.name === over.id);
-        
+
         return arrayMove(items, oldIndex, newIndex);
       });
     }
   };
 
   return (
-    <DndContext 
-      sensors={sensors} 
-      collisionDetection={closestCenter} 
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="card space-y-2 p-4 h-fit w-full sm:max-w-xs">
-        <h3>Arrange Lists</h3>
+      <div className="card space-y-2 p-4 h-auto w-full">
+        <div className="flex items-center justify-between">
+          <h3>Arrange Lists</h3>
+          <ToolTip>
+            <p>
+              Customize the order of codes you want to use.
+            </p>
+            <p>You will be able to use custom lists in the future.</p>
+          </ToolTip>
+        </div>
         <SortableContext items={list.map(item => item.name)} strategy={verticalListSortingStrategy}>
           {list.map((item) => (
             <SortableItem key={item.name} id={item.name} item={item} />

@@ -348,7 +348,7 @@ export const MusicRadio: FC = () => {
         <div className="card h-fit w-full sm:max-w-md">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-primary">Fishing Village Radio</h1>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap justify-end">
                     <button
                         onClick={() => setShowDebug(!showDebug)}
                         className="text-xs text-accent/70 hover:text-accent"
@@ -402,11 +402,11 @@ export const MusicRadio: FC = () => {
             )}
 
             <div className="flex items-center gap-2">
-                <div className="h-full aspect-square bg-tertiary p-1 rounded-md size-16 flex items-center justify-center">
+                <button className="h-full aspect-square bg-tertiary p-1 rounded-md size-16 flex items-center justify-center" onClick={toggleAudio}>
                     <div className={`h-full aspect-square relative ${isPlaying ? 'animate-zoom' : 'opacity-50'}`}>
                         <img src="/speaker.png" alt="Radio" className="w-full h-full object-contain" />
                     </div>
-                </div>
+                </button>
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-sm mt-2 text-secondary">

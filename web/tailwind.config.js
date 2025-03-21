@@ -11,7 +11,9 @@ export default {
             colors: {
                 accent: '#CCC46A',
                 primary: '#F5F5F5',
-                secondary: '#858585'
+                secondary: '#858585',
+                rust: '#AA4735',
+                'rust-active': '#852E1E',
                 // background: 'var(--theme-bg-color)',
                 // text: 'var(--theme-text-color)',
                 // hint: 'var(--theme-hint-color)',

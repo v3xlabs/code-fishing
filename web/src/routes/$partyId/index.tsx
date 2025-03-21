@@ -1,6 +1,7 @@
 import { Switch } from '@/components/input/Switch';
 import { Modal } from '@/components/modal/Modal';
 import { MusicRadio } from '@/components/MusicRadio';
+import { CodeEntryMod } from '@/components/party/codes/CodeEntryMod';
 import { CodeListOrder } from '@/components/party/codes/CodeListOrder';
 import { PartyProgress } from '@/components/party/codes/PartyProgress';
 import { PartyInviteCard } from '@/components/party/management/PartyInvite';
@@ -16,10 +17,11 @@ export const Route = createFileRoute('/$partyId/')({
 function RouteComponent() {
   const { partyId } = Route.useParams();
 
-  return (<div className="p-2 flex flex-wrap gap-2">
+  // auto columns 300w min
+  return (<div className="p-2 grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(321px, 1fr))' }}>
     <PartyInviteCard partyId={partyId} />
-    <div className="flex flex-col gap-2 sm:max-w-xs w-full">
-      <div className="card p-4 h-fit flex flex-col gap-2 sm:max-w-xs w-full">
+    <div className="flex flex-col gap-2 w-full">
+      <div className="card p-4 h-fit flex flex-col gap-2 w-full">
         <h3 className="">
           Settings
         </h3>
@@ -46,6 +48,7 @@ function RouteComponent() {
     </div>
     <CodeListOrder />
     <MusicRadio />
+    <CodeEntryMod />
     <PartyProgress />
   </div>);
 }

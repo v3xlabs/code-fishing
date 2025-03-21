@@ -31,6 +31,10 @@ html, body {
     @apply bg-primary text-secondary line-through cursor-not-allowed;
 }
 
+.button-rust {
+    @apply bg-rust text-primary hover:bg-rust-active active:brightness-125;
+}
+
 input.input {
     @apply px-2.5 py-1 rounded-sm bg-primary text-secondary outline-accent hover:border-none outline-offset-4 max-w-full;
 }

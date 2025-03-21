@@ -55,7 +55,7 @@ const handleCopy = async (partyId: string) => {
 export const PartyInviteCard: FC<{ partyId: string }> = ({ partyId }) => {
     const [hidden, setHidden] = useState(true);
 
-    return (<div className="card flex flex-col gap-2 sm:max-w-sm max-w-full w-full">
+    return (<div className="card flex flex-col gap-2 max-w-full w-full">
         <h2>Party Invite</h2>
         <p className="text-secondary">Share this link with your friends to invite them to the party.</p>
         <div className="flex justify-center gap-2 flex-col items-center">
