@@ -347,7 +347,7 @@ export const MusicRadio: FC = () => {
     return (
         <div className="card w-full flex flex-col gap-4 text md:col-span-2">
             <div className="flex items-center justify-between">
-                <h1 className="text-primary">Fishing Village Radio</h1>
+                <h3 className="text-primary">Fishing Village Radio</h3>
                 <div className="flex items-center gap-2 flex-wrap justify-end">
                     <button
                         onClick={() => setShowDebug(!showDebug)}
