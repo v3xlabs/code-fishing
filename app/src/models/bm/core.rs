@@ -63,11 +63,15 @@ pub struct BattleMetricsRelationshipIdentifier {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BattleMetricsRelationships {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub game: Option<BattleMetricsRelationshipData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub server: Option<BattleMetricsRelationshipData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub player: Option<BattleMetricsRelationshipData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub organizations: Option<BattleMetricsRelationshipData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

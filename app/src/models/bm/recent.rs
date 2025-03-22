@@ -48,9 +48,21 @@ pub struct BattleMetricsRecentServer {
     pub online: Option<bool>,
 }
 
-impl From<&BattleMetricsType> for BattleMetricsRecentServer {
-    fn from(value: &BattleMetricsType) -> Self {
-        BattleMetricsRecentServer {
+impl BattleMetricsRecentServer {
+    fn from(value: &BattleMetricsType) -> Option<Self> {
+        let is_rust = value
+            .relationships
+            .as_ref()
+            .and_then(|r| r.game.as_ref())
+            .map_or(false, |d| d.data._type == "game" && d.data.id == "rust");
+
+        if !is_rust {
+            return None;
+        }
+
+        // leave this code intact
+
+        Some(BattleMetricsRecentServer {
             bm_id: value.id.clone().unwrap(),
             name: value.attributes.as_ref().and_then(|a| a.name.clone()),
             styled_ip: value.attributes.as_ref().and_then(|a| {
@@ -126,7 +138,7 @@ impl From<&BattleMetricsType> for BattleMetricsRecentServer {
             first_seen: value.meta.as_ref().and_then(|m| m.first_seen.clone()),
             time_played: value.meta.as_ref().and_then(|m| m.time_played),
             online: value.meta.as_ref().and_then(|m| m.online),
-        }
+        })
     }
 }
 
@@ -139,7 +151,7 @@ impl From<&BattleMetricsObjectResponse> for BattleMetricsRecentServers {
             .iter()
             .filter_map(|item| {
                 if item._type == "server" {
-                    Some(BattleMetricsRecentServer::from(item))
+                    BattleMetricsRecentServer::from(item)
                 } else {
                     None
                 }
@@ -169,7 +181,9 @@ impl From<&BattleMetricsObjectResponse> for BattleMetricsRecentServers {
     }
 }
 
-pub async fn get_recent_server_by_player_id(player_id: String) -> Result<BattleMetricsObjectResponse> {
+pub async fn get_recent_server_by_player_id(
+    player_id: String,
+) -> Result<BattleMetricsObjectResponse> {
     let url = format!(
         "https://api.battlemetrics.com/players/{}?include=server%2Cidentifier&fields[server]=name%2Caddress%2Cplayers%2Cstatus%2Cdetails",
         player_id
@@ -205,13 +219,14 @@ pub async fn get_recent_server_by_player_id(player_id: String) -> Result<BattleM
 
     // tracing::info!("Response body: {}", body);
 
-    let search_response: BattleMetricsObjectResponse = serde_json::from_str(&body).map_err(|e| {
-        warn!("Failed to parse JSON: {}", e);
-        poem::Error::from_string(
-            format!("JSON parse error: {}", e),
-            poem::http::StatusCode::INTERNAL_SERVER_ERROR,
-        )
-    })?;
+    let search_response: BattleMetricsObjectResponse =
+        serde_json::from_str(&body).map_err(|e| {
+            warn!("Failed to parse JSON: {}", e);
+            poem::Error::from_string(
+                format!("JSON parse error: {}", e),
+                poem::http::StatusCode::INTERNAL_SERVER_ERROR,
+            )
+        })?;
 
     Ok(search_response)
 }
