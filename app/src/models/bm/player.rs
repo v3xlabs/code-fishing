@@ -212,9 +212,7 @@ pub async fn get_quick_match_players_cached(
     auth_token: &String,
     state: &AppState,
 ) -> Result<BattleMetricsPlayerResponse> {
-    let response = state.cache.bm_user_from_name.try_get_with(player_name.clone(), async {
-        get_quick_match_players(player_name, auth_token).await
-    }).await;
+    let response = state.cache.bm_user_from_name.try_get_with(player_name.clone(), get_quick_match_players(player_name, auth_token)).await;
 
     match response {
         Ok(response) => Ok(response),

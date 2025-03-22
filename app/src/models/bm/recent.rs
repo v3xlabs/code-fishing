@@ -183,9 +183,7 @@ impl From<&BattleMetricsObjectResponse> for BattleMetricsRecentServers {
     }
 }
 
-pub async fn get_recent_server_by_player_id(
-    bm_id: String,
-) -> Result<BattleMetricsRecentServers> {
+pub async fn get_recent_server_by_player_id(bm_id: String) -> Result<BattleMetricsRecentServers> {
     info!("bm_get_recent_server_by_player_id: {:?}", bm_id);
 
     let url = format!(
@@ -239,16 +237,21 @@ pub async fn get_recent_servers_cached(
     bm_id: String,
     state: &AppState,
 ) -> Result<BattleMetricsRecentServers> {
-    let response = state.cache.bm_recent_servers.try_get_with(bm_id.clone(), async {
-        get_recent_server_by_player_id(bm_id).await
-    }).await;
+    let response = state
+        .cache
+        .bm_recent_servers
+        .try_get_with(bm_id.clone(), get_recent_server_by_player_id(bm_id))
+        .await;
 
     match response {
         Ok(response) => Ok(response),
         Err(e) => {
             warn!("Failed to get cached response: {}", e);
             // TODO: improve error handling
-            let err: poem::Error = poem::Error::from_string(e.to_string(), poem::http::StatusCode::INTERNAL_SERVER_ERROR);
+            let err: poem::Error = poem::Error::from_string(
+                e.to_string(),
+                poem::http::StatusCode::INTERNAL_SERVER_ERROR,
+            );
             Err(err)
         }
     }
