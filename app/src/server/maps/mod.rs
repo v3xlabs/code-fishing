@@ -96,7 +96,7 @@ impl MapsApi {
     #[oai(path = "/maps/search", method = "get", tag = "ApiTags::Maps")]
     async fn search(
         &self,
-        state: Data<&AppState>,
+        _state: Data<&AppState>,
         search: Query<String>,
     ) -> Result<Json<SearchResponse>> {
         let url = format!(
@@ -125,7 +125,7 @@ impl MapsApi {
     #[oai(path = "/maps/get", method = "get", tag = "ApiTags::Maps")]
     async fn get(
         &self,
-        state: Data<&AppState>,
+        _state: Data<&AppState>,
         map_id: Query<String>,
     ) -> Result<Json<MapResponse>> {
         let url = format!("https://api.rustmaps.com/internal/v1/maps/{}", map_id.0);

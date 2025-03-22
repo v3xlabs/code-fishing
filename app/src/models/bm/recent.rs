@@ -1,7 +1,7 @@
 use chrono::DateTime;
 use poem::Result;
-use poem_openapi::{Object, OpenApi};
-use reqwest::{Client, ClientBuilder};
+use poem_openapi::Object;
+use reqwest::ClientBuilder;
 use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 
@@ -56,7 +56,7 @@ impl BattleMetricsRecentServer {
             .relationships
             .as_ref()
             .and_then(|r| r.game.as_ref())
-            .map_or(false, |d| d.data._type == "game" && d.data.id == "rust");
+            .is_some_and(|d| d.data._type == "game" && d.data.id == "rust");
 
         if !is_rust {
             return None;
@@ -84,15 +84,11 @@ impl BattleMetricsRecentServer {
             tags: value.attributes.as_ref().and_then(|a| {
                 a.extra.get("details").and_then(|d| {
                     d.get("tags").and_then(|v| {
-                        if let Some(arr) = v.as_array() {
-                            Some(
-                                arr.iter()
-                                    .filter_map(|item| item.as_str().map(|s| s.to_string()))
-                                    .collect(),
-                            )
-                        } else {
-                            None
-                        }
+                        v.as_array().map(|arr| 
+                            arr.iter()
+                                .filter_map(|item| item.as_str().map(|s| s.to_string()))
+                                .collect()
+                        )
                     })
                 })
             }),

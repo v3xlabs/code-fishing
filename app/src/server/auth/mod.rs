@@ -52,8 +52,8 @@ impl AuthApi {
             })?;
 
         // Check if it starts with "Bearer " and extract the token
-        let token = if auth_header.starts_with("Bearer ") {
-            auth_header[7..].to_string()
+        let token = if let Some(token_str) = auth_header.strip_prefix("Bearer ") {
+            token_str.to_string()
         } else {
             return Err(poem::Error::from_string(
                 "Invalid Authorization header format. Expected 'Bearer TOKEN'",

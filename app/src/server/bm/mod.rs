@@ -1,20 +1,16 @@
 use crate::{
     models::bm::{
-        player::{get_quick_match_players, get_quick_match_players_cached},
-        recent::{get_recent_server_by_player_id, get_recent_servers_cached, BattleMetricsRecentServers},
+        player::get_quick_match_players_cached,
+        recent::{get_recent_servers_cached, BattleMetricsRecentServers},
     },
     state::AppState,
 };
-use chrono::DateTime;
 use poem::{
-    http::Error,
-    web::{Data, Query},
-    EndpointExt, Result,
+    web::Data,
+    Result,
 };
-use poem_openapi::{payload::Json, Object, OpenApi};
-use reqwest::{Client, ClientBuilder};
-use serde::{Deserialize, Serialize};
-use tracing::{info, warn};
+use poem_openapi::{payload::Json, OpenApi};
+use tracing::info;
 
 use super::auth::mw::AuthUser;
 

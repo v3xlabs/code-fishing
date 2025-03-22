@@ -2,7 +2,7 @@ use crate::models::user::User;
 use crate::server::ApiTags;
 use crate::state::{AppState, SteamOAuthConfig};
 use async_std::task;
-use poem::{web::Query, EndpointExt, Result};
+use poem::{web::Query, Result};
 use poem_openapi::payload::Response;
 use poem_openapi::{payload::Html, payload::PlainText, OpenApi};
 use reqwest::{Client, StatusCode};

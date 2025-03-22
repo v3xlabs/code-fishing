@@ -1,9 +1,8 @@
-use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
+use poem::{web::Data, FromRequest, Request, RequestBody, Result};
 use poem_openapi::{
     registry::{MetaSecurityScheme, Registry},
     ApiExtractor, ApiExtractorType, ExtractParamOptions,
 };
-use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use crate::{models::user::User, state::AppState};
@@ -94,7 +93,6 @@ impl<'a> ApiExtractor<'a> for AuthUser {
         vec!["AuthToken"]
     }
 }
-
 impl AuthUser {
     fn state(&self) -> &AppState {
         match self {
@@ -103,3 +101,4 @@ impl AuthUser {
         }
     }
 }
+

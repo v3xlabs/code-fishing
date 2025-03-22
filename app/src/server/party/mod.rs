@@ -78,7 +78,7 @@ impl PartyApi {
     #[oai(path = "/party/create", method = "post", tag = "ApiTags::Party")]
     async fn create(
         &self,
-        state: Data<&AppState>,
+        _state: Data<&AppState>,
         body: Json<PartyCreateRequest>,
     ) -> Result<Json<PartyCreateResponse>> {
         tracing::info!("{:?}", body);
@@ -105,9 +105,9 @@ impl PartyApi {
     #[oai(path = "/party/:party_id/get", method = "get", tag = "ApiTags::Party")]
     async fn get(
         &self,
-        state: Data<&AppState>,
+        _state: Data<&AppState>,
         party_id: Path<String>,
-        cursor: Query<String>,
+        _cursor: Query<String>,
     ) -> Result<Json<PartyGetResponse>> {
         tracing::info!("{:?}", party_id.0);
 

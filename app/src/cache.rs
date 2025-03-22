@@ -24,3 +24,9 @@ impl AppCache {
         }
     }
 }
+
+impl Default for AppCache {
+    fn default() -> Self {
+        Self::new()
+    }
+}
