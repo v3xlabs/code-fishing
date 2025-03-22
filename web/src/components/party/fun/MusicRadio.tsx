@@ -356,8 +356,24 @@ export const MusicRadio: FC = () => {
                         {showDebug ? 'Hide Debug' : 'Show Debug'}
                     </button>
                     <div className="flex items-center">
-                        <div className={`w-2 h-2 rounded-full animate-pulse mr-2 ${isPlaying ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-                        <span className="text-accent text-sm font-medium">LIVE</span>
+                        <div className="pb-1">
+                            <div className="relative flex items-center justify-center w-8 h-4 scale-75">
+                                <div className={`w-4 h-4 ${isPlaying ? 'bg-accent' : 'bg-yellow-500'} rounded-full z-10`}></div>
+
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className={`w-4 h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring`}></div>
+                                </div>
+
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className={`w-12 h-12 size-12 max-w-4 max-h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring-delay-1`}></div>
+                                </div>
+
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className={`w-16 h-16 size-16 max-w-4 max-h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring-delay-2`}></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span className="text-accent text-sm font-medium flex items-center">LIVE</span>
                     </div>
                 </div>
             </div>
