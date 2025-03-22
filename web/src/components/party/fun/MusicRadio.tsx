@@ -356,7 +356,7 @@ export const MusicRadio: FC = () => {
                         {showDebug ? 'Hide Debug' : 'Show Debug'}
                     </button>
                     <div className="flex items-center">
-                        <div className={`w-2 h-2 rounded-full animate-pulse mr-2 ${isPlaying ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                        <div className={`w-2 h-2 rounded-full animate-ping mr-2 ${isPlaying ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
                         <span className="text-accent text-sm font-medium">LIVE</span>
                     </div>
                 </div>
