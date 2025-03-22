@@ -36,11 +36,36 @@ export default {
             animation: {
                 "spin-slow": "spin 9s linear infinite",
                 zoom: "zoom 1s ease-in-out infinite",
+                'pulse-ring': 'pulseRing 1.5s linear infinite',
+                'pulse-ring-delay-1': 'pulseRing 1.5s linear infinite 0.5s',
+                'pulse-ring-delay-2': 'pulseRing 1.5s linear infinite 1s',
+            },
+            keyframes: {
+                pulseRing: {
+                  '0%': { transform: 'scale(0.8)', opacity: 1 },
+                  '70%': { transform: 'scale(1.8)', opacity: 0 },
+                  '100%': { transform: 'scale(2)', opacity: 0 },
+                },
             },
             screens: {
                 "3xl": "1660px",
             },
         },
     },
-    plugins: [],
+    plugins: [
+        function({ addUtilities }) {
+            const newUtilities = {
+                '.animation-delay-0': {
+                    'animation-delay': '0s',
+                },
+                '.animation-delay-300': {
+                    'animation-delay': '0.3s',
+                },
+                '.animation-delay-600': {
+                    'animation-delay': '0.6s',
+                },
+            }
+            addUtilities(newUtilities)
+        }
+    ],
 };
