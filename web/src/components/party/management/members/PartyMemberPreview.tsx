@@ -9,7 +9,7 @@ import { FaSteam } from "react-icons/fa";
 import {
     LuClock, LuCalendarDays, LuBan, LuCheck,
     LuHourglass, LuUser, LuSword, LuCrosshair,
-    LuActivity, LuDroplet, LuMedal, LuBarChart
+    LuActivity, LuDroplet, LuMedal, LuArmchair
 } from "react-icons/lu";
 
 export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ member, children }) => {
@@ -136,25 +136,94 @@ export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ me
                             {stats?.pvp_stats && (
                                 <div className="card no-padding">
                                     <h4 className="text-secondary uppercase text-xs font-semibold tracking-wider mb-3">PVP Performance</h4>
-                                    <div className="mb-3">
-                                        <div className="flex justify-between mb-1">
-                                            <span className="text-xs text-secondary">Accuracy</span>
-                                            <span className="text-xs text-secondary">{stats.pvp_stats.bullets_hit_percent}</span>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div className="bg-tertiary rounded p-3">
+                                            <div className="flex justify-between mb-1">
+                                                <div className="flex items-center gap-2">
+                                                    <img src="https://cdn.rusthelp.com/images/256/rifle-ak.webp" className="w-6 h-6" alt="Accuracy" />
+                                                    <span className="text-xs text-secondary">Accuracy</span>
+                                                </div>
+                                                <span className="text-xs text-secondary">{stats.pvp_stats.bullets_hit_percent}</span>
+                                            </div>
+                                            <div className="w-full bg-primarybg rounded-full h-2 mb-2">
+                                                <div
+                                                    className="bg-accent h-2 rounded-full"
+                                                    style={{
+                                                        width: `${parseFloat(stats.pvp_stats.bullets_hit_percent) || 0}%`
+                                                    }}
+                                                ></div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 text-xs text-secondary mt-2">
+                                                <div>Bullets Hit: {stats.pvp_stats.bullets_hit}</div>
+                                                <div>Bullets Fired: {stats.pvp_stats.bullets_fired}</div>
+                                            </div>
                                         </div>
-                                        <div className="w-full bg-tertiary rounded-full h-2">
-                                            <div
-                                                className="bg-accent h-2 rounded-full"
-                                                style={{
-                                                    width: `${parseFloat(stats.pvp_stats.bullets_hit_percent) || 0}%`
-                                                }}
-                                            ></div>
+                                        
+                                        <div className="bg-tertiary rounded p-3">
+                                            <div className="flex justify-between mb-1">
+                                                <div className="flex items-center gap-2">
+                                                    <img src="https://cdn.rusthelp.com/images/256/ammo-rifle-hv.webp" className="w-6 h-6" alt="Headshots" />
+                                                    <span className="text-xs text-secondary">Headshot Ratio</span>
+                                                </div>
+                                                <span className="text-xs text-secondary">{stats.pvp_stats.headshot_percent}</span>
+                                            </div>
+                                            <div className="w-full bg-primarybg rounded-full h-2 mb-2">
+                                                <div
+                                                    className="bg-rust h-2 rounded-full"
+                                                    style={{
+                                                        width: `${parseFloat(stats.pvp_stats.headshot_percent) || 0}%`
+                                                    }}
+                                                ></div>
+                                            </div>
+                                            <div className="text-xs text-secondary mt-2">
+                                                Headshots: {stats.pvp_stats.headshots}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="grid grid-cols-4 gap-2">
-                                        <StatValue label="K/D Ratio" value={stats.pvp_stats.kdr} />
-                                        <StatValue label="Kills" value={stats.pvp_stats.kills} />
-                                        <StatValue label="Deaths" value={stats.pvp_stats.deaths} />
-                                        <StatValue label="Headshots" value={stats.pvp_stats.headshot_percent} />
+
+                                        <div className="bg-tertiary rounded p-3">
+                                            <div className="flex items-center mb-2">
+                                                <Tooltip trigger={
+                                                    <div className="flex items-center gap-2">
+                                                        <img src="https://cdn.rusthelp.com/images/256/ammo-rifle.webp" className="w-8 h-8" alt="K/D" />
+                                                        <div>
+                                                            <div className="text-xs text-secondary">K/D Ratio</div>
+                                                            <div className="font-medium text-primary">{stats.pvp_stats.kdr}</div>
+                                                        </div>
+                                                    </div>
+                                                }>
+                                                    <div className="text-xs text-secondary">
+                                                        Kill/Death Ratio: {stats.pvp_stats.kdr}<br/>
+                                                        Higher is better!
+                                                    </div>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-tertiary rounded p-3 grid grid-cols-2 gap-2">
+                                            <Tooltip trigger={
+                                                <div className="flex items-center gap-2">
+                                                    <img src="https://cdn.rusthelp.com/images/256/skull-human.webp" className="w-6 h-6" alt="Kills" />
+                                                    <div>
+                                                        <div className="text-xs text-secondary">Kills</div>
+                                                        <div className="text-primary">{stats.pvp_stats.kills}</div>
+                                                    </div>
+                                                </div>
+                                            }>
+                                                <div className="text-xs text-secondary">Total player kills: {stats.pvp_stats.kills}</div>
+                                            </Tooltip>
+
+                                            <Tooltip trigger={
+                                                <div className="flex items-center gap-2">
+                                                    <img src="https://cdn.rusthelp.com/images/256/gravestone.webp" className="w-6 h-6" alt="Deaths" />
+                                                    <div>
+                                                        <div className="text-xs text-secondary">Deaths</div>
+                                                        <div className="text-primary">{stats.pvp_stats.deaths}</div>
+                                                    </div>
+                                                </div>
+                                            }>
+                                                <div className="text-xs text-secondary">Total deaths: {stats.pvp_stats.deaths}</div>
+                                            </Tooltip>
+                                        </div>
                                     </div>
                                 </div>
                             )}
