@@ -22,19 +22,30 @@ pub struct JwtConfig {
     pub secret: String,
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct BattleMetricsConfig {
+    pub api_key: Option<String>,
+}
+
 pub struct AppStateInner {
     pub database: Database,
     pub steam_oauth_config: SteamOAuthConfig,
+    pub battlemetrics_config: BattleMetricsConfig,
     pub jwt: JwtConfig,
 }
 
 impl AppStateInner {
     pub async fn init() -> Self {
         // Load configuration from environment variables
-        let config = Figment::new()
+        let steam_oauth_config = Figment::new()
             .merge(Env::prefixed("STEAM_"))
             .extract::<SteamOAuthConfig>()
             .expect("Failed to load Steam OAuth configuration");
+
+        let battlemetrics_config = Figment::new()
+            .merge(Env::prefixed("BATTLEMETRICS_"))
+            .extract::<BattleMetricsConfig>()
+            .expect("Failed to load BattleMetrics configuration");
 
         let database_config = Figment::new()
             .merge(Env::prefixed("DATABASE_"))
@@ -50,7 +61,8 @@ impl AppStateInner {
 
         Self {
             database,
-            steam_oauth_config: config,
+            steam_oauth_config,
+            battlemetrics_config,
             jwt,
         }
     }

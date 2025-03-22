@@ -2,17 +2,15 @@ use crate::models::user::User;
 use crate::server::ApiTags;
 use crate::state::{AppState, SteamOAuthConfig};
 use async_std::task;
-use poem::web::Redirect;
-use poem::{web::Query, EndpointExt, Result, Route};
+use poem::{web::Query, EndpointExt, Result};
 use poem_openapi::payload::Response;
-use poem_openapi::{payload::Html, payload::PlainText, OpenApi, Tags};
+use poem_openapi::{payload::Html, payload::PlainText, OpenApi};
 use reqwest::{Client, StatusCode};
 use reqwest::ClientBuilder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tracing::{error, info, warn};
-use url::Url;
 
 /// Steam user profile data from the Steam Web API
 #[derive(Serialize, Deserialize, Clone, Debug)]

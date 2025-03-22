@@ -897,6 +897,7 @@ dependencies = [
  "tracing-opentelemetry",
  "tracing-subscriber",
  "tree_magic",
+ "uri",
  "url",
  "urlencoding",
 ]
@@ -5075,6 +5076,12 @@ name = "untrusted"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ecb6da28b8a351d773b68d5825ac39017e680750f980f3a1a85cd8dd28a47c1"
+
+[[package]]
+name = "uri"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b5c61fea9e6205d0d14c7e6efe252f15ed404da4cbdbe4ecd1de0a4d7241829f"
 
 [[package]]
 name = "url"

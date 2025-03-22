@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 pub mod oauth;
 pub use oauth::OAuthApi;
+pub mod mw;
 
 use crate::{models::user::User, state::AppState};
 

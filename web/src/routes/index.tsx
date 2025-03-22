@@ -3,6 +3,7 @@
 // import { ServerFinder } from '@/components/ServerFinder'
 import { useUser } from '@/api/auth'
 import { usePartyCreate } from '@/api/party'
+import { SteamRecentServers } from '@/components/bm/SteamRecentServers'
 import { useApp } from '@/hooks/context'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
@@ -15,7 +16,7 @@ export const Route = createFileRoute('/')({
 function RouteComponent() {
   return <div className="mx-auto w-full max-w-4xl pt-8 px-2 space-y-4">
     <div className="flex flex-wrap gap-4">
-      <div className="card flex-1 flex flex-col gap-1">
+      <div className="card flex-1 flex flex-col gap-1 h-fit">
         <h1 className="">Let&apos;s fish some base codes!</h1>
         <p className="text-secondary">Code raiding is the age-old process of endlessly trying codes on your enemies base until you find one that works.</p>
         <h2 className="text-accent pt-4">How-to Code Raid:</h2>
@@ -47,6 +48,7 @@ function RouteComponent() {
           <p className="text-secondary">Enter party code to join a party.</p>
           <PartyJoinButton />
         </div>
+        <SteamRecentServers />
       </div>
     </div>
     <div className="w-full flex items-center justify-center text-secondary gap-4 text-sm">

@@ -290,10 +290,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/bm/recent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["BattleMetricsRecentServers"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** BattleMetricsRecentServer */
+        BattleMetricsRecentServer: {
+            bm_id: string;
+            name?: string;
+            styled_ip?: string;
+            /** Format: uint64 */
+            players?: number;
+            status?: string;
+            tags?: string[];
+            is_official?: boolean;
+            rust_type?: string;
+            gamemode?: string;
+            map_name?: string;
+            header_url?: string;
+            url?: string;
+            description?: string;
+            last_seen?: string;
+            first_seen?: string;
+            /** Format: uint64 */
+            time_played?: number;
+            online?: boolean;
+        };
+        /** BattleMetricsRecentServers */
+        BattleMetricsRecentServers: {
+            servers: components["schemas"]["BattleMetricsRecentServer"][];
+        };
         /** GuestResponse */
         GuestResponse: {
             token: string;

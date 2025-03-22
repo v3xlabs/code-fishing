@@ -84,7 +84,7 @@ impl PartyApi {
         tracing::info!("{:?}", body);
 
         let new_id = Sqids::default();
-        let random_number = rand::thread_rng().gen_range(0..u64::MAX);
+        let random_number = rand::rng().random_range(0..u64::MAX);
         let new_id = new_id.encode(&[0, random_number]).unwrap();
 
         Ok(Json(PartyCreateResponse {

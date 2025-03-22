@@ -56,7 +56,7 @@ impl User {
     }
 
     pub async fn get_next_guest_id(state: &AppState, attempt: u32) -> Result<String> {
-        let random_number = rand::thread_rng().gen_range(0..u64::MAX);
+        let random_number = rand::rng().random_range(0..u64::MAX);
         let user_id = sqids::Sqids::default().encode(&[0, random_number]).unwrap();
 
         // check if user_id is already in the database

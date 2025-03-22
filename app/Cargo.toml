@@ -28,6 +28,7 @@ reqwest = { version = "0.12.5", features = [
     # Add back the default features excluding native-tls
     "charset",
     "http2",
+    "json",
     "macos-system-configuration",
 ], default-features = false }
 rustls = "0.23.19"
@@ -86,6 +87,7 @@ sqids = "0.4.2"
 rand = "0.9.0"
 jsonwebtoken = "9.3.1"
 fake = "4.0.0"
+uri = "0.4.0"
 
 [build-dependencies]
 build-info-build = "0.0.39"
