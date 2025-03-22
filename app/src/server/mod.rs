@@ -18,18 +18,13 @@ use crate::state::AppState;
 use tracing_mw::TraceId;
 use auth::{oauth::OAuthApi, AuthApi};
 use bm::BattleMetricsApi;
-// pub mod auth;
-// pub mod channel;
-// pub mod info;
-// pub mod media;
-// pub mod prom;
-// pub mod redirect;
-// pub mod request;
-// pub mod stats;
+use inventory::InventoryApi;
+
 pub mod party;
 pub mod maps;
 pub mod auth;
 pub mod bm;
+pub mod inventory;
 pub mod tracing_mw;
 
 #[derive(Tags)]
@@ -38,14 +33,16 @@ pub enum ApiTags {
     Party,
     /// Maps Related Operations
     Maps,
-    /// Auth Related Operations
+    /// Inventory Related Operations
+    Inventory,
+    /// BattleMetrics Related Operations
+    BattleMetrics,
+    /// Auth Authentication
     Auth,
-    /// OAuth Authentication
-    OAuth,
 }
 
 fn get_api(state: AppState) -> impl OpenApi {
-    (PartyApi, MapsApi, AuthApi, OAuthApi::new(state.clone()), BattleMetricsApi)
+    (PartyApi, MapsApi, AuthApi, OAuthApi::new(state.clone()), BattleMetricsApi, InventoryApi)
 }
 
 pub async fn start_http(state: AppState) {

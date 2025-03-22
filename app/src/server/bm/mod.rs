@@ -11,6 +11,7 @@ use poem::{
 };
 use poem_openapi::{payload::Json, OpenApi};
 use tracing::info;
+use crate::server::ApiTags;
 
 use super::auth::mw::AuthUser;
 
@@ -18,7 +19,7 @@ pub struct BattleMetricsApi;
 
 #[OpenApi]
 impl BattleMetricsApi {
-    #[oai(path = "/bm/recent", method = "get")]
+    #[oai(path = "/bm/recent", method = "get", tag = "ApiTags::BattleMetrics")]
     async fn get_recent_servers(
         &self,
         state: Data<&AppState>,

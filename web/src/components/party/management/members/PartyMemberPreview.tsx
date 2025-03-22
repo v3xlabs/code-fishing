@@ -1,4 +1,5 @@
 import { User } from "@/api/auth";
+import { useSteamInventoryTotal } from "@/api/inventory";
 import { useStats } from "@/api/stats";
 import { Avatar } from "@/components/auth/Avatar";
 import { Tooltip } from "@/components/helpers/Tooltip";
@@ -9,11 +10,19 @@ import { FaSteam } from "react-icons/fa";
 import {
     LuClock, LuCalendarDays, LuBan, LuCheck,
     LuHourglass, LuUser, LuSword, LuCrosshair,
-    LuActivity, LuDroplet, LuMedal, LuArmchair
+    LuActivity, LuDroplet, LuMedal, LuArmchair,
+    LuCoins
 } from "react-icons/lu";
 
 export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ member, children }) => {
-    const { data: stats } = useStats(member.user_id.startsWith("steam:") ? member.user_id.replace("steam:", "") : undefined);
+    const steam_id = member.user_id.startsWith("steam:") ? member.user_id.replace("steam:", "") : undefined;
+
+    if (!steam_id) {
+        return null;
+    }
+
+    const { data: stats } = useStats(steam_id);
+    const { data: inventory } = useSteamInventoryTotal(steam_id);
 
     // Calculate account age from the creation date if available
     const calculateAccountAge = () => {
@@ -106,6 +115,26 @@ export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ me
                     <div className="space-y-4">
                         {/* Overview section */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {
+                                inventory && (
+                                    <div className="card no-padding">
+                                        <h4 className="text-secondary uppercase text-xs font-semibold tracking-wider mb-3">Inventory</h4>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <StatItem
+                                                icon={<LuCoins className="text-accent" />}
+                                                label="Total Items"
+                                                value={inventory.items}
+                                            />
+                                            <StatItem
+                                                icon={<LuCoins className="text-accent" />}
+                                                label="NET WORTH"
+                                                value={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(inventory.market_value / 100)}
+                                            />
+
+                                        </div>
+                                    </div>
+                                )
+                            }
                             <div className="card no-padding">
                                 <h4 className="text-secondary uppercase text-xs font-semibold tracking-wider mb-3">Account Overview</h4>
                                 <div className="grid grid-cols-2 gap-3">
@@ -158,7 +187,7 @@ export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ me
                                                 <div>Bullets Fired: {stats.pvp_stats.bullets_fired}</div>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="bg-tertiary rounded p-3">
                                             <div className="flex justify-between mb-1">
                                                 <div className="flex items-center gap-2">
@@ -192,7 +221,7 @@ export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ me
                                                     </div>
                                                 }>
                                                     <div className="text-xs text-secondary">
-                                                        Kill/Death Ratio: {stats.pvp_stats.kdr}<br/>
+                                                        Kill/Death Ratio: {stats.pvp_stats.kdr}<br />
                                                         Higher is better!
                                                     </div>
                                                 </Tooltip>

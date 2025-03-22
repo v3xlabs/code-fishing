@@ -7,6 +7,7 @@ pub use oauth::OAuthApi;
 pub mod mw;
 
 use crate::{models::user::User, state::AppState};
+use crate::server::ApiTags;
 
 pub struct AuthApi;
 
@@ -18,7 +19,7 @@ pub struct GuestResponse {
 
 #[OpenApi]
 impl AuthApi {
-    #[oai(path = "/auth/guest", method = "post")]
+    #[oai(path = "/auth/guest", method = "post", tag = "ApiTags::Auth")]
     pub async fn guest(&self, state: Data<&AppState>) -> Result<Json<GuestResponse>> {
         let user = User::authorize_by_guest_id(&state).await?;
 
@@ -28,7 +29,7 @@ impl AuthApi {
         }))
     }
 
-    #[oai(path = "/auth/user", method = "get")]
+    #[oai(path = "/auth/user", method = "get", tag = "ApiTags::Auth")]
     pub async fn user(
         &self,
         state: Data<&AppState>,

@@ -14,9 +14,9 @@ export const Route = createFileRoute('/')({
 })
 
 function RouteComponent() {
-  return <div className="mx-auto w-full max-w-4xl pt-8 px-2 space-y-4">
-    <div className="flex flex-wrap gap-4">
-      <div className="card flex-1 flex flex-col gap-1 h-fit">
+  return <div className="mx-auto w-full max-w-screen-lg 2xl:max-w-screen-xl pt-8 px-2 space-y-4">
+    <div className="grid gap-2 grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(90px,1fr))] md:grid-flow-row-dense mx-auto">
+      <div className="card flex-1 flex flex-col gap-1 h-fit col-span-full xl:col-span-6 2xl:col-span-8 w-full">
         <h1 className="">Let&apos;s fish some base codes!</h1>
         <p className="text-secondary">Code raiding is the age-old process of endlessly trying codes on your enemies base until you find one that works.</p>
         <h2 className="text-accent pt-4">How-to Code Raid:</h2>
@@ -37,19 +37,19 @@ function RouteComponent() {
         <h2 className="text-accent pt-4">Let&apos;s go!</h2>
         <p className="text-secondary">Use this site to coordinate with ur group. And profit efficiently.</p>
       </div>
-      <div className="flex h-fit gap-4 flex-col w-full sm:max-w-sm">
+      <div className="flex gap-2 flex-col w-full -col-end-1 col-span-full xl:col-span-4">
         <div className="card flex-1 flex flex-col gap-1">
           <h2>Create a party</h2>
-          <p className="text-secondary">Start a code raid</p>
+          <p className="text-secondary grow">Start a code raid</p>
           <PartyCreateButton />
         </div>
         <div className="card flex-1 flex flex-col gap-1">
           <h2>Join a party</h2>
-          <p className="text-secondary">Enter party code to join a party.</p>
+          <p className="text-secondary grow">Enter party code to join a party.</p>
           <PartyJoinButton />
         </div>
-        <SteamRecentServers />
       </div>
+      <SteamRecentServers />
     </div>
     <div className="w-full flex items-center justify-center text-secondary gap-4 text-sm">
       <div className="flex items-center gap-1">
@@ -121,7 +121,7 @@ export const PartyJoinButton = () => {
       <input
         type="text"
         placeholder="Party code"
-        className="input"
+        className="input grow"
         value={partyCode}
         onChange={(e) => setPartyCode(e.target.value)}
       />

@@ -106,8 +106,8 @@ impl PartyApi {
     async fn get(
         &self,
         _state: Data<&AppState>,
-        party_id: Path<String>,
-        _cursor: Query<String>,
+        #[oai(style = "simple")] party_id: Path<String>,
+        #[oai(style = "form")] _cursor: Query<String>,
     ) -> Result<Json<PartyGetResponse>> {
         tracing::info!("{:?}", party_id.0);
 

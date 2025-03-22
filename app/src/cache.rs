@@ -8,6 +8,7 @@ use crate::models::bm::player::BattleMetricsPlayerResponse;
 use crate::models::bm::recent::BattleMetricsRecentServers;
 use crate::models::rm::MapResponse;
 use crate::models::rm::SearchResponse;
+use crate::models::scmm::total::SCMMTotalInventoryResponse;
 use crate::state::AppState;
 
 pub struct AppCache {
@@ -15,6 +16,7 @@ pub struct AppCache {
     pub bm_recent_servers: Cache<String, BattleMetricsRecentServers>,
     pub rm_search: Cache<String, SearchResponse>,
     pub rm_map: Cache<String, MapResponse>,
+    pub scmm_total_inventory: Cache<String, SCMMTotalInventoryResponse>,
 }
 
 impl AppCache {
@@ -40,15 +42,21 @@ impl AppCache {
                 .time_to_idle(Duration::from_secs(1 * 60))
                 .max_capacity(1000)
                 .build(),
+            scmm_total_inventory: Cache::builder()
+                .time_to_live(Duration::from_secs(5 * 60))
+                .time_to_idle(Duration::from_secs(1 * 60))
+                .max_capacity(1000)
+                .build(),
         }
     }
 
-    pub async fn get_sizes(&self) -> (u64, u64, u64, u64) {
+    pub async fn get_sizes(&self) -> (u64, u64, u64, u64, u64) {
         (
             self.bm_user_from_name.weighted_size(),
             self.bm_recent_servers.weighted_size(),
             self.rm_search.weighted_size(),
             self.rm_map.weighted_size(),
+            self.scmm_total_inventory.weighted_size()
         )
     }
 
@@ -56,9 +64,9 @@ impl AppCache {
         loop {
             self.collect_all().await;
 
-            let (bm_user_from_name, bm_recent_servers, rm_search, rm_map) = self.get_sizes().await;
-            tracing::info!("Cache sizes: bm_user_from_name: {}, bm_recent_servers: {}, rm_search: {}, rm_map: {}", bm_user_from_name, bm_recent_servers, rm_search, rm_map);
-            async_std::task::sleep(std::time::Duration::from_secs(10)).await;
+            let (bm_user_from_name, bm_recent_servers, rm_search, rm_map, scmm_total_inventory) = self.get_sizes().await;
+            tracing::info!(bm_user_from_name, bm_recent_servers, rm_search, rm_map, scmm_total_inventory);
+            async_std::task::sleep(std::time::Duration::from_secs(3*60)).await;
         }
     }
 
@@ -68,6 +76,7 @@ impl AppCache {
             async { self.bm_recent_servers.run_pending_tasks().await }.boxed(),
             async { self.rm_search.run_pending_tasks().await }.boxed(),
             async { self.rm_map.run_pending_tasks().await }.boxed(),
+            async { self.scmm_total_inventory.run_pending_tasks().await }.boxed(),
         ];
 
         join_all(tasks).await;

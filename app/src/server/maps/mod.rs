@@ -18,7 +18,7 @@ impl MapsApi {
     async fn search(
         &self,
         _state: Data<&AppState>,
-        search: Query<String>,
+        #[oai(style = "form")] search: Query<String>,
     ) -> Result<Json<SearchResponse>> {
         let search_response = search_maps_cached(search.0, _state.0).await?;
 
@@ -29,7 +29,7 @@ impl MapsApi {
     async fn get(
         &self,
         _state: Data<&AppState>,
-        map_id: Query<String>,
+        #[oai(style = "form")] map_id: Query<String>,
     ) -> Result<Json<MapResponse>> {
         let map_response = get_map_cached(map_id.0, _state.0).await?;
 

@@ -363,7 +363,7 @@ impl OAuthApi {
 #[OpenApi]
 impl OAuthApi {
     /// Redirect to Steam login page
-    #[oai(path = "/auth/oauth/steam", method = "get", tag = "ApiTags::OAuth")]
+    #[oai(path = "/auth/oauth/steam", method = "get", tag = "ApiTags::Auth")]
     async fn steam_login(&self) -> Result<Html<String>> {
         // Detect if we're running on localhost
         let is_localhost = self.config.auth_return_url.contains("localhost")
@@ -402,11 +402,11 @@ impl OAuthApi {
     #[oai(
         path = "/auth/oauth/steam/callback",
         method = "get",
-        tag = "ApiTags::OAuth"
+        tag = "ApiTags::Auth"
     )]
     async fn steam_callback(
         &self,
-        query: Query<HashMap<String, String>>,
+        #[oai(style = "form")] query: Query<HashMap<String, String>>,
     ) -> Result<poem_openapi::payload::Response<PlainText<String>>> {
         let params = &query.0;
 
