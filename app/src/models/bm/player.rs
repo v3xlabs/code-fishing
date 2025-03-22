@@ -7,6 +7,8 @@ use reqwest::{Client, ClientBuilder};
 use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 
+use crate::state::AppState;
+
 use super::core::*;
 
 // Payload with the recent servers the user has connected to
@@ -15,7 +17,7 @@ pub struct BattleMetricsQuickMatchPayload {
     pub data: Vec<BattleMetricsType>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Object)]
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
 pub struct BattleMetricsPlayer {
     // `id` from BattleMetrics
     pub bm_id: String,
@@ -48,7 +50,7 @@ impl From<&BattleMetricsType> for BattleMetricsPlayer {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BattleMetricsPlayerResponse {
     pub data: BattleMetricsPlayer,
 }
@@ -129,6 +131,8 @@ pub async fn get_quick_match_players(
     player_name: String,
     auth_token: &String,
 ) -> Result<BattleMetricsPlayerResponse> {
+    info!("bm_get_quick_match_players: {:?}", player_name);
+
     let payload = BattleMetricsQuickMatchPayload {
         data: vec![BattleMetricsType {
             _type: "identifier".to_string(),
@@ -201,4 +205,25 @@ pub async fn get_quick_match_players(
     let data = BattleMetricsPlayerResponse::from(search_response)?;
 
     Ok(data)
+}
+
+pub async fn get_quick_match_players_cached(
+    player_name: String,
+    auth_token: &String,
+    state: &AppState,
+) -> Result<BattleMetricsPlayerResponse> {
+    let response = state.cache.bm_user_from_name.try_get_with(player_name.clone(), async {
+        get_quick_match_players(player_name, auth_token).await
+    }).await;
+
+    match response {
+        Ok(response) => Ok(response),
+        Err(e) => {
+            warn!("Failed to get cached response: {}", e);
+            // remove from arc
+            // crappy error stripping
+            let err: poem::Error = poem::Error::from_string(e.to_string(), poem::http::StatusCode::INTERNAL_SERVER_ERROR);
+            Err(err)
+        }
+    }
 }

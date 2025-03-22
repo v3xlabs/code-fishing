@@ -1,4 +1,4 @@
-use crate::database::Database;
+use crate::{cache::AppCache, database::Database};
 use figment::{providers::Env, Figment};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -32,6 +32,9 @@ pub struct AppStateInner {
     pub steam_oauth_config: SteamOAuthConfig,
     pub battlemetrics_config: BattleMetricsConfig,
     pub jwt: JwtConfig,
+
+    //
+    pub cache: AppCache,
 }
 
 impl AppStateInner {
@@ -59,11 +62,14 @@ impl AppStateInner {
             .extract::<JwtConfig>()
             .expect("Failed to load JWT secret");
 
+        let cache = AppCache::new();
+
         Self {
             database,
             steam_oauth_config,
             battlemetrics_config,
             jwt,
+            cache,
         }
     }
 }

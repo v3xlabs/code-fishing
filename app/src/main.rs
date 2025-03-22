@@ -2,10 +2,11 @@ use state::{AppState, AppStateInner};
 use std::sync::Arc;
 
 pub mod database;
-pub mod state;
-pub mod util;
 pub mod models;
 pub mod server;
+pub mod cache;
+pub mod state;
+pub mod util;
 
 #[async_std::main]
 async fn main() {

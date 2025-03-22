@@ -5,16 +5,18 @@ use reqwest::{Client, ClientBuilder};
 use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 
+use crate::state::AppState;
+
 use super::core::*;
 
 // Payload with the recent servers the user has connected to
-#[derive(Debug, Serialize, Deserialize, Object)]
+#[derive(Debug, Serialize, Deserialize, Object, Clone)]
 pub struct BattleMetricsRecentServers {
     // Recent servers the user has connected to
     pub servers: Vec<BattleMetricsRecentServer>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Object)]
+#[derive(Debug, Serialize, Deserialize, Object, Clone)]
 pub struct BattleMetricsRecentServer {
     // `id` from BattleMetrics
     pub bm_id: String,
@@ -182,11 +184,13 @@ impl From<&BattleMetricsObjectResponse> for BattleMetricsRecentServers {
 }
 
 pub async fn get_recent_server_by_player_id(
-    player_id: String,
-) -> Result<BattleMetricsObjectResponse> {
+    bm_id: String,
+) -> Result<BattleMetricsRecentServers> {
+    info!("bm_get_recent_server_by_player_id: {:?}", bm_id);
+
     let url = format!(
         "https://api.battlemetrics.com/players/{}?include=server%2Cidentifier&fields[server]=name%2Caddress%2Cplayers%2Cstatus%2Cdetails",
-        player_id
+        bm_id
     );
 
     let client = ClientBuilder::new()
@@ -228,5 +232,24 @@ pub async fn get_recent_server_by_player_id(
             )
         })?;
 
-    Ok(search_response)
+    Ok(BattleMetricsRecentServers::from(&search_response))
+}
+
+pub async fn get_recent_servers_cached(
+    bm_id: String,
+    state: &AppState,
+) -> Result<BattleMetricsRecentServers> {
+    let response = state.cache.bm_recent_servers.try_get_with(bm_id.clone(), async {
+        get_recent_server_by_player_id(bm_id).await
+    }).await;
+
+    match response {
+        Ok(response) => Ok(response),
+        Err(e) => {
+            warn!("Failed to get cached response: {}", e);
+            // TODO: improve error handling
+            let err: poem::Error = poem::Error::from_string(e.to_string(), poem::http::StatusCode::INTERNAL_SERVER_ERROR);
+            Err(err)
+        }
+    }
 }

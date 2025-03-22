@@ -1,7 +1,7 @@
 use crate::{
     models::bm::{
-        player::get_quick_match_players,
-        recent::{get_recent_server_by_player_id, BattleMetricsRecentServers},
+        player::{get_quick_match_players, get_quick_match_players_cached},
+        recent::{get_recent_server_by_player_id, get_recent_servers_cached, BattleMetricsRecentServers},
     },
     state::AppState,
 };
@@ -64,14 +64,12 @@ impl BattleMetricsApi {
             }
         };
 
-        let x = get_quick_match_players(user_name, bm_api_key).await?;
+        let x = get_quick_match_players_cached(user_name, bm_api_key, &state).await?;
 
         info!("x: {:?}", x);
 
-        let x = get_recent_server_by_player_id(x.data.bm_id.to_string()).await?;
+        let x = get_recent_servers_cached(x.data.bm_id.to_string(), &state).await?;
 
-        let y = BattleMetricsRecentServers::from(&x);
-
-        Ok(Json(y))
+        Ok(Json(x))
     }
 }
