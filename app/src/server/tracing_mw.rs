@@ -109,7 +109,7 @@ where
         span.add_event("request.started".to_string(), vec![]);
 
         let parent_context = Context::current_with_span(span);
-        let tracing_span = tracing::span!(tracing::Level::INFO, "test");
+        let tracing_span = tracing::span!(tracing::Level::INFO, "http");
         tracing_span.set_parent(parent_context.clone());
 
         async move {

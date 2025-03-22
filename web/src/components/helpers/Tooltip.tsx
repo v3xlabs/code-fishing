@@ -43,6 +43,7 @@ export const Tooltip: FC<ToolTipProps> = ({
             align={align}
             sideOffset={5}
             aria-label={ariaLabel}
+            collisionPadding={10}
           >
             {children}
             <RadixTooltip.Arrow className="fill-secondary" />

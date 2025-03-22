@@ -52,7 +52,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    cursor: string;
+                    _cursor: string;
                 };
                 header?: never;
                 path: {

@@ -1,10 +1,11 @@
+use async_std::prelude::FutureExt;
 use state::{AppState, AppStateInner};
 use std::sync::Arc;
 
+pub mod cache;
 pub mod database;
 pub mod models;
 pub mod server;
-pub mod cache;
 pub mod state;
 pub mod util;
 
@@ -21,5 +22,9 @@ async fn main() {
     // let http = async { server::start_http(state.clone()).await };
 
     // telegram.race(http).await;
-    server::start_http(state).await;
+    let http = server::start_http(state.clone());
+
+    let cache_size_notifier = state.cache.collect(&state);
+
+    cache_size_notifier.race(http).await;
 }

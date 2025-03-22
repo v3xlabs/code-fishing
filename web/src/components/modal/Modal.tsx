@@ -8,7 +8,7 @@ export const Modal: FC<PropsWithChildren<{ size?: 'small' | 'medium' | 'large' |
     <DialogPortal>
       <DialogOverlay className="fixed inset-0 bg-tertiary/80 data-[state=open]:animate-overlayShow" />
       <DialogContent className={clsx(`fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-md bg-secondary p-[25px] shadow-md focus:outline-none data-[state=open]:animate-contentShow overflow-y-auto flex flex-col gap-4`,
-        size === 'small' ? 'max-w-[500px]' : size === 'medium' ? 'max-w-[800px]' : size === 'large' ? 'max-w-[1000px]' : 'max-w-[90vw]'
+        size === 'small' ? 'max-w-[500px]' : size === 'medium' ? 'max-w-[800px]' : size === 'large' ? 'max-w-[1000px]' : 'max-w-[1400px]'
       )}>
         {children}
         <DialogClose asChild>
