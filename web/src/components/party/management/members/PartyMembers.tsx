@@ -7,14 +7,14 @@ export const PartyMembers = () => {
     const { data: user } = useUser();
     const members: User[] = [];
 
-    return <div className="flex flex-col gap-2 card w-full h-full text">
-        <div className="flex items-center justify-between">
+    return <div className="flex flex-col gap-2 card w-full h-full text no-padding">
+        <div className="flex items-center justify-between p-4 pb-0">
             <h3>Members</h3>
             <span className="text-secondary">
                 {members.length + 1}
             </span>
         </div>
-        <ul>
+        <ul className="px-2 pb-2">
             {
                 [user, ...members].filter(Boolean).map((member) => (
                     <li key={member!.user_id}>
@@ -29,10 +29,10 @@ export const PartyMembers = () => {
 export const PartyMember: FC<{ member: User }> = ({ member }) => {
     return (
         <PartyMemberPreview member={member}>
-            <div className="flex items-center gap-2">
+            <button className="flex items-center gap-2 hover:bg-primary w-full p-2 rounded-md">
                 <Avatar src={member.avatar_url} seed={member.user_id} />
                 <span>{member.name}</span>
-            </div>
+            </button>
         </PartyMemberPreview>
     );
 };
