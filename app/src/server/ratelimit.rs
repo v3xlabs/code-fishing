@@ -2,9 +2,12 @@ use async_trait::async_trait;
 use governor::clock::DefaultClock;
 use governor::state::keyed::DashMapStateStore;
 use governor::{Quota, RateLimiter};
-use poem::IntoResponse;
+use poem::web::RealIp;
+use poem::{FromRequest, IntoResponse};
 use poem::{http::StatusCode, middleware::Middleware, Endpoint, Request, Response};
+use poem_openapi::ApiExtractor;
 use std::net::IpAddr;
+use std::ops::Deref;
 use std::sync::Arc;
 use tracing::{info, warn};
 // Type aliases for clarity.
@@ -59,14 +62,11 @@ where
 
     async fn call(&self, req: Request) -> poem::Result<Self::Output> {
         // Extract IP (fallback to 127.0.0.1)
-        let ip: IpAddr = req
-            .remote_addr()
-            .to_string()
-            .parse()
-            .unwrap_or_else(|_| {
-                warn!("Failed to parse IP address for rate limiting");
-                "127.0.0.1".parse().unwrap()
-            });
+        let ip = RealIp::from_request_without_body(&req).await?;
+        let ip = ip.0.unwrap_or_else(|| {
+            warn!("Failed to parse IP address for rate limiting");
+            "127.0.0.1".parse().unwrap()
+        });
 
         let endpoint = req.uri().to_string();
         info!("Rate limiting request to endpoint: {}", endpoint);
