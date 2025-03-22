@@ -19,6 +19,9 @@ pub struct GuestResponse {
 
 #[OpenApi]
 impl AuthApi {
+    /// /auth/guest
+    /// 
+    /// Sign in as a guest
     #[oai(path = "/auth/guest", method = "post", tag = "ApiTags::Auth")]
     pub async fn guest(&self, state: Data<&AppState>) -> Result<Json<GuestResponse>> {
         let user = User::authorize_by_guest_id(&state).await?;
@@ -29,6 +32,9 @@ impl AuthApi {
         }))
     }
 
+    /// /auth/user
+    /// 
+    /// Get the current user
     #[oai(path = "/auth/user", method = "get", tag = "ApiTags::Auth")]
     pub async fn user(
         &self,

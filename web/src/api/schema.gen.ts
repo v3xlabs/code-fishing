@@ -87,6 +87,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * /maps/search
+         * @description Search for maps
+         */
         get: {
             parameters: {
                 query: {
@@ -123,6 +127,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * /maps/get
+         * @description Get a map by ID
+         */
         get: {
             parameters: {
                 query: {
@@ -161,6 +169,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * /auth/guest
+         * @description Sign in as a guest
+         */
         post: {
             parameters: {
                 query?: never;
@@ -193,6 +205,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * /auth/user
+         * @description Get the current user
+         */
         get: {
             parameters: {
                 query?: never;
@@ -227,7 +243,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Redirect to Steam login page */
+        /**
+         * /auth/oauth/steam
+         * @description Redirect to Steam login page
+         */
         get: {
             parameters: {
                 query?: never;
@@ -262,7 +281,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Handle Steam OAuth callback */
+        /**
+         * /auth/oauth/steam/callback
+         * @description Handle Steam OAuth callback
+         */
         get: {
             parameters: {
                 query?: never;
@@ -297,6 +319,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * /bm/recent
+         * @description Get the most recent rust servers for the authenticated user
+         */
         get: {
             parameters: {
                 query?: never;
@@ -331,6 +357,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * /inventory/total
+         * @description Get the total inventory value & size of the queried user
+         */
         get: operations["get_total_inventory"];
         put?: never;
         post?: never;

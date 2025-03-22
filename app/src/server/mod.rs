@@ -1,5 +1,6 @@
-use std::sync::Arc;
+use std::{num::NonZero, sync::Arc};
 
+use governor::Quota;
 // use channel::ChannelApi;
 // use info::InfoApi;
 // use media::MediaApi;
@@ -12,19 +13,21 @@ use poem::{
 use poem_openapi::{payload::Html, OpenApi, OpenApiService, Tags};
 
 use maps::MapsApi;
+use ratelimit::GovRateLimitMiddleware;
 use tracing::info;
 
 use crate::state::AppState;
-use tracing_mw::TraceId;
 use auth::{oauth::OAuthApi, AuthApi};
 use bm::BattleMetricsApi;
 use inventory::InventoryApi;
+use tracing_mw::TraceId;
 
-pub mod party;
-pub mod maps;
 pub mod auth;
 pub mod bm;
 pub mod inventory;
+pub mod maps;
+pub mod party;
+pub mod ratelimit;
 pub mod tracing_mw;
 
 #[derive(Tags)]
@@ -32,25 +35,47 @@ pub enum ApiTags {
     /// Party Related Operations
     Party,
     /// Maps Related Operations
+    /// 
+    /// This uses the RustMaps.com API to search for maps
     Maps,
     /// Inventory Related Operations
     Inventory,
     /// BattleMetrics Related Operations
+    /// 
+    /// This uses the BattleMetrics.com API to get server information
     BattleMetrics,
     /// Auth Authentication
     Auth,
 }
 
 fn get_api(state: AppState) -> impl OpenApi {
-    (PartyApi, MapsApi, AuthApi, OAuthApi::new(state.clone()), BattleMetricsApi, InventoryApi)
+    (
+        PartyApi,
+        MapsApi,
+        AuthApi,
+        OAuthApi::new(state.clone()),
+        BattleMetricsApi,
+        InventoryApi,
+    )
 }
 
 pub async fn start_http(state: AppState) {
     info!("Starting HTTP server");
-    let api_service =
-        OpenApiService::new(get_api(state.clone()), "Code Fishing", "0.0.1").server("http://localhost:3000/api");
+    let api_service = OpenApiService::new(get_api(state.clone()), "Code Fishing", "0.0.1")
+        .server("http://localhost:3000/api");
 
     let spec = api_service.spec_endpoint();
+
+    let limiter = GovRateLimitMiddleware::new(
+        Quota::per_minute(NonZero::new(120).unwrap()),
+        Quota::per_minute(NonZero::new(60).unwrap()),
+    );
+
+    let api_service = api_service
+        .with(limiter)
+        .with(TraceId::new(Arc::new(global::tracer("code-fishing"))))
+        .with(OpenTelemetryMetrics::new());
+
 
     let path = std::path::Path::new("./www");
 
@@ -69,8 +94,6 @@ pub async fn start_http(state: AppState) {
         // .at("/v/:video_id/oembed", get(redirect::video_oembed))
         // .nest("/metrics", get(prom::route))
         // .with(OpenTelemetryTracing::new(global::tracer("storedvideo")))
-        .with(TraceId::new(Arc::new(global::tracer("storedvideo"))))
-        .with(OpenTelemetryMetrics::new())
         .data(state);
     // .with(Cors::new());
 

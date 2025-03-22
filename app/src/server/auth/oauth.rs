@@ -362,6 +362,8 @@ impl OAuthApi {
 
 #[OpenApi]
 impl OAuthApi {
+    /// /auth/oauth/steam
+    /// 
     /// Redirect to Steam login page
     #[oai(path = "/auth/oauth/steam", method = "get", tag = "ApiTags::Auth")]
     async fn steam_login(&self) -> Result<Html<String>> {
@@ -398,12 +400,10 @@ impl OAuthApi {
         Ok(Html(html))
     }
 
+    /// /auth/oauth/steam/callback
+    /// 
     /// Handle Steam OAuth callback
-    #[oai(
-        path = "/auth/oauth/steam/callback",
-        method = "get",
-        tag = "ApiTags::Auth"
-    )]
+    #[oai(path = "/auth/oauth/steam/callback", method = "get", tag = "ApiTags::Auth")]
     async fn steam_callback(
         &self,
         #[oai(style = "form")] query: Query<HashMap<String, String>>,

@@ -19,6 +19,9 @@ pub struct BattleMetricsApi;
 
 #[OpenApi]
 impl BattleMetricsApi {
+    /// /bm/recent
+    /// 
+    /// Get the most recent rust servers for the authenticated user
     #[oai(path = "/bm/recent", method = "get", tag = "ApiTags::BattleMetrics")]
     async fn get_recent_servers(
         &self,

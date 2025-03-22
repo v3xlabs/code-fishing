@@ -1,6 +1,7 @@
 import { createFetch } from "openapi-hooks";
 import { paths } from "./schema.gen";
 import { authStore, useAuth } from "@/hooks/auth";
+import { toast } from "sonner";
 
 export const baseUrl = new URL('/api/', window.location.origin);
 
@@ -16,5 +17,14 @@ export const useApi = createFetch<paths>({
         return {
             Authorization: `Bearer ${tokenProxy.value}`,
         };
+    },
+    onError(error: { status: number }) {
+        if (error.status === 429) {
+            console.error('Rate limit exceeded');
+            toast.error('Rate limit exceeded', {
+                description: 'Please try again later.',
+                duration: 5000,
+            });
+        }
     },
 });

@@ -75,6 +75,9 @@ pub enum PartyEntryData {
 
 #[OpenApi]
 impl PartyApi {
+    /// /party/create
+    /// 
+    /// Create a new party
     #[oai(path = "/party/create", method = "post", tag = "ApiTags::Party")]
     async fn create(
         &self,
@@ -102,6 +105,9 @@ impl PartyApi {
     //     }))
     // }
 
+    /// /party/:party_id/get
+    /// 
+    /// Get a party by ID
     #[oai(path = "/party/:party_id/get", method = "get", tag = "ApiTags::Party")]
     async fn get(
         &self,

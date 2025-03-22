@@ -10,6 +10,9 @@ pub struct InventoryApi;
 
 #[OpenApi]
 impl InventoryApi {
+    /// /inventory/total
+    /// 
+    /// Get the total inventory value & size of the queried user
     #[oai(path = "/inventory/total", method = "get", tag = "ApiTags::Inventory", operation_id = "get_total_inventory")]
     async fn get_total_inventory(
         &self,

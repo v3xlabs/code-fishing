@@ -14,6 +14,9 @@ pub struct MapsApi;
 
 #[OpenApi]
 impl MapsApi {
+    /// /maps/search
+    /// 
+    /// Search for maps
     #[oai(path = "/maps/search", method = "get", tag = "ApiTags::Maps")]
     async fn search(
         &self,
@@ -25,6 +28,9 @@ impl MapsApi {
         Ok(Json(search_response))
     }
 
+    /// /maps/get
+    /// 
+    /// Get a map by ID
     #[oai(path = "/maps/get", method = "get", tag = "ApiTags::Maps")]
     async fn get(
         &self,
