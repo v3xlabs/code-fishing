@@ -62,6 +62,10 @@ html, body {
     padding: 1rem;
 }
 
+.card.no-padding {
+    padding: 0;
+}
+
 .button {
     @apply px-2 py-1 rounded-sm bg-primary text-primary hover:bg-tertiary hover:text-primary;
 }

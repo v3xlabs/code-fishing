@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ToolTip } from "@/components/helpers/ToolTip";
+import { Tooltip } from "@/components/helpers/Tooltip";
 
 const SortableItem = ({ item, id }: { item: CodeList; id: string }) => {
   const {
@@ -85,12 +85,12 @@ export const CodeListOrder = () => {
       <div className="card space-y-2 p-4 h-auto w-full text 3xl:col-span-2">
         <div className="flex items-center justify-between">
           <h3>Arrange Lists</h3>
-          <ToolTip>
+          <Tooltip>
             <p>
               Customize the order of codes you want to use.
             </p>
             <p>You will be able to use custom lists in the future.</p>
-          </ToolTip>
+          </Tooltip>
         </div>
         <SortableContext items={list.map(item => item.name)} strategy={verticalListSortingStrategy}>
           {list.map((item) => (

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { LISTS, setifyList } from "@/util/lists";
 import cx from "classnames";
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { ToolTip } from "@/components/helpers/ToolTip";
+import { Tooltip } from "@/components/helpers/Tooltip";
 
 export const PartyProgress = () => {
     const codes = setifyList(LISTS.flatMap(list => list.codes));
@@ -111,11 +111,11 @@ export const PartyProgress = () => {
         <div className="card w-full flex flex-col gap-2 text" style={{ gridColumn: '1 / -1' }}>
             <div className="flex items-center justify-between">
                 <h3>Raid Progress</h3>
-                <ToolTip>
+                <Tooltip>
                     <p>Here you see the progress of the raid.</p>
                     <br />
                     <p>More info about your progress will be added in the future.</p>
-                </ToolTip>
+                </Tooltip>
             </div>
             <p className="text-secondary">These are all the codes you have entered and you have left to explore.</p>
             <div

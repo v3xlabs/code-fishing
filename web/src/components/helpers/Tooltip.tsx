@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactElement, ReactNode } from "react";
+import { FC, ReactElement, ReactNode } from "react";
 import { LuInfo } from "react-icons/lu";
 import * as RadixTooltip from "@radix-ui/react-tooltip";
 
@@ -13,7 +13,7 @@ interface ToolTipProps {
   align?: "start" | "center" | "end";
 }
 
-export const ToolTip: FC<ToolTipProps> = ({ 
+export const Tooltip: FC<ToolTipProps> = ({ 
   children, 
   trigger, 
   ariaLabel = "Information", 

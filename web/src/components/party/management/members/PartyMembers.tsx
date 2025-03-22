@@ -1,6 +1,7 @@
 import { User, useUser } from "@/api/auth";
 import { FC } from "react";
-import { Avatar } from "../auth/Avatar";
+import { Avatar } from "../../../auth/Avatar";
+import { PartyMemberPreview } from "./PartyMemberPreview";
 
 export const PartyMembers = () => {
     const { data: user } = useUser();
@@ -26,8 +27,12 @@ export const PartyMembers = () => {
 };
 
 export const PartyMember: FC<{ member: User }> = ({ member }) => {
-    return (<div className="flex items-center gap-2">
-        <Avatar src={member.avatar_url} seed={member.user_id} />
-        <span>{member.name}</span>
-    </div>);
+    return (
+        <PartyMemberPreview member={member}>
+            <div className="flex items-center gap-2">
+                <Avatar src={member.avatar_url} seed={member.user_id} />
+                <span>{member.name}</span>
+            </div>
+        </PartyMemberPreview>
+    );
 };

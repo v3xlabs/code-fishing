@@ -38,6 +38,14 @@ export const ServerFinder = () => {
                 {data?.data.map((server) => (
                     <ServerPreview key={server.name} server={server} />
                 ))}
+                {
+                    input.trim().length == 0 && (
+                        <div className="flex flex-col gap-2 text-center">
+                            <p>Type the server name</p>
+                            <p className="text-secondary">or connect steam to find a server</p>
+                        </div>
+                    )
+                }
             </ul>
         </div>
     )

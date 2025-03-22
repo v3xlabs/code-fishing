@@ -1,7 +1,7 @@
 import { NotImplemented } from "@/components/modal/NotImplemented";
 import { FC, useMemo, useState } from "react";
 import { LuArrowBigLeft, LuArrowBigRight, LuCheck, LuSquareX } from "react-icons/lu";
-import { ToolTip } from "@/components/helpers/ToolTip";
+import { Tooltip } from "@/components/helpers/Tooltip";
 import { LISTS, setifyList } from "@/util/lists";
 
 export const CodeEntryMod: FC<{}> = () => {
@@ -15,11 +15,11 @@ export const CodeEntryMod: FC<{}> = () => {
                 <h3 className="text-primary text">Code Entry (WIP)</h3>
                 <div className="flex items-center gap-1">
                     <input type="number" className="input grow-0 w-fit" min={1} max={10} value={codeCount} onChange={(e) => setCodeCount(parseInt(e.target.value))} />
-                    <ToolTip>
+                    <Tooltip>
                         <p>This is a work in progress.</p>
                         <br />
                         <p>You will mark codes as done here, and select how many you want to view at a time.</p>
-                    </ToolTip>
+                    </Tooltip>
                 </div>
             </div>
             <div className="w-full -mx-4 px-4 box-content bg-primary py-2 grow">

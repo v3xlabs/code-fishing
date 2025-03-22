@@ -6,7 +6,7 @@ import { CodeListOrder } from '@/components/party/codes/CodeListOrder';
 import { PartyProgress } from '@/components/party/codes/PartyProgress';
 import { PartyInviteCard } from '@/components/party/management/PartyInvite';
 import { ServerFinder } from '@/components/party/management/ServerFinder';
-import { PartyMembers } from '@/components/party/PartyMembers';
+import { PartyMembers } from '@/components/party/management/members/PartyMembers';
 import { Dialog, DialogContent, DialogTrigger } from '@radix-ui/react-dialog';
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import { PartyChat } from '@/components/party/fun/PartyChat';

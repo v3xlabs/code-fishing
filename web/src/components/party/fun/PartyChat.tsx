@@ -1,5 +1,5 @@
 import { Avatar } from "@/components/auth/Avatar";
-import { ToolTip } from "@/components/helpers/ToolTip";
+import { Tooltip } from "@/components/helpers/Tooltip";
 import { FC } from "react";
 
 const messages = [
@@ -59,9 +59,9 @@ export const PartyChat: FC<{}> = () => {
         <div className="card md:col-span-2 space-y-2 text">
             <div className="flex gap-2 justify-between items-center">
                 <h3>Party Chat</h3>
-                <ToolTip>
+                <Tooltip>
                     <p>Hi</p>
-                </ToolTip>
+                </Tooltip>
             </div>
             <div className="bg-primary w-full p-4 pt-1 min-h-[160px] max-h-[420px] overflow-y-auto">
                 {messages.map((message) => (
