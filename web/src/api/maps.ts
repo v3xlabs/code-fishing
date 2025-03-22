@@ -50,17 +50,70 @@ export type MapResponse = {
 };
 
 export type MapResult = {
-    "id": "41d038d37cd64053a0900b973c185c2a",
-    "type": "Procedural",
-    "seed": 2031947583,
-    "size": 4500,
-    "saveVersion": 265,
-    "imageUrl": "https://content.rustmaps.com/maps/265/41d038d37cd64053a0900b973c185c2a/map_raw_normalized.png",
-    "tileBaseUrl": "https://content.rustmaps.com/maps/265/41d038d37cd64053a0900b973c185c2a/tiles-webp/{z}/{x}/{y}.webp",
-    "imageIconUrl": "https://content.rustmaps.com/maps/265/41d038d37cd64053a0900b973c185c2a/map_icons.png",
-    "thumbnail_url": "https://content.rustmaps.com/maps/265/41d038d37cd64053a0900b973c185c2a/thumbnail.webp",
-    "undergroundOverlayUrl": "https://content.rustmaps.com/maps/265/41d038d37cd64053a0900b973c185c2a/tunnel/tiles/",
-    "buildingBlockAreaUrl": "https://content.rustmaps.com/maps/265/41d038d37cd64053a0900b973c185c2a/building_block.json",
+    id: string;
+    _type: string;
+    seed: number;
+    size: number;
+    save_version: number;
+    image_url: string;
+    title_base_url: string | null;
+    image_icon_url: string;
+    thumbnail_url: string;
+    underground_overlay_url: string;
+    building_block_area_url: string;
+    is_staging: boolean;
+    is_custom_map: boolean;
+    is_for_sale: boolean;
+    is_featured: boolean;
+    has_custom_monuments: boolean;
+    can_download: boolean;
+    download_url: string | null;
+    slug: string | null;
+    monuments: Monument[];
+    extra: {
+        tileBaseUrl: string;
+        displayName: string | null;
+        purchaseUrl: string | null;
+        landPercentageOfMap: number;
+        biomePercentages: {
+            s: number; // sand
+            d: number; // desert
+            f: number; // forest
+            t: number; // tundra
+        };
+        islands: number;
+        totalMonuments: number;
+        largeMonuments: number;
+        smallMonuments: number;
+        tinyMonuments: number;
+        safezones: number;
+        caves: number;
+        rivers: number;
+        mountains: number;
+        icebergs: number;
+        iceLakes: number;
+        lakes: number;
+        canyons: number;
+        oases: number;
+        buildableRocks: number;
+        heatMaps: HeatMap[];
+        estimatedDeletionDate: string | null;
+    };
+};
+
+export type Monument = {
+    type: string;
+    sizeCategory: string;
+    coordinates: {
+        x: number;
+        y: number;
+    };
+    iconPath: string;
+};
+
+export type HeatMap = {
+    name: string;
+    url: string;
 };
 
 const getMap = async (map_id: string) => {
@@ -73,5 +126,7 @@ export const useMap = (map_id: string) => {
     return useQuery({
         queryKey: ['map', map_id],
         queryFn: () => getMap(map_id),
+        // staleTime: 1000 * 60 * 60 * 24, // 24 hours
+        enabled: !!map_id,
     });
 }
