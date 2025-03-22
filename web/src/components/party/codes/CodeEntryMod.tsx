@@ -10,7 +10,7 @@ export const CodeEntryMod: FC<{}> = () => {
     const results = codes.slice(0, codeCount);
 
     return (
-        <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumn: '-2 / -1' }}>
+        <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumnEnd: '-1' }}>
             <div className="flex items-center justify-between">
                 <h3 className="text-primary text">Code Entry (WIP)</h3>
                 <div className="flex items-center gap-1">

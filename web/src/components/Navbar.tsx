@@ -37,7 +37,6 @@ export const Navbar = () => {
                     </Link>
                 </div>
                 <div className="flex items-center h-full gap-2 flex-1 justify-end">
-                    <FontSwitch />
                     <UserProfile />
                 </div>
             </div>
@@ -77,6 +76,9 @@ export const UserProfile: FC<{}> = () => {
                                 <span>Preferences</span>
                             </button>
                         </NotImplemented>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="focus:outline-none focus:bg-secondary rounded-md">
+                        <FontSwitch />
                     </DropdownMenuItem>
                     <DropdownMenuItem className="focus:outline-none focus:bg-secondary rounded-md">
                         <button className="button button-rust flex items-center gap-2 w-full" onClick={logout}>

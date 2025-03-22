@@ -56,7 +56,7 @@ const messages = [
 
 export const PartyChat: FC<{}> = () => {
     return (
-        <div className="card col-span-2 space-y-2 text">
+        <div className="card md:col-span-2 space-y-2 text">
             <div className="flex gap-2 justify-between items-center">
                 <h3>Party Chat</h3>
                 <ToolTip>

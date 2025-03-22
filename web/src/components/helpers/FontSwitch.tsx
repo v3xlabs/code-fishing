@@ -7,8 +7,9 @@ export const FontSwitch: FC = () => {
 
     return (
         <>
-            <button className="button h-full" onClick={toggleFont}>
+            <button className="button flex items-center gap-2 w-full" onClick={toggleFont}>
                 <LuType />
+                <span>Change Font</span>
             </button>
         </>
     )

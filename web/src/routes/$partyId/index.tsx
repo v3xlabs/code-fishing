@@ -19,7 +19,7 @@ function RouteComponent() {
   const { partyId } = Route.useParams();
 
   // auto columns 300w min
-  return (<div className="p-2 grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(321px, 1fr))' }}>
+  return (<div className="p-2 grid gap-2 grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:grid-flow-row-dense">
     <PartyInviteCard partyId={partyId} />
     <div className="flex flex-col gap-2 w-full text">
       <div className="card p-4 h-fit flex flex-col gap-2 w-full">
