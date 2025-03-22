@@ -48,9 +48,9 @@ function RouteComponent() {
       <PartyMembers />
     </div>
     <CodeListOrder />
-    <MusicRadio />
     <CodeEntryMod />
     <PartyChat />
+    <MusicRadio />
     <PartyProgress />
   </div>);
 }

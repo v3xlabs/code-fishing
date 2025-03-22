@@ -82,7 +82,7 @@ export const CodeListOrder = () => {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="card space-y-2 p-4 h-auto w-full text">
+      <div className="card space-y-2 p-4 h-auto w-full text 3xl:col-span-2">
         <div className="flex items-center justify-between">
           <h3>Arrange Lists</h3>
           <ToolTip>
