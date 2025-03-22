@@ -39,6 +39,8 @@ pub enum ApiTags {
     /// This uses the RustMaps.com API to search for maps
     Maps,
     /// Inventory Related Operations
+    /// 
+    /// This uses the scmm.app API to get inventory information
     Inventory,
     /// BattleMetrics Related Operations
     /// 
