@@ -13,6 +13,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * /party/create
+         * @description Create a new party
+         */
         post: {
             parameters: {
                 query?: never;
@@ -49,6 +53,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * /party/:party_id/get
+         * @description Get a party by ID
+         */
         get: {
             parameters: {
                 query: {
