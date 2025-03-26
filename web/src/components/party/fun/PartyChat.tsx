@@ -144,7 +144,7 @@ export const PartyChatMessage: FC<{ message: PartyEvent }> = ({ message }) => {
     const { data: user } = useUserById(message.user_id);
 
     return (
-        <div key={message.event_id} className="flex flex-row items-baseline gap-1">
+        <div key={message.event_id} className="flex flex-row items-center gap-1">
             <div className="inline-flex scale-[90%]">
                 <Avatar src={user?.avatar_url ?? ''} seed={message.user_id} />
             </div>
