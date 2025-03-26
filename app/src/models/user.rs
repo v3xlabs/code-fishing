@@ -1,13 +1,14 @@
 use chrono::{DateTime, Utc};
 use fake::Fake;
 use poem::Result;
-use poem_openapi::Object;
+use poem_openapi::{types::Example, Object};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use crate::{server::auth::oauth::SteamUserProfile, state::AppState};
 
 #[derive(Debug, Deserialize, Serialize, Clone, Object)]
+#[oai(example)]
 pub struct User {
     pub user_id: String,
     pub name: String,
@@ -15,6 +16,19 @@ pub struct User {
     pub profile_url: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+}
+
+impl Example for User {
+    fn example() -> Self {
+        User {
+            user_id: "guest:ImvHRo4RUHSD2x".to_string(),
+            name: "John D.".to_string(),
+            avatar_url: Some("https://avatars.akamai.steamstatic.com/0000000000000000.jpg".to_string()),
+            profile_url: Some("https://steamcommunity.com/id/john_doe".to_string()),
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        }
+    }
 }
 
 impl User {
@@ -89,7 +103,8 @@ impl User {
             &jsonwebtoken::Header::default(),
             &JwtClaims::from(self),
             &jsonwebtoken::EncodingKey::from_secret(state.jwt.secret.as_bytes()),
-        ).unwrap();
+        )
+        .unwrap();
 
         Ok(token)
     }
@@ -109,20 +124,24 @@ impl User {
         .claims;
 
         // Look up the user in the database
-        let user = sqlx::query_as!(
-            User,
-            "SELECT * FROM users WHERE user_id = $1",
-            claims.sub
-        )
-        .fetch_one(&state.database.pool)
-        .await
-        .map_err(|e| {
-            poem::Error::from_string(
-                format!("User not found: {}", e),
-                poem::http::StatusCode::UNAUTHORIZED,
-            )
-        })?;
+        let user = sqlx::query_as!(User, "SELECT * FROM users WHERE user_id = $1", claims.sub)
+            .fetch_one(&state.database.pool)
+            .await
+            .map_err(|e| {
+                poem::Error::from_string(
+                    format!("User not found: {}", e),
+                    poem::http::StatusCode::UNAUTHORIZED,
+                )
+            })?;
 
+        Ok(user)
+    }
+
+    pub async fn get_by_id(user_id: &str, state: &AppState) -> Result<User> {
+        let user = sqlx::query_as!(User, "SELECT * FROM users WHERE user_id = $1", user_id)
+            .fetch_one(&state.database.pool)
+            .await
+            .unwrap();
         Ok(user)
     }
 }
@@ -136,6 +155,9 @@ pub struct JwtClaims {
 impl From<&User> for JwtClaims {
     fn from(user: &User) -> Self {
         let exp = Utc::now() + chrono::Duration::days(7);
-        Self { sub: user.user_id.clone(), exp: exp.timestamp() as usize }
+        Self {
+            sub: user.user_id.clone(),
+            exp: exp.timestamp() as usize,
+        }
     }
 }

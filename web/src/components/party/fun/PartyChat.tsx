@@ -1,6 +1,9 @@
+import { useUserById } from "@/api/auth";
+import { PartyEvent, usePartyEvents, usePartyEventSubmit } from "@/api/party";
+import { components } from "@/api/schema.gen";
 import { Avatar } from "@/components/auth/Avatar";
 import { Tooltip } from "@/components/helpers/Tooltip";
-import { FC } from "react";
+import { FC, useRef, useState, useEffect } from "react";
 
 const messages = [
     {
@@ -54,7 +57,47 @@ const messages = [
     // },
 ];
 
-export const PartyChat: FC<{}> = () => {
+export const PartyChat: FC<{ party_id: string }> = ({ party_id }) => {
+    const { mutate: submitEvent } = usePartyEventSubmit(party_id);
+    const { data: events } = usePartyEvents(party_id);
+    const messageInputRef = useRef<HTMLInputElement>(null);
+    const chatWindowRef = useRef<HTMLDivElement>(null);
+    const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+
+    let messages = events?.pages.flatMap(page => page) ?? [];
+
+    // Check if user is at bottom when messages change
+    useEffect(() => {
+        if (chatWindowRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = chatWindowRef.current;
+            // Consider "at bottom" if within 10px of the bottom
+            const isAtBottom = scrollHeight - scrollTop - clientHeight < 10;
+            setShouldScrollToBottom(isAtBottom);
+        }
+    }, [messages]);
+
+    // Scroll to bottom when needed
+    useEffect(() => {
+        if (shouldScrollToBottom && chatWindowRef.current) {
+            chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+        }
+    }, [shouldScrollToBottom, messages]);
+
+    // Add scroll event listener to update shouldScrollToBottom
+    useEffect(() => {
+        const chatWindow = chatWindowRef.current;
+        if (!chatWindow) return;
+
+        const handleScroll = () => {
+            const { scrollTop, scrollHeight, clientHeight } = chatWindow;
+            const isAtBottom = scrollHeight - scrollTop - clientHeight < 10;
+            setShouldScrollToBottom(isAtBottom);
+        };
+
+        chatWindow.addEventListener('scroll', handleScroll);
+        return () => chatWindow.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <div className="card md:col-span-2 space-y-2 text">
             <div className="flex gap-2 justify-between items-center">
@@ -63,22 +106,52 @@ export const PartyChat: FC<{}> = () => {
                     <p>Hi</p>
                 </Tooltip>
             </div>
-            <div className="bg-primary w-full p-4 pt-1 min-h-[160px] max-h-[420px] overflow-y-auto">
-                {messages.map((message) => (
-                    <div key={message.id} className="flex flex-row items-baseline gap-1">
-                        <div className="inline-flex translate-y-1/4 scale-[90%]">
-                            <Avatar src={message.avatar} seed={message.sender} />
-                        </div>
-                        <div className="space-x-2">
-                            <p className="text-secondary inline bold-text">{message.sender}</p>
-                            <p className="break-words inline">{message.content}</p>
-                        </div>
+            <div className="bg-primary w-full p-4 min-h-[160px] max-h-[420px] overflow-y-auto" ref={chatWindowRef}>
+                <div className="flex flex-row items-center gap-1">
+                    <div className="inline-flex scale-[90%]">
+                        <Avatar src={'/system.png'} seed={'system'} />
                     </div>
+                    <div className="space-x-2">
+                        <p className="text-secondary inline bold-text">System</p>
+                        <p className="break-words inline">Welcome to the party chat!</p>
+                    </div>
+                </div>
+                {messages.map((message) => (
+                    <PartyChatMessage key={message.event_id} message={message} />
                 ))}
             </div>
             <div className="flex flex-row gap-2">
-                <input type="text" className="flex-1 input" />
-                <button className="button button-primary">Send</button>
+                <form onSubmit={e => {
+                    e.preventDefault();
+                    submitEvent({
+                        type: 'PartyChatMessage',
+                        message: messageInputRef.current?.value ?? '',
+                    });
+                    if (messageInputRef.current) {
+                        messageInputRef.current.value = '';
+                    }
+                }} className="w-full flex flex-row gap-2">
+                    <input type="text" className="flex-1 input" ref={messageInputRef} />
+                    <button className="button button-primary" type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+export const PartyChatMessage: FC<{ message: PartyEvent }> = ({ message }) => {
+    const messageData = message.data.type == 'PartyChatMessage' ? message.data.message : null;
+    const { data: user } = useUserById(message.user_id);
+
+    return (
+        <div key={message.event_id} className="flex flex-row items-baseline gap-1">
+            <div className="inline-flex scale-[90%]">
+                <Avatar src={user?.avatar_url ?? ''} seed={message.user_id} />
+            </div>
+            <div className="space-x-2">
+                <p className="text-secondary inline bold-text">{user?.name ?? message.user_id}</p>
+                {messageData &&
+                    <p className="break-words inline">{messageData}</p>}
             </div>
         </div>
     )

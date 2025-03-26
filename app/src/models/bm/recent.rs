@@ -1,6 +1,6 @@
 use chrono::DateTime;
 use poem::Result;
-use poem_openapi::Object;
+use poem_openapi::{types::Example, Object};
 use reqwest::ClientBuilder;
 use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
@@ -17,37 +17,66 @@ pub struct BattleMetricsRecentServers {
 }
 
 #[derive(Debug, Serialize, Deserialize, Object, Clone)]
+#[oai(example)]
 pub struct BattleMetricsRecentServer {
-    // `id` from BattleMetrics
+    /// `id` from BattleMetrics
     pub bm_id: String,
     pub name: Option<String>,
-    // `address` from BattleMetrics
+    /// `address` from BattleMetrics
     pub styled_ip: Option<String>,
-    // online player count;
+    /// online player count;
     pub players: Option<u64>,
-    // subjective status
+    /// subjective status
     pub status: Option<String>,
     pub tags: Option<Vec<String>>,
-    // `official` from BattleMetrics
+    /// `official` from BattleMetrics
     pub is_official: Option<bool>,
-    // ex 'official'
+    /// ex 'official'
     pub rust_type: Option<String>,
-    // ex 'standard'; `rust_gamemode` from BattleMetrics
+    /// ex 'standard'; `rust_gamemode` from BattleMetrics
     pub gamemode: Option<String>,
-    // Map Name; ex 'Rustafied Custom Map'; `map` from BattleMetrics
+    /// Map Name; ex 'Rustafied Custom Map'; `map` from BattleMetrics
     pub map_name: Option<String>,
-    // Header Image; `rust_headerimage` from BattleMetrics
+    /// Header Image; `rust_headerimage` from BattleMetrics
     pub header_url: Option<String>,
-    // Url; `rust_url` from BattleMetrics
+    /// Url; `rust_url` from BattleMetrics
     pub url: Option<String>,
-    // description; `rust_description` from BattleMetrics
+    /// description; `rust_description` from BattleMetrics
     pub description: Option<String>,
 
-    // Specific to the user
+    /// Specific to the user
     pub last_seen: Option<String>,
     pub first_seen: Option<String>,
     pub time_played: Option<u64>,
     pub online: Option<bool>,
+}
+
+impl Example for BattleMetricsRecentServer {
+    fn example() -> Self {
+        BattleMetricsRecentServer {
+            bm_id: "123456789".to_string(),
+            name: Some("MyRustServer 1000x | JUST WIPED (yesterday)".to_string()),
+            styled_ip: Some("play.code.fishing".to_string()),
+            players: Some(260),
+            status: Some("online".to_string()),
+            tags: Some(vec![
+                "tags".to_string(),
+                "go".to_string(),
+                "here".to_string(),
+            ]),
+            is_official: Some(false),
+            rust_type: Some("modded".to_string()),
+            gamemode: Some("standard".to_string()),
+            map_name: Some("Custom Map".to_string()),
+            header_url: Some("https://example.com/headerimage.png".to_string()),
+            url: Some("https://example.com".to_string()),
+            description: Some("Welcome to MyRustServer!\nWipe Schedule:\n• Fullwipes Every Friday at 17:45 CET\n• Map wipes Every Monday at 15:45 CET\n- Last Wipe: 24.03 15:45 CET Type: Map Wipe\n- Next Wipe: 28.03 17:45 CET Type: Full Wipe\n\nFeatures:\n- 2x gathering & loot\n- Max Group Size: 3\n- Shared Blueprints\n- Balanced kits & commands\n- Great anti-cheat + Active non-playing admins\n\nFor more info join our Discord or visit our website\nWebsite: https://example.com/\nDiscord: https://discord.gg/example".to_string()),
+            last_seen: Some("2025-03-23T18:16:45.138Z".to_string()),
+            first_seen: Some("2025-03-23T18:15:45.362Z".to_string()),
+            time_played: Some(60),
+            online: Some(false),
+        }
+    }
 }
 
 impl BattleMetricsRecentServer {
@@ -84,11 +113,11 @@ impl BattleMetricsRecentServer {
             tags: value.attributes.as_ref().and_then(|a| {
                 a.extra.get("details").and_then(|d| {
                     d.get("tags").and_then(|v| {
-                        v.as_array().map(|arr| 
+                        v.as_array().map(|arr| {
                             arr.iter()
                                 .filter_map(|item| item.as_str().map(|s| s.to_string()))
                                 .collect()
-                        )
+                        })
                     })
                 })
             }),

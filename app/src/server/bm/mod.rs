@@ -22,6 +22,7 @@ impl BattleMetricsApi {
     /// /bm/recent
     /// 
     /// Get the most recent rust servers for the authenticated user
+    /// This uses the BattleMetrics API only works if the player's steam name is unique enough
     #[oai(path = "/bm/recent", method = "get", tag = "ApiTags::BattleMetrics")]
     async fn get_recent_servers(
         &self,

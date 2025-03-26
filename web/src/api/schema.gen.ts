@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/party/create": {
+    "/party": {
         parameters: {
             query?: never;
             header?: never;
@@ -14,7 +14,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * /party/create
+         * /party
          * @description Create a new party
          */
         post: {
@@ -46,7 +46,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/party/{party_id}/get": {
+    "/party/{party_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -54,13 +54,53 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * /party/:party_id/get
+         * /party/:party_id
          * @description Get a party by ID
          */
         get: {
             parameters: {
-                query: {
-                    _cursor: string;
+                query?: never;
+                header?: never;
+                path: {
+                    party_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Party"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/party/{party_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /party/:party_id/events
+         * @description Get events for a party
+         */
+        get: {
+            parameters: {
+                query?: {
+                    cursor?: number;
                 };
                 header?: never;
                 path: {
@@ -75,13 +115,41 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["PartyGetResponse"];
+                        "application/json; charset=utf-8": components["schemas"]["PartyEvent"][];
                     };
                 };
             };
         };
         put?: never;
-        post?: never;
+        /**
+         * /party/:party_id/events
+         * @description Submit an event to a party
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    party_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["PartyEventData"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["PartyEvent"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -179,7 +247,11 @@ export interface paths {
         put?: never;
         /**
          * /auth/guest
-         * @description Sign in as a guest
+         * @description Sign in as a guest, this allows for anonymous access to the api
+         *     This method of authentication comes with limited functionality notably:
+         *     - No access to any server specific data
+         *     - No access to steam specific data
+         *     This is done to restrict load on the server to only authenticated users
          */
         post: {
             parameters: {
@@ -215,13 +287,53 @@ export interface paths {
         };
         /**
          * /auth/user
-         * @description Get the current user
+         * @description Get the currently authenticated user
          */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
                 path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["User"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/user/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /auth/user/:user_id
+         * @description Get a user by their user id
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    user_id: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -330,6 +442,7 @@ export interface paths {
         /**
          * /bm/recent
          * @description Get the most recent rust servers for the authenticated user
+         *     This uses the BattleMetrics API only works if the player's steam name is unique enough
          */
         get: {
             parameters: {
@@ -382,22 +495,61 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** BattleMetricsRecentServer */
+        /**
+         * BattleMetricsRecentServer
+         * @example {
+         *       "bm_id": "123456789",
+         *       "name": "MyRustServer 1000x | JUST WIPED (yesterday)",
+         *       "styled_ip": "play.code.fishing",
+         *       "players": 260,
+         *       "status": "online",
+         *       "tags": [
+         *         "tags",
+         *         "go",
+         *         "here"
+         *       ],
+         *       "is_official": false,
+         *       "rust_type": "modded",
+         *       "gamemode": "standard",
+         *       "map_name": "Custom Map",
+         *       "header_url": "https://example.com/headerimage.png",
+         *       "url": "https://example.com",
+         *       "description": "Welcome to MyRustServer!\nWipe Schedule:\n• Fullwipes Every Friday at 17:45 CET\n• Map wipes Every Monday at 15:45 CET\n- Last Wipe: 24.03 15:45 CET Type: Map Wipe\n- Next Wipe: 28.03 17:45 CET Type: Full Wipe\n\nFeatures:\n- 2x gathering & loot\n- Max Group Size: 3\n- Shared Blueprints\n- Balanced kits & commands\n- Great anti-cheat + Active non-playing admins\n\nFor more info join our Discord or visit our website\nWebsite: https://example.com/\nDiscord: https://discord.gg/example",
+         *       "last_seen": "2025-03-23T18:16:45.138Z",
+         *       "first_seen": "2025-03-23T18:15:45.362Z",
+         *       "time_played": 60,
+         *       "online": false
+         *     }
+         */
         BattleMetricsRecentServer: {
+            /** @description `id` from BattleMetrics */
             bm_id: string;
             name?: string;
+            /** @description `address` from BattleMetrics */
             styled_ip?: string;
-            /** Format: uint64 */
+            /**
+             * Format: uint64
+             * @description online player count;
+             */
             players?: number;
+            /** @description subjective status */
             status?: string;
             tags?: string[];
+            /** @description `official` from BattleMetrics */
             is_official?: boolean;
+            /** @description ex 'official' */
             rust_type?: string;
+            /** @description ex 'standard'; `rust_gamemode` from BattleMetrics */
             gamemode?: string;
+            /** @description Map Name; ex 'Rustafied Custom Map'; `map` from BattleMetrics */
             map_name?: string;
+            /** @description Header Image; `rust_headerimage` from BattleMetrics */
             header_url?: string;
+            /** @description Url; `rust_url` from BattleMetrics */
             url?: string;
+            /** @description description; `rust_description` from BattleMetrics */
             description?: string;
+            /** @description Specific to the user */
             last_seen?: string;
             first_seen?: string;
             /** Format: uint64 */
@@ -451,6 +603,13 @@ export interface components {
             meta: components["schemas"]["MapMeta"];
             data: components["schemas"]["MapData"];
         };
+        /** Party */
+        Party: {
+            party_id: string;
+            owner_id: string;
+            /** Format: date-time */
+            created_at: string;
+        };
         /** PartyCreateRequest */
         PartyCreateRequest: Record<string, never>;
         /** PartyCreateResponse */
@@ -458,50 +617,87 @@ export interface components {
             id: string;
             created_at: string;
         };
-        /** PartyEntry */
-        PartyEntry: {
-            entry_id: string;
+        /** PartyEvent */
+        PartyEvent: {
+            party_id: string;
+            /** Format: int32 */
+            event_id: number;
             user_id: string;
+            data: components["schemas"]["PartyEventData"];
+            /** Format: date-time */
             created_at: string;
-            data: components["schemas"]["PartyEntryData"];
         };
-        /** PartyEntryCodeSubmit */
-        PartyEntryCodeSubmit: {
+        /** PartyEventChatMessage */
+        PartyEventChatMessage: {
+            message: string;
+        };
+        /** PartyEventCodesSubmitted */
+        PartyEventCodesSubmitted: {
+            user_id: string;
             codes: string[];
         };
-        /** PartyEntryCursorUpdate */
-        PartyEntryCursorUpdate: {
-            codes: string[];
+        /** PartyEventCreated */
+        PartyEventCreated: {
+            owner_id: string;
         };
-        PartyEntryData: components["schemas"]["PartyEntryData_PartyEntryCursorUpdate"] | components["schemas"]["PartyEntryData_PartyEntryJoinLeave"] | components["schemas"]["PartyEntryData_PartyEntryCodeSubmit"];
-        PartyEntryData_PartyEntryCodeSubmit: {
-            /**
-             * @example CodeSubmit
-             * @enum {string}
-             */
-            type: "CodeSubmit";
-        } & components["schemas"]["PartyEntryCodeSubmit"];
-        PartyEntryData_PartyEntryCursorUpdate: {
-            /**
-             * @example CursorUpdate
-             * @enum {string}
-             */
-            type: "CursorUpdate";
-        } & components["schemas"]["PartyEntryCursorUpdate"];
-        PartyEntryData_PartyEntryJoinLeave: {
-            /**
-             * @example JoinLeave
-             * @enum {string}
-             */
-            type: "JoinLeave";
-        } & components["schemas"]["PartyEntryJoinLeave"];
-        /** PartyEntryJoinLeave */
-        PartyEntryJoinLeave: {
-            action: string;
+        /** PartyEventCursorUpdate */
+        PartyEventCursorUpdate: {
+            user_id: string;
+            cursor: string;
+            /** Format: uint32 */
+            size: number;
         };
-        /** PartyGetResponse */
-        PartyGetResponse: {
-            entries: components["schemas"]["PartyEntry"][];
+        PartyEventData: components["schemas"]["PartyEventData_PartyEventCreated"] | components["schemas"]["PartyEventData_PartyEventOwnerChanged"] | components["schemas"]["PartyEventData_PartyEventJoinLeave"] | components["schemas"]["PartyEventData_PartyEventCodesSubmitted"] | components["schemas"]["PartyEventData_PartyEventCursorUpdate"] | components["schemas"]["PartyEventData_PartyEventChatMessage"];
+        PartyEventData_PartyEventChatMessage: {
+            /**
+             * @example PartyChatMessage
+             * @enum {string}
+             */
+            type: "PartyChatMessage";
+        } & components["schemas"]["PartyEventChatMessage"];
+        PartyEventData_PartyEventCodesSubmitted: {
+            /**
+             * @example PartyCodesSubmitted
+             * @enum {string}
+             */
+            type: "PartyCodesSubmitted";
+        } & components["schemas"]["PartyEventCodesSubmitted"];
+        PartyEventData_PartyEventCreated: {
+            /**
+             * @example PartyCreated
+             * @enum {string}
+             */
+            type: "PartyCreated";
+        } & components["schemas"]["PartyEventCreated"];
+        PartyEventData_PartyEventCursorUpdate: {
+            /**
+             * @example PartyCursorUpdate
+             * @enum {string}
+             */
+            type: "PartyCursorUpdate";
+        } & components["schemas"]["PartyEventCursorUpdate"];
+        PartyEventData_PartyEventJoinLeave: {
+            /**
+             * @example PartyJoinLeave
+             * @enum {string}
+             */
+            type: "PartyJoinLeave";
+        } & components["schemas"]["PartyEventJoinLeave"];
+        PartyEventData_PartyEventOwnerChanged: {
+            /**
+             * @example PartyOwnerChanged
+             * @enum {string}
+             */
+            type: "PartyOwnerChanged";
+        } & components["schemas"]["PartyEventOwnerChanged"];
+        /** PartyEventJoinLeave */
+        PartyEventJoinLeave: {
+            user_id: string;
+            is_join: boolean;
+        };
+        /** PartyEventOwnerChanged */
+        PartyEventOwnerChanged: {
+            owner_id: string;
         };
         /** SCMMTotalInventoryResponse */
         SCMMTotalInventoryResponse: {
@@ -533,7 +729,17 @@ export interface components {
             game_port: number;
             last_wipe_utc: string;
         };
-        /** User */
+        /**
+         * User
+         * @example {
+         *       "user_id": "guest:ImvHRo4RUHSD2x",
+         *       "name": "John D.",
+         *       "avatar_url": "https://avatars.akamai.steamstatic.com/0000000000000000.jpg",
+         *       "profile_url": "https://steamcommunity.com/id/john_doe",
+         *       "created_at": "2025-03-26T00:12:42.218442081+00:00",
+         *       "updated_at": "2025-03-26T00:12:42.218445001+00:00"
+         *     }
+         */
         User: {
             user_id: string;
             name: string;

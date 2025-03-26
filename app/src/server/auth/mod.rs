@@ -1,4 +1,5 @@
 use poem::{web::Data, Result, http::HeaderMap};
+use poem_openapi::param::Path;
 use poem_openapi::{payload::Json, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 
@@ -21,7 +22,11 @@ pub struct GuestResponse {
 impl AuthApi {
     /// /auth/guest
     /// 
-    /// Sign in as a guest
+    /// Sign in as a guest, this allows for anonymous access to the api
+    /// This method of authentication comes with limited functionality notably:
+    /// - No access to any server specific data
+    /// - No access to steam specific data
+    /// This is done to restrict load on the server to only authenticated users
     #[oai(path = "/auth/guest", method = "post", tag = "ApiTags::Auth")]
     pub async fn guest(&self, state: Data<&AppState>) -> Result<Json<GuestResponse>> {
         let user = User::authorize_by_guest_id(&state).await?;
@@ -34,7 +39,7 @@ impl AuthApi {
 
     /// /auth/user
     /// 
-    /// Get the current user
+    /// Get the currently authenticated user
     #[oai(path = "/auth/user", method = "get", tag = "ApiTags::Auth")]
     pub async fn user(
         &self,
@@ -71,6 +76,20 @@ impl AuthApi {
         // Verify the JWT token and get the user
         let user = User::verify_jwt(&token, &state).await?;
         
+        Ok(Json(user))
+    }
+
+    /// /auth/user/:user_id
+    /// 
+    /// Get a user by their user id
+    #[oai(path = "/auth/user/:user_id", method = "get", tag = "ApiTags::Auth")]
+    pub async fn user_by_id(
+        &self,
+        state: Data<&AppState>,
+        #[oai(style = "simple")] user_id: Path<String>,
+    ) -> Result<Json<User>> {
+        let user = User::get_by_id(&user_id, &state).await?;
+
         Ok(Json(user))
     }
 }

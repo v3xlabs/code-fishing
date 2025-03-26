@@ -3,6 +3,7 @@ use poem_openapi::{
     registry::{MetaSecurityScheme, Registry},
     ApiExtractor, ApiExtractorType, ExtractParamOptions,
 };
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use crate::{models::user::User, state::AppState};
@@ -31,6 +32,18 @@ impl AuthUser {
         match self {
             AuthUser::User(user, _) => Some(user.user_id.clone()),
             AuthUser::None(_) => None,
+        }
+    }
+    pub fn state(&self) -> &AppState {
+        match self {
+            AuthUser::User(_, state) => state,
+            AuthUser::None(state) => state,
+        }
+    }
+    pub fn require_user(&self) -> Result<&User> {
+        match self {
+            AuthUser::User(user, _) => Ok(user),
+            AuthUser::None(_) => Err(poem::Error::from_status(StatusCode::UNAUTHORIZED)),
         }
     }
 }
@@ -93,12 +106,3 @@ impl<'a> ApiExtractor<'a> for AuthUser {
         vec!["AuthToken"]
     }
 }
-impl AuthUser {
-    fn state(&self) -> &AppState {
-        match self {
-            AuthUser::User(_, state) => state,
-            AuthUser::None(state) => state,
-        }
-    }
-}
-

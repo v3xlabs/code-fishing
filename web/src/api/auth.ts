@@ -46,6 +46,17 @@ export const useUser = () => {
         refetchOnMount: true,
         refetchOnWindowFocus: true,
         staleTime: 3000, // Consider data stale after 3 seconds
-        refetchInterval: 5000,
+        refetchInterval: 20000,
     });
 };
+
+export const useUserById = (user_id: string) => {
+    return useQuery({
+        queryKey: ['user', user_id],
+        queryFn: async () => {
+            const response = await useApi('/auth/user/{user_id}', 'get', { path: { user_id } });
+
+            return response.data;
+        }
+    })
+}

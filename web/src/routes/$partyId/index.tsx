@@ -49,7 +49,7 @@ function RouteComponent() {
     </div>
     <CodeListOrder />
     <CodeEntryMod />
-    <PartyChat />
+    <PartyChat party_id={partyId} />
     <MusicRadio />
     <PartyProgress />
   </div>);

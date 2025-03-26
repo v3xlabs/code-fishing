@@ -60,7 +60,7 @@ impl AppCache {
         )
     }
 
-    pub async fn collect(&self, state: &AppState) {
+    pub async fn collect(&self, _state: &AppState) {
         loop {
             self.collect_all().await;
 

@@ -5,9 +5,7 @@ use governor::{Quota, RateLimiter};
 use poem::web::RealIp;
 use poem::{FromRequest, IntoResponse};
 use poem::{http::StatusCode, middleware::Middleware, Endpoint, Request, Response};
-use poem_openapi::ApiExtractor;
 use std::net::IpAddr;
-use std::ops::Deref;
 use std::sync::Arc;
 use tracing::{info, warn};
 // Type aliases for clarity.

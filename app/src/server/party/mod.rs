@@ -1,13 +1,15 @@
 use poem::{web::Data, Result};
-use poem_openapi::param::Path;
-use poem_openapi::Union;
-use poem_openapi::{param::Query, payload::Json, Object, OpenApi};
-use rand::prelude::*;
+use poem_openapi::param::{Path, Query};
+use poem_openapi::{payload::Json, Object, OpenApi};
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
-use sqids::Sqids;
 
+use crate::models::party::event::{PartyEvent, PartyEventData};
+use crate::models::party::Party;
 use crate::server::ApiTags;
 use crate::state::AppState;
+
+use super::auth::mw::AuthUser;
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyApi;
@@ -23,100 +25,91 @@ pub struct PartyCreateRequest {
     // pub name: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct PartySubmitRequest {
-    pub name: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct PartySubmitResponse {
-    pub id: String,
-    pub created_at: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct PartyGetResponse {
-    pub entries: Vec<PartyEntry>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct PartyEntry {
-    pub entry_id: String,
-    pub user_id: String,
-    pub created_at: String,
-    pub data: PartyEntryData,
-}
-
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct PartyEntryCursorUpdate {
-    pub codes: Vec<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct PartyEntryJoinLeave {
-    pub action: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct PartyEntryCodeSubmit {
-    pub codes: Vec<String>,
-}
-
-#[derive(Union, Serialize, Deserialize, Debug)]
-#[oai(discriminator_name = "type")]
-pub enum PartyEntryData {
-    #[serde(rename = "cursor_update")]
-    CursorUpdate(PartyEntryCursorUpdate),
-    #[serde(rename = "join_leave")]
-    JoinLeave(PartyEntryJoinLeave),
-    #[serde(rename = "code_submit")]
-    CodeSubmit(PartyEntryCodeSubmit),
-}
-
 #[OpenApi]
 impl PartyApi {
-    /// /party/create
-    /// 
+    /// /party
+    ///
     /// Create a new party
-    #[oai(path = "/party/create", method = "post", tag = "ApiTags::Party")]
+    #[oai(path = "/party", method = "post", tag = "ApiTags::Party")]
     async fn create(
         &self,
-        _state: Data<&AppState>,
+        state: Data<&AppState>,
         body: Json<PartyCreateRequest>,
+        user: AuthUser,
     ) -> Result<Json<PartyCreateResponse>> {
         tracing::info!("{:?}", body);
+        let user = user.require_user()?;
 
-        let new_id = Sqids::default();
-        let random_number = rand::rng().random_range(0..u64::MAX);
-        let new_id = new_id.encode(&[0, random_number]).unwrap();
+        let party = Party::create(&user.user_id, state.0).await.map_err(|e| {
+            tracing::error!("Error creating party: {:?}", e);
+            poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+        })?;
 
         Ok(Json(PartyCreateResponse {
-            id: new_id,
-            created_at: "2021-01-01".to_string(),
+            id: party.party_id,
+            created_at: party.created_at.to_rfc3339(),
         }))
     }
 
-    // #[oai(path = "/party/:party_id/submit", method = "post", tag = "ApiTags::Party")]
-    // async fn submit(&self, state: Data<&AppState>, party_id: Path<String>, body: Json<PartySubmitRequest>) -> Result<Json<PartySubmitResponse>> {
-    //     tracing::info!("{:?}", body);
-
-    //     Ok(Json(PartySubmitResponse {
-    //         id: "123".to_string(),
-    //     }))
-    // }
-
-    /// /party/:party_id/get
-    /// 
+    /// /party/:party_id
+    ///
     /// Get a party by ID
-    #[oai(path = "/party/:party_id/get", method = "get", tag = "ApiTags::Party")]
+    #[oai(path = "/party/:party_id", method = "get", tag = "ApiTags::Party")]
     async fn get(
         &self,
-        _state: Data<&AppState>,
+        state: Data<&AppState>,
         #[oai(style = "simple")] party_id: Path<String>,
-        #[oai(style = "form")] _cursor: Query<String>,
-    ) -> Result<Json<PartyGetResponse>> {
+    ) -> Result<Json<Party>> {
         tracing::info!("{:?}", party_id.0);
 
-        Ok(Json(PartyGetResponse { entries: vec![] }))
+        let party = Party::get_by_id(&party_id.0, state.0).await.map_err(|e| {
+            tracing::error!("Error getting party: {:?}", e);
+            poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+        })?;
+
+        if let Some(party) = party {
+            Ok(Json(party))
+        } else {
+            Err(poem::Error::from_status(StatusCode::NOT_FOUND))
+        }
+    }
+
+    /// /party/:party_id/events
+    ///
+    /// Get events for a party
+    #[oai(path = "/party/:party_id/events", method = "get", tag = "ApiTags::Party")]
+    async fn get_events(
+        &self,
+        state: Data<&AppState>,
+        party_id: Path<String>,
+        #[oai(style = "simple")] cursor: Query<Option<i32>>,
+    ) -> Result<Json<Vec<PartyEvent>>> {
+        tracing::info!("{:?}", party_id.0);
+
+        let cursor = cursor.unwrap_or(0);
+
+        let events = PartyEvent::get_events_by_event_cursor(&party_id.0, cursor, state.0).await.map_err(|e| {
+            tracing::error!("Error getting events: {:?}", e);
+            poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+        })?;
+
+        Ok(Json(events))
+    }
+
+    /// /party/:party_id/events
+    /// 
+    /// Submit an event to a party
+    #[oai(path = "/party/:party_id/events", method = "post", tag = "ApiTags::Party")]
+    async fn submit_event(&self, state: Data<&AppState>, user: AuthUser, party_id: Path<String>, body: Json<PartyEventData>) -> Result<Json<PartyEvent>> {
+        tracing::info!("{:?}", party_id.0);
+
+        let user = user.require_user()?;
+
+        let event = PartyEvent::create(&party_id.0, &user.user_id, body.0, state.0).await.map_err(|e| {
+            tracing::error!("Error creating event: {:?}", e);
+            poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+        })?;
+
+        Ok(Json(event))
     }
 }
