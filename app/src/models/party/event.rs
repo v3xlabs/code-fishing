@@ -56,28 +56,33 @@ pub enum PartyEventData {
     PartyChatMessage(PartyEventChatMessage),
 }
 
+/// Auto generated event when a party is created
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventCreated {
     pub owner_id: String,
 }
 
+/// TODO: This event is unimplemented at this time
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventOwnerChanged {
     pub owner_id: String,
 }
 
+/// TODO: This event is unimplemented at this time
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventJoinLeave {
     pub user_id: String,
     pub is_join: bool,
 }
 
+/// TODO: This event is unimplemented at this time
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventCodesSubmitted {
     pub user_id: String,
     pub codes: Vec<String>,
 }
 
+/// TODO: This event is unimplemented at this time
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventCursorUpdate {
     pub user_id: String,
@@ -85,6 +90,7 @@ pub struct PartyEventCursorUpdate {
     pub size: u32,
 }
 
+/// Represents a chat message sent by a user in the party
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventChatMessage {
     pub message: String,

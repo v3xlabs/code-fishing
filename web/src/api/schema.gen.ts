@@ -627,20 +627,32 @@ export interface components {
             /** Format: date-time */
             created_at: string;
         };
-        /** PartyEventChatMessage */
+        /**
+         * PartyEventChatMessage
+         * @description Represents a chat message sent by a user in the party
+         */
         PartyEventChatMessage: {
             message: string;
         };
-        /** PartyEventCodesSubmitted */
+        /**
+         * PartyEventCodesSubmitted
+         * @description TODO: This event is unimplemented at this time
+         */
         PartyEventCodesSubmitted: {
             user_id: string;
             codes: string[];
         };
-        /** PartyEventCreated */
+        /**
+         * PartyEventCreated
+         * @description Auto generated event when a party is created
+         */
         PartyEventCreated: {
             owner_id: string;
         };
-        /** PartyEventCursorUpdate */
+        /**
+         * PartyEventCursorUpdate
+         * @description TODO: This event is unimplemented at this time
+         */
         PartyEventCursorUpdate: {
             user_id: string;
             cursor: string;
@@ -690,12 +702,18 @@ export interface components {
              */
             type: "PartyOwnerChanged";
         } & components["schemas"]["PartyEventOwnerChanged"];
-        /** PartyEventJoinLeave */
+        /**
+         * PartyEventJoinLeave
+         * @description TODO: This event is unimplemented at this time
+         */
         PartyEventJoinLeave: {
             user_id: string;
             is_join: boolean;
         };
-        /** PartyEventOwnerChanged */
+        /**
+         * PartyEventOwnerChanged
+         * @description TODO: This event is unimplemented at this time
+         */
         PartyEventOwnerChanged: {
             owner_id: string;
         };
@@ -736,8 +754,8 @@ export interface components {
          *       "name": "John D.",
          *       "avatar_url": "https://avatars.akamai.steamstatic.com/0000000000000000.jpg",
          *       "profile_url": "https://steamcommunity.com/id/john_doe",
-         *       "created_at": "2025-03-26T00:12:42.218442081+00:00",
-         *       "updated_at": "2025-03-26T00:12:42.218445001+00:00"
+         *       "created_at": "2025-03-30T13:22:03.162940203+00:00",
+         *       "updated_at": "2025-03-30T13:22:03.162942533+00:00"
          *     }
          */
         User: {
