@@ -14,11 +14,15 @@ import {
     LuCoins
 } from "react-icons/lu";
 
-export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ member, children }) => {
-    const steam_id = member.user_id.startsWith("steam:") ? member.user_id.replace("steam:", "") : undefined;
+export const PartyMemberPreview: FC<PropsWithChildren<{ member?: User }>> = ({ member, children }) => {
+    const steam_id = member?.user_id.startsWith("steam:") ? member?.user_id.replace("steam:", "") : undefined;
 
     if (!steam_id) {
-        return null;
+        return (
+            <>
+                {children}
+            </>
+        );
     }
 
     const { data: stats } = useStats(steam_id);
@@ -115,52 +119,52 @@ export const PartyMemberPreview: FC<PropsWithChildren<{ member: User }>> = ({ me
                     <div className="space-y-4">
                         {/* Overview section */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                           <div className="flex flex-col gap-4">
-                            <div className="card no-padding">
-                                <h4 className="text-secondary uppercase text-xs font-semibold tracking-wider mb-3">Account Overview</h4>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <StatItem
-                                        icon={<LuHourglass className="text-accent" />}
-                                        label="Total Hours"
-                                        value={stats?.overview?.time_played || "Unknown"}
+                            <div className="flex flex-col gap-4">
+                                <div className="card no-padding">
+                                    <h4 className="text-secondary uppercase text-xs font-semibold tracking-wider mb-3">Account Overview</h4>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <StatItem
+                                            icon={<LuHourglass className="text-accent" />}
+                                            label="Total Hours"
+                                            value={stats?.overview?.time_played || "Unknown"}
                                         />
-                                    <StatItem
-                                        icon={<LuActivity className="text-accent" />}
-                                        label="Recent (2w)"
-                                        value={stats?.overview?.played_last_2weeks || "Unknown"}
+                                        <StatItem
+                                            icon={<LuActivity className="text-accent" />}
+                                            label="Recent (2w)"
+                                            value={stats?.overview?.played_last_2weeks || "Unknown"}
                                         />
-                                    <StatItem
-                                        icon={<LuCalendarDays className="text-secondary" />}
-                                        label="Account Age"
-                                        value={calculateAccountAge()}
+                                        <StatItem
+                                            icon={<LuCalendarDays className="text-secondary" />}
+                                            label="Account Age"
+                                            value={calculateAccountAge()}
                                         />
-                                    <StatItem
-                                        icon={<LuMedal className="text-secondary" />}
-                                        label="Achievements"
-                                        value={stats?.overview?.achievement_count || "0"}
+                                        <StatItem
+                                            icon={<LuMedal className="text-secondary" />}
+                                            label="Achievements"
+                                            value={stats?.overview?.achievement_count || "0"}
                                         />
+                                    </div>
                                 </div>
-                            </div>
-                            {
-                                inventory && (
-                                    <div className="card no-padding">
-                                        <h4 className="text-secondary uppercase text-xs font-semibold tracking-wider mb-3">Inventory</h4>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <StatItem
-                                                icon={<LuCoins className="text-accent" />}
-                                                label="Total Items"
-                                                value={inventory.items}
+                                {
+                                    inventory && (
+                                        <div className="card no-padding">
+                                            <h4 className="text-secondary uppercase text-xs font-semibold tracking-wider mb-3">Inventory</h4>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <StatItem
+                                                    icon={<LuCoins className="text-accent" />}
+                                                    label="Total Items"
+                                                    value={inventory.items}
                                                 />
-                                            <StatItem
-                                                icon={<LuCoins className="text-accent" />}
-                                                label="NET WORTH"
-                                                value={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(inventory.market_value / 100)}
+                                                <StatItem
+                                                    icon={<LuCoins className="text-accent" />}
+                                                    label="NET WORTH"
+                                                    value={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(inventory.market_value / 100)}
                                                 />
 
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            }
+                                    )
+                                }
                             </div>
                             {/* PVP Statistics */}
                             {stats?.pvp_stats && (

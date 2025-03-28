@@ -1,6 +1,6 @@
 import { LISTS } from "@/util/lists";
 import { CodeList } from "@/util/lists";
-import { useState } from "react";
+import { FC, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -19,8 +19,9 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Tooltip } from "@/components/helpers/Tooltip";
+import { CodeListEntry, usePartyEventSubmit, usePartyListOrder } from "@/api/party";
 
-const SortableItem = ({ item, id }: { item: CodeList; id: string }) => {
+const SortableItem = ({ item, id }: { item: CodeListEntry; id: string }) => {
   const {
     attributes,
     listeners,
@@ -36,6 +37,8 @@ const SortableItem = ({ item, id }: { item: CodeList; id: string }) => {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const codes = LISTS.find(list => list.name === item.name)?.codes;
+
   return (
     <div
       ref={setNodeRef}
@@ -47,14 +50,16 @@ const SortableItem = ({ item, id }: { item: CodeList; id: string }) => {
     >
       <span className="font-medium">{item.name}</span>
       <span className="text-secondary bg-secondary px-2 py-1 rounded-full text-sm">
-        {item.codes.length}
+        {codes?.length}
       </span>
     </div>
   );
 };
 
-export const CodeListOrder = () => {
-  const [list, setList] = useState<CodeList[]>(LISTS);
+
+export const CodeListOrder: FC<{ party_id: string }> = ({ party_id }) => {
+  // const [list, setList] = useState<CodeList[]>();
+  const { data: list, update } = usePartyListOrder(party_id);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -67,7 +72,7 @@ export const CodeListOrder = () => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setList((items) => {
+      update((items) => {
         const oldIndex = items.findIndex((item) => item.name === active.id);
         const newIndex = items.findIndex((item) => item.name === over.id);
 
@@ -92,8 +97,8 @@ export const CodeListOrder = () => {
             <p>You will be able to use custom lists in the future.</p>
           </Tooltip>
         </div>
-        <SortableContext items={list.map(item => item.name)} strategy={verticalListSortingStrategy}>
-          {list.map((item) => (
+        <SortableContext items={list?.map(item => item.name) ?? []} strategy={verticalListSortingStrategy}>
+          {list?.map((item) => (
             <SortableItem key={item.name} id={item.name} item={item} />
           ))}
         </SortableContext>

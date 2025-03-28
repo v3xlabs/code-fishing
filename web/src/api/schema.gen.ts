@@ -659,7 +659,7 @@ export interface components {
             /** Format: uint32 */
             size: number;
         };
-        PartyEventData: components["schemas"]["PartyEventData_PartyEventCreated"] | components["schemas"]["PartyEventData_PartyEventOwnerChanged"] | components["schemas"]["PartyEventData_PartyEventJoinLeave"] | components["schemas"]["PartyEventData_PartyEventCodesSubmitted"] | components["schemas"]["PartyEventData_PartyEventCursorUpdate"] | components["schemas"]["PartyEventData_PartyEventChatMessage"];
+        PartyEventData: components["schemas"]["PartyEventData_PartyEventCreated"] | components["schemas"]["PartyEventData_PartyEventOwnerChanged"] | components["schemas"]["PartyEventData_PartyEventJoinLeave"] | components["schemas"]["PartyEventData_PartyEventCodesSubmitted"] | components["schemas"]["PartyEventData_PartyEventCursorUpdate"] | components["schemas"]["PartyEventData_PartyEventChatMessage"] | components["schemas"]["PartyEventData_PartyEventListOrderChanged"];
         PartyEventData_PartyEventChatMessage: {
             /**
              * @example PartyChatMessage
@@ -695,6 +695,13 @@ export interface components {
              */
             type: "PartyJoinLeave";
         } & components["schemas"]["PartyEventJoinLeave"];
+        PartyEventData_PartyEventListOrderChanged: {
+            /**
+             * @example PartyListOrderChanged
+             * @enum {string}
+             */
+            type: "PartyListOrderChanged";
+        } & components["schemas"]["PartyEventListOrderChanged"];
         PartyEventData_PartyEventOwnerChanged: {
             /**
              * @example PartyOwnerChanged
@@ -709,6 +716,10 @@ export interface components {
         PartyEventJoinLeave: {
             user_id: string;
             is_join: boolean;
+        };
+        /** PartyEventListOrderChanged */
+        PartyEventListOrderChanged: {
+            order: unknown[];
         };
         /**
          * PartyEventOwnerChanged
@@ -754,8 +765,8 @@ export interface components {
          *       "name": "John D.",
          *       "avatar_url": "https://avatars.akamai.steamstatic.com/0000000000000000.jpg",
          *       "profile_url": "https://steamcommunity.com/id/john_doe",
-         *       "created_at": "2025-03-30T13:22:03.162940203+00:00",
-         *       "updated_at": "2025-03-30T13:22:03.162942533+00:00"
+         *       "created_at": "2025-03-30T14:09:35.991942909+00:00",
+         *       "updated_at": "2025-03-30T14:09:35.991944979+00:00"
          *     }
          */
         User: {

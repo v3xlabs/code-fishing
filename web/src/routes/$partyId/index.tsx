@@ -45,9 +45,9 @@ function RouteComponent() {
           </li>
         </ul>
       </div>
-      <PartyMembers />
+      <PartyMembers party_id={partyId} />
     </div>
-    <CodeListOrder />
+    <CodeListOrder party_id={partyId} />
     <CodeEntryMod />
     <PartyChat party_id={partyId} />
     <MusicRadio />

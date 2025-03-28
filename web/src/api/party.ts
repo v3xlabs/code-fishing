@@ -3,6 +3,8 @@ import { components } from "./schema.gen";
 import { useApi } from "./api";
 import * as React from 'react';
 import { queryClient } from "@/util/query";
+import { LISTS } from "@/util/lists";
+import { useState } from "react";
 
 export type PartyCreateResponse = components['schemas']['PartyCreateResponse'];
 export type PartyCreateRequest = components['schemas']['PartyCreateRequest'];
@@ -92,10 +94,10 @@ const internalGetPartyEvents = async (party_id: string, cursor: number): Promise
 const openPartyEventsDB = (): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open('PartyEventsDB', 1);
-        
+
         request.onerror = () => reject(request.error);
         request.onsuccess = () => resolve(request.result);
-        
+
         request.onupgradeneeded = (event) => {
             const db = request.result;
             if (!db.objectStoreNames.contains('events')) {
@@ -111,7 +113,7 @@ const storeEventInIndexedDB = async (party_id: string, cursor: number, data: Par
     const db = await openPartyEventsDB();
     const transaction = db.transaction(['events'], 'readwrite');
     const store = transaction.objectStore('events');
-    
+
     return new Promise((resolve, reject) => {
         // Use a composite key combining party_id and cursor
         const request = store.put({
@@ -121,10 +123,10 @@ const storeEventInIndexedDB = async (party_id: string, cursor: number, data: Par
             data: data,
             timestamp: Date.now() // Add timestamp for potential expiration logic
         });
-        
+
         request.onerror = () => reject(request.error);
         request.onsuccess = () => resolve();
-        
+
         transaction.oncomplete = () => db.close();
     });
 };
@@ -134,10 +136,10 @@ const getEventFromIndexedDB = async (party_id: string, cursor: number): Promise<
     const db = await openPartyEventsDB();
     const transaction = db.transaction(['events'], 'readonly');
     const store = transaction.objectStore('events');
-    
+
     return new Promise((resolve, reject) => {
         const request = store.get(`${party_id}_${cursor}`);
-        
+
         request.onerror = () => reject(request.error);
         request.onsuccess = () => {
             if (request.result) {
@@ -146,7 +148,7 @@ const getEventFromIndexedDB = async (party_id: string, cursor: number): Promise<
                 resolve(null);
             }
         };
-        
+
         transaction.oncomplete = () => db.close();
     });
 };
@@ -189,3 +191,45 @@ export const usePartyEvents = (party_id: string) => {
 
     return query;
 };
+
+export type CodeListEntry = {
+    name: string; // name of the list
+    reverse: boolean; // whether to reverse the list
+};
+
+export type CodeListOrder = CodeListEntry[];
+
+// default order
+const defaultListOrder: CodeListOrder = LISTS.map(list => ({
+    name: list.name,
+    reverse: false,
+}));
+
+export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => void } => {
+    const { data: events } = usePartyEvents(party_id);
+    const { mutate: submitEvent } = usePartyEventSubmit(party_id);
+    const [localOrder, setLocalOrder] = useState<CodeListOrder>(defaultListOrder);
+
+    // todo update order based on recent party events
+    React.useEffect(() => {
+        if (events) {
+            const fEvents = events.pages.flatMap(page => page).filter(event => event.data.type == 'PartyListOrderChanged');
+            console.log('fEvents', fEvents);
+        }
+    }, [events]);
+
+    return {
+        data: localOrder, update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => {
+            // todo update order based on recent party events
+            const compute = updater(localOrder);
+            setLocalOrder(compute);
+
+            console.log('Updating code list order', compute);
+
+            submitEvent({
+                type: 'PartyListOrderChanged',
+                order: compute,
+            });
+        }
+    };
+}
