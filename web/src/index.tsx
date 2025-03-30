@@ -23,10 +23,9 @@ const router = createRouter({
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
-  // eslint-disable-next-line prettier/prettier, unused-imports/no-unused-vars
-  interface Register {
-    router: typeof router;
-  }
+    interface Register {
+        router: typeof router;
+    }
 }
 
 // preflightAuth();

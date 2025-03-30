@@ -1,6 +1,6 @@
-import { FC } from "react";
-import { LuType } from "react-icons/lu";
-import { useApp } from "@/hooks/context";
+import { FC } from 'react';
+import { LuType } from 'react-icons/lu';
+import { useApp } from '@/hooks/context';
 
 export const FontSwitch: FC = () => {
     const { toggleFont } = useApp();
@@ -12,5 +12,5 @@ export const FontSwitch: FC = () => {
                 <span>Change Font</span>
             </button>
         </>
-    )
+    );
 };

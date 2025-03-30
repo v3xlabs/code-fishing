@@ -1,79 +1,91 @@
-import { infiniteQueryOptions, MutationOptions, queryOptions, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { components } from "./schema.gen";
-import { useApi } from "./api";
+import {
+    infiniteQueryOptions,
+    MutationOptions,
+    queryOptions,
+    useInfiniteQuery,
+    useMutation,
+    useQuery,
+} from '@tanstack/react-query';
+import { components } from './schema.gen';
+import { useApi } from './api';
 import * as React from 'react';
-import { queryClient } from "@/util/query";
-import { LISTS } from "@/util/lists";
-import { useMemo, useState } from "react";
+import { queryClient } from '@/util/query';
+import { LISTS } from '@/util/lists';
+import { useMemo, useState } from 'react';
 
 export type PartyCreateResponse = components['schemas']['PartyCreateResponse'];
 export type PartyCreateRequest = components['schemas']['PartyCreateRequest'];
 
-export const usePartyCreate = (extra: Partial<MutationOptions<PartyCreateResponse, undefined, PartyCreateRequest>>) => {
+export const usePartyCreate = (
+    extra: Partial<MutationOptions<PartyCreateResponse, undefined, PartyCreateRequest>>
+) => {
     return useMutation({
         mutationFn: async (body: PartyCreateRequest) => {
             const response = await useApi('/party', 'post', {
                 contentType: 'application/json; charset=utf-8',
                 data: body,
-            })
+            });
 
             return response.data;
         },
         ...extra,
-    })
-}
+    });
+};
 
-export const getParty = (party_id: string) => queryOptions({
-    queryKey: ['party', party_id],
-    queryFn: async () => {
-        const response = await useApi(`/party/{party_id}`, 'get', {
-            path: {
-                party_id
-            }
-        });
+export const getParty = (party_id: string) =>
+    queryOptions({
+        queryKey: ['party', party_id],
+        queryFn: async () => {
+            const response = await useApi('/party/{party_id}', 'get', {
+                path: {
+                    party_id,
+                },
+            });
 
-        return response.data;
-    },
-})
+            return response.data;
+        },
+    });
 
 export const useParty = (party_id: string) => {
     return useQuery({
         queryKey: ['party', party_id],
         queryFn: () => getParty(party_id),
-    })
-}
+    });
+};
 
 export type PartyEventData = components['schemas']['PartyEventData'];
 export type PartyEvent = components['schemas']['PartyEvent'];
 
-export const usePartyEventSubmit = (party_id: string) => useMutation({
-    mutationFn: async (body: PartyEventData) => {
-        const response = await useApi(`/party/{party_id}/events`, 'post', {
-            path: { party_id },
-            contentType: 'application/json; charset=utf-8',
-            data: body,
-        });
+export const usePartyEventSubmit = (party_id: string) =>
+    useMutation({
+        mutationFn: async (body: PartyEventData) => {
+            const response = await useApi('/party/{party_id}/events', 'post', {
+                path: { party_id },
+                contentType: 'application/json; charset=utf-8',
+                data: body,
+            });
 
-        queryClient.invalidateQueries({ queryKey: ['party', party_id, 'events'] });
-        queryClient.refetchQueries({ queryKey: ['party', party_id, 'events'] });
+            queryClient.invalidateQueries({ queryKey: ['party', party_id, 'events'] });
+            queryClient.refetchQueries({ queryKey: ['party', party_id, 'events'] });
 
-        return response.data;
-    }
-});
+            return response.data;
+        },
+    });
 
 const internalGetPartyEvents = async (party_id: string, cursor: number): Promise<PartyEvent[]> => {
     try {
         // Try to get data from IndexedDB first
         const cachedData = await getEventFromIndexedDB(party_id, cursor);
+
         if (cachedData) {
             return cachedData;
         }
     } catch (error) {
-        console.error("Error retrieving data from IndexedDB:", error);
+        console.error('Error retrieving data from IndexedDB:', error);
     }
 
     // If no cached data or error occurred, fetch from API
-    const response = await useApi(`/party/{party_id}/events`, 'get', {
+    const response = await useApi('/party/{party_id}/events', 'get', {
         path: { party_id },
         query: { cursor },
     });
@@ -84,11 +96,11 @@ const internalGetPartyEvents = async (party_id: string, cursor: number): Promise
             await storeEventInIndexedDB(party_id, cursor, response.data);
         }
     } catch (error) {
-        console.error("Error caching party events in IndexedDB:", error);
+        console.error('Error caching party events in IndexedDB:', error);
     }
 
     return response.data;
-}
+};
 
 // Helper function to open IndexedDB connection
 const openPartyEventsDB = (): Promise<IDBDatabase> => {
@@ -98,8 +110,9 @@ const openPartyEventsDB = (): Promise<IDBDatabase> => {
         request.onerror = () => reject(request.error);
         request.onsuccess = () => resolve(request.result);
 
-        request.onupgradeneeded = (event) => {
+        request.onupgradeneeded = () => {
             const db = request.result;
+
             if (!db.objectStoreNames.contains('events')) {
                 // Create an object store to hold party events data
                 db.createObjectStore('events', { keyPath: 'id' });
@@ -109,7 +122,11 @@ const openPartyEventsDB = (): Promise<IDBDatabase> => {
 };
 
 // Helper function to store events in IndexedDB
-const storeEventInIndexedDB = async (party_id: string, cursor: number, data: PartyEvent[]): Promise<void> => {
+const storeEventInIndexedDB = async (
+    party_id: string,
+    cursor: number,
+    data: PartyEvent[]
+): Promise<void> => {
     const db = await openPartyEventsDB();
     const transaction = db.transaction(['events'], 'readwrite');
     const store = transaction.objectStore('events');
@@ -121,7 +138,7 @@ const storeEventInIndexedDB = async (party_id: string, cursor: number, data: Par
             partyId: party_id,
             cursor: cursor,
             data: data,
-            timestamp: Date.now() // Add timestamp for potential expiration logic
+            timestamp: Date.now(), // Add timestamp for potential expiration logic
         });
 
         request.onerror = () => reject(request.error);
@@ -132,7 +149,10 @@ const storeEventInIndexedDB = async (party_id: string, cursor: number, data: Par
 };
 
 // Helper function to retrieve events from IndexedDB
-const getEventFromIndexedDB = async (party_id: string, cursor: number): Promise<PartyEvent[] | null> => {
+const getEventFromIndexedDB = async (
+    party_id: string,
+    cursor: number
+): Promise<PartyEvent[] | null> => {
     const db = await openPartyEventsDB();
     const transaction = db.transaction(['events'], 'readonly');
     const store = transaction.objectStore('events');
@@ -153,25 +173,27 @@ const getEventFromIndexedDB = async (party_id: string, cursor: number): Promise<
     });
 };
 
-export const getPartyEvents = (party_id: string) => infiniteQueryOptions({
-    queryKey: ['party', party_id, 'events'],
-    queryFn: async ({ pageParam }) => {
-        const response = await internalGetPartyEvents(party_id, pageParam);
+export const getPartyEvents = (party_id: string) =>
+    infiniteQueryOptions({
+        queryKey: ['party', party_id, 'events'],
+        queryFn: async ({ pageParam }) => {
+            const response = await internalGetPartyEvents(party_id, pageParam);
 
-        return response;
-    },
-    getNextPageParam: (lastPage, pages) => {
-        if (lastPage.length === 0) {
-            return undefined;
-        }
+            return response;
+        },
+        getNextPageParam: (lastPage) => {
+            if (lastPage.length === 0) {
+                return undefined;
+            }
 
-        const next_page = lastPage[lastPage.length - 1].event_id;
-        return next_page;
-    },
-    initialPageParam: 2,
-    refetchInterval: 5000,
-    staleTime: 3000,
-});
+            const next_page = lastPage[lastPage.length - 1].event_id;
+
+            return next_page;
+        },
+        initialPageParam: 2,
+        refetchInterval: 5000,
+        staleTime: 3000,
+    });
 
 export const usePartyEvents = (party_id: string) => {
     const query = useInfiniteQuery(getPartyEvents(party_id));
@@ -186,7 +208,7 @@ export const usePartyEvents = (party_id: string) => {
         query.hasNextPage,
         query.isFetchingNextPage,
         query.data?.pages.length,
-        query.fetchNextPage
+        query.fetchNextPage,
     ]);
 
     return query;
@@ -200,26 +222,41 @@ export type CodeListEntry = {
 export type CodeListOrder = CodeListEntry[];
 
 // default order
-export const defaultListOrder: CodeListOrder = LISTS.map(list => ({
+export const defaultListOrder: CodeListOrder = LISTS.map((list) => ({
     name: list.name,
     reverse: false,
 }));
 
-export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => void, reset: () => void, isDefault: boolean } => {
+export const usePartyListOrder = (
+    party_id: string
+): {
+    data?: CodeListOrder;
+    update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => void;
+    reset: () => void;
+    isDefault: boolean;
+} => {
     const { data: events } = usePartyEvents(party_id);
     const { mutate: submitEvent } = usePartyEventSubmit(party_id);
     const [localOrder, setLocalOrder] = useState<CodeListOrder>(defaultListOrder);
     const isDefault = useMemo(() => {
-        return localOrder.every((entry, index) => entry.name === defaultListOrder[index].name && entry.reverse === defaultListOrder[index].reverse);
+        return localOrder.every(
+            (entry, index) =>
+                entry.name === defaultListOrder[index].name &&
+                entry.reverse === defaultListOrder[index].reverse
+        );
     }, [localOrder]);
 
     // todo update order based on recent party events
     React.useEffect(() => {
         if (events) {
-            const fEvents = events.pages.flatMap(page => page).filter(event => event.data.type == 'PartyListOrderChanged');
+            const fEvents = events.pages
+                .flatMap((page) => page)
+                .filter((event) => event.data.type == 'PartyListOrderChanged');
+
             console.log('fEvents', fEvents);
             // @ts-ignore
             const lastEvent = fEvents.at(-1);
+
             if (lastEvent) {
                 setLocalOrder(lastEvent.data.order);
             }
@@ -227,9 +264,11 @@ export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, upd
     }, [events]);
 
     return {
-        data: localOrder, update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => {
+        data: localOrder,
+        update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => {
             // todo update order based on recent party events
             const compute = updater(localOrder);
+
             setLocalOrder(compute);
 
             console.log('Updating code list order', compute);
@@ -251,4 +290,4 @@ export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, upd
         },
         isDefault,
     };
-}
+};

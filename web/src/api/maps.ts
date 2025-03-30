@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useDebounce } from "use-debounce";
+import { useQuery } from '@tanstack/react-query';
+import { useDebounce } from 'use-debounce';
 
 export type ServerResult = {
     name: string;
@@ -12,10 +11,10 @@ export type ServerResult = {
 
 export type ServerSearchResponse = {
     meta: {
-        status: "Success",
-        statusCode: 200,
-    },
-    data: ServerResult[]
+        status: 'Success';
+        statusCode: 200;
+    };
+    data: ServerResult[];
 };
 
 export const getServerSearch = async (_input: string) => {
@@ -27,10 +26,10 @@ export const getServerSearch = async (_input: string) => {
         };
     }
 
-    const response = await fetch(`/api/maps/search?search=${encodeURIComponent(input)}`, {})
+    const response = await fetch(`/api/maps/search?search=${encodeURIComponent(input)}`, {});
 
     return response.json() as Promise<ServerSearchResponse>;
-}
+};
 
 export const useServerSearch = (input: string) => {
     const [debouncedInput] = useDebounce(input, 300);
@@ -43,10 +42,10 @@ export const useServerSearch = (input: string) => {
 
 export type MapResponse = {
     meta: {
-        status: "Success",
-        statusCode: 200,
-    },
-    data: MapResult
+        status: 'Success';
+        statusCode: 200;
+    };
+    data: MapResult;
 };
 
 export type MapResult = {
@@ -117,10 +116,10 @@ export type HeatMap = {
 };
 
 const getMap = async (map_id: string) => {
-    const response = await fetch(`/api/maps/get?map_id=${encodeURIComponent(map_id)}`, {})
+    const response = await fetch(`/api/maps/get?map_id=${encodeURIComponent(map_id)}`, {});
 
     return response.json() as Promise<MapResponse>;
-}
+};
 
 export const useMap = (map_id: string) => {
     return useQuery({
@@ -129,4 +128,4 @@ export const useMap = (map_id: string) => {
         // staleTime: 1000 * 60 * 60 * 24, // 24 hours
         enabled: !!map_id,
     });
-}
+};

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState, useMemo, FC } from "react";
-import { LISTS, setifyList } from "@/util/lists";
-import cx from "classnames";
+import { useCallback, useEffect, useRef, useState, useMemo, FC } from 'react';
+import { LISTS, setifyList } from '@/util/lists';
+import cx from 'classnames';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Tooltip } from "@/components/helpers/Tooltip";
-import { usePartyListOrder } from "@/api/party";
+import { Tooltip } from '@/components/helpers/Tooltip';
+import { usePartyListOrder } from '@/api/party';
 
 export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     const { data: listOrder } = usePartyListOrder(party_id);
@@ -12,21 +12,22 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     const orderedCodes = useMemo(() => {
         // If listOrder doesn't exist yet, just use LISTS as is
         if (!listOrder) {
-            return setifyList(LISTS.flatMap(list => list.codes));
+            return setifyList(LISTS.flatMap((list) => list.codes));
         }
-        
+
         // Create a map for quick lookup of lists by name
-        const listsByName = new Map(LISTS.map(list => [list.name, list]));
-        
+        const listsByName = new Map(LISTS.map((list) => [list.name, list]));
+
         // Collect all codes in the specified order, applying reversals where needed
-        const allCodes = listOrder.flatMap(entry => {
+        const allCodes = listOrder.flatMap((entry) => {
             const list = listsByName.get(entry.name);
+
             if (!list) return []; // Skip if list doesn't exist
-            
+
             // Return the codes array, reversed if needed
             return entry.reverse ? [...list.codes].reverse() : list.codes;
         });
-        
+
         // Return the deduplicated list of codes
         return setifyList(allCodes);
     }, [listOrder]);
@@ -49,14 +50,14 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
     // Calculate columns based on container width - memoize to prevent recalculation
-    const columnCount = useMemo(() =>
-        Math.max(1, Math.floor(containerSize.width / CELL_SIZE)),
+    const columnCount = useMemo(
+        () => Math.max(1, Math.floor(containerSize.width / CELL_SIZE)),
         [containerSize.width, CELL_SIZE]
     );
 
     // Calculate the total number of rows needed - memoize to prevent recalculation
-    const rowCount = useMemo(() =>
-        Math.ceil(codes.length / columnCount),
+    const rowCount = useMemo(
+        () => Math.ceil(codes.length / columnCount),
         [codes.length, columnCount]
     );
 
@@ -65,6 +66,7 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
         if (parentRef.current) {
             const width = parentRef.current.clientWidth;
             const height = parentRef.current.clientHeight;
+
             setContainerSize({ width, height });
         }
     }, []);
@@ -77,12 +79,14 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
 
         // Use ResizeObserver for more efficient resize detection
         const resizeObserver = new ResizeObserver(observerCallback);
+
         resizeObserver.observe(parentRef.current);
 
         return () => {
             if (parentRef.current) {
                 resizeObserver.unobserve(parentRef.current);
             }
+
             resizeObserver.disconnect();
         };
     }, [observerCallback]);
@@ -105,35 +109,42 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     });
 
     // Get cell index in the full list
-    const getCellIndex = useCallback((rowIndex: number, columnIndex: number) => {
-        return rowIndex * columnCount + columnIndex;
-    }, [columnCount]);
+    const getCellIndex = useCallback(
+        (rowIndex: number, columnIndex: number) => {
+            return rowIndex * columnCount + columnIndex;
+        },
+        [columnCount]
+    );
 
     // Memoize virtual cells to prevent unnecessary re-renders
     const virtualCells = useMemo(() => {
-        return rowVirtualizer.getVirtualItems().flatMap(virtualRow =>
-            columnVirtualizer.getVirtualItems().map(virtualColumn => {
-                const cellIndex = getCellIndex(virtualRow.index, virtualColumn.index);
+        return rowVirtualizer.getVirtualItems().flatMap(
+            (virtualRow) =>
+                columnVirtualizer
+                    .getVirtualItems()
+                    .map((virtualColumn) => {
+                        const cellIndex = getCellIndex(virtualRow.index, virtualColumn.index);
 
-                // Skip rendering if cell index is out of bounds
-                if (cellIndex >= codes.length) return null;
+                        // Skip rendering if cell index is out of bounds
+                        if (cellIndex >= codes.length) return null;
 
-                const code = codes[cellIndex];
+                        const code = codes[cellIndex];
 
-                return {
-                    key: `${virtualRow.index}:${virtualColumn.index}`,
-                    rowStart: virtualRow.start,
-                    columnStart: virtualColumn.start,
-                    code,
-                    cellIndex
-                };
-            }).filter(Boolean) // Filter out null entries
+                        return {
+                            key: `${virtualRow.index}:${virtualColumn.index}`,
+                            rowStart: virtualRow.start,
+                            columnStart: virtualColumn.start,
+                            code,
+                            cellIndex,
+                        };
+                    })
+                    .filter(Boolean) // Filter out null entries
         );
     }, [
         rowVirtualizer.getVirtualItems(),
         columnVirtualizer.getVirtualItems(),
         codes,
-        getCellIndex
+        getCellIndex,
     ]);
 
     return (
@@ -146,7 +157,9 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
                     <p>More info about your progress will be added in the future.</p>
                 </Tooltip>
             </div>
-            <p className="text-secondary">These are all the codes you have entered and you have left to explore.</p>
+            <p className="text-secondary">
+                These are all the codes you have entered and you have left to explore.
+            </p>
             <div
                 ref={parentRef}
                 className="max-h-[300px] overflow-auto w-full"
@@ -162,25 +175,32 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
                         position: 'relative',
                     }}
                 >
-                    {virtualCells.map(cell => cell && (
-                        <div
-                            key={cell.key}
-                            className="absolute bg-secondary rounded-sm"
-                            style={{
-                                top: cell.rowStart,
-                                left: cell.columnStart,
-                                width: `${ITEM_WIDTH}px`, // This will now use the increased width
-                                height: `${ITEM_HEIGHT}px`,
-                            }}
-                        >
-                            <div className={cx(
-                                "flex justify-center items-center w-full h-full rounded-sm text-[0.8rem]",
-                                cell.cellIndex < progress ? 'bg-accent text-primary' : 'bg-tertiary text-secondary'
-                            )}>
-                                {cell.code}
-                            </div>
-                        </div>
-                    ))}
+                    {virtualCells.map(
+                        (cell) =>
+                            cell && (
+                                <div
+                                    key={cell.key}
+                                    className="absolute bg-secondary rounded-sm"
+                                    style={{
+                                        top: cell.rowStart,
+                                        left: cell.columnStart,
+                                        width: `${ITEM_WIDTH}px`, // This will now use the increased width
+                                        height: `${ITEM_HEIGHT}px`,
+                                    }}
+                                >
+                                    <div
+                                        className={cx(
+                                            'flex justify-center items-center w-full h-full rounded-sm text-[0.8rem]',
+                                            cell.cellIndex < progress
+                                                ? 'bg-accent text-primary'
+                                                : 'bg-tertiary text-secondary'
+                                        )}
+                                    >
+                                        {cell.code}
+                                    </div>
+                                </div>
+                            )
+                    )}
                 </div>
             </div>
         </div>

@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { components } from "./schema.gen";
-import { useApi } from "./api";
-import { useAuth } from "@/hooks/auth";
-import { useUser } from "./auth";
+import { useQuery } from '@tanstack/react-query';
+import { components } from './schema.gen';
+import { useApi } from './api';
+import { useAuth } from '@/hooks/auth';
+import { useUser } from './auth';
 
 export type BattleMetricsRecentServers = components['schemas']['BattleMetricsRecentServers'];
 
@@ -20,10 +20,17 @@ export const useBattleMetricsRecentServers = () => {
             }
 
             try {
-                const response = await useApi('/bm/recent', 'get', { fetchOptions: { cache: 'no-store', headers: { Authorization: `Bearer ${token}` } } })
+                const response = await useApi('/bm/recent', 'get', {
+                    fetchOptions: {
+                        cache: 'no-store',
+                        headers: { Authorization: `Bearer ${token}` },
+                    },
+                });
+
                 return response.data;
             } catch (error) {
                 console.error('Error fetching recent servers:', error);
+
                 return null;
             }
         },

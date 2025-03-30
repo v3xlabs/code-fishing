@@ -1,9 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { useUser } from "./auth";
-import { components } from "./schema.gen";
-import { useApi } from "./api";
+import { useQuery } from '@tanstack/react-query';
+import { components } from './schema.gen';
+import { useApi } from './api';
 
-export type InventoryResponse = components["schemas"]["SCMMTotalInventoryResponse"];
+export type InventoryResponse = components['schemas']['SCMMTotalInventoryResponse'];
 
 export const useSteamInventoryTotal = (steam_id: string) => {
     return useQuery({
@@ -14,10 +13,12 @@ export const useSteamInventoryTotal = (steam_id: string) => {
             }
 
             try {
-                const response = await useApi('/inventory/total', 'get', { query: { steam_id } })
+                const response = await useApi('/inventory/total', 'get', { query: { steam_id } });
+
                 return response.data;
             } catch (error) {
                 console.error('Error fetching inventory total:', error);
+
                 return null;
             }
         },

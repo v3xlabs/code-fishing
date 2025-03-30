@@ -1,22 +1,23 @@
-import { MutationOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { components } from "./schema.gen";
-import { useApi } from "./api";
-import { useAuth } from "@/hooks/auth";
-import { useEffect } from "react";
+import { MutationOptions, useMutation, useQuery } from '@tanstack/react-query';
+import { components } from './schema.gen';
+import { useApi } from './api';
+import { useAuth } from '@/hooks/auth';
 
 export type GuestResponse = components['schemas']['GuestResponse'];
 export type User = components['schemas']['User'];
 
-export const useGuestAuth = (extra?: Partial<MutationOptions<GuestResponse, undefined, undefined>>) => {
+export const useGuestAuth = (
+    extra?: Partial<MutationOptions<GuestResponse, undefined, undefined>>
+) => {
     return useMutation({
         mutationFn: async () => {
-            const response = await useApi('/auth/guest', 'post', {})
+            const response = await useApi('/auth/guest', 'post', {});
 
             return response.data;
         },
         ...extra,
-    })
-}
+    });
+};
 
 export const useUser = () => {
     const { token } = useAuth();
@@ -30,11 +31,19 @@ export const useUser = () => {
 
             try {
                 console.log('fetching user');
-                const response = await useApi('/auth/user', 'get', { fetchOptions: { cache: 'no-store', headers: { Authorization: `Bearer ${token}` } } })
+                const response = await useApi('/auth/user', 'get', {
+                    fetchOptions: {
+                        cache: 'no-store',
+                        headers: { Authorization: `Bearer ${token}` },
+                    },
+                });
+
                 console.log('user response', response.data);
+
                 return response.data;
             } catch (error) {
                 console.error('Error fetching user data:', error);
+
                 return null;
             }
         },
@@ -57,6 +66,6 @@ export const useUserById = (user_id: string) => {
             const response = await useApi('/auth/user/{user_id}', 'get', { path: { user_id } });
 
             return response.data;
-        }
-    })
-}
+        },
+    });
+};

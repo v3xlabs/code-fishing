@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC } from 'react';
 import { Switch as SwitchPrimitive, SwitchThumb } from '@radix-ui/react-switch';
 
 interface SwitchProps {
@@ -8,12 +8,7 @@ interface SwitchProps {
     id?: string;
 }
 
-export const Switch: FC<SwitchProps> = ({
-    checked,
-    onCheckedChange,
-    disabled = false,
-    id
-}) => {
+export const Switch: FC<SwitchProps> = ({ checked, onCheckedChange, disabled = false, id }) => {
     return (
         <SwitchPrimitive
             checked={checked}
@@ -24,7 +19,8 @@ export const Switch: FC<SwitchProps> = ({
                  focus:outline-accent data-[state=checked]:bg-accent
                  disabled:opacity-50 disabled:cursor-not-allowed"
         >
-            <SwitchThumb className="block size-[18px] translate-x-0.5 bg-tertiary 
+            <SwitchThumb
+                className="block size-[18px] translate-x-0.5 bg-tertiary 
                              shadow-sm transition-transform duration-100 will-change-transform 
                              data-[state=checked]:translate-x-[18px] data-[state=checked]:bg-primary"
             />

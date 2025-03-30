@@ -1,7 +1,7 @@
-import { createFetch } from "openapi-hooks";
-import { paths } from "./schema.gen";
-import { authStore, useAuth } from "@/hooks/auth";
-import { toast } from "sonner";
+import { createFetch } from 'openapi-hooks';
+import { paths } from './schema.gen';
+import { authStore } from '@/hooks/auth';
+import { toast } from 'sonner';
 
 export const baseUrl = new URL('/api/', window.location.origin);
 
@@ -9,7 +9,7 @@ const tokenProxy = {
     get value() {
         return authStore.getSnapshot().context.token;
     },
-}
+};
 
 export const useApi = createFetch<paths>({
     baseUrl,

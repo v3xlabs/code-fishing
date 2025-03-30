@@ -8,6 +8,6 @@ export default {
         tailwindcss(),
         postcssNested(),
         //But others, like autoprefixer, need to run after,
-        autoprefixer
-    ]
+        autoprefixer,
+    ],
 };

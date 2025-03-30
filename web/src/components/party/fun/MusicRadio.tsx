@@ -25,7 +25,9 @@ export const MusicRadio: FC = () => {
     const [showDebug, setShowDebug] = useState<boolean>(false);
 
     // Debug state
-    const [logs, setLogs] = useState<Array<{ time: string; message: string; type: 'info' | 'error' }>>([]);
+    const [logs, setLogs] = useState<
+        Array<{ time: string; message: string; type: 'info' | 'error' }>
+    >([]);
 
     // Audio source and configuration
     const audioUrl = 'https://v3x.video/drop/fishing_village.mp3';
@@ -38,7 +40,8 @@ export const MusicRadio: FC = () => {
     // Logging helper
     const addLog = (message: string, type: 'info' | 'error' = 'info') => {
         const time = new Date().toLocaleTimeString();
-        setLogs(prev => [...prev.slice(-49), { time, message, type }]);
+
+        setLogs((prev) => [...prev.slice(-49), { time, message, type }]);
         console[type](message);
     };
 
@@ -55,6 +58,7 @@ export const MusicRadio: FC = () => {
             // Prevent multiple unlocks
             if (hasUnlockedRef.current || isAudioContextUnlocked) {
                 addLog('iOS: Unlock already attempted, skipping');
+
                 return;
             }
 
@@ -68,8 +72,10 @@ export const MusicRadio: FC = () => {
                 }
 
                 const ctx = audioContextRef.current;
+
                 if (!ctx) {
                     addLog('iOS: No audio context available', 'error');
+
                     return;
                 }
 
@@ -78,11 +84,13 @@ export const MusicRadio: FC = () => {
                 // Create and play a short silent buffer
                 const buffer = ctx.createBuffer(1, 1, 22050);
                 const source = ctx.createBufferSource();
+
                 source.buffer = buffer;
                 source.connect(ctx.destination);
 
                 // Create a temporary gain node for the unlock sound
                 const unlockGain = ctx.createGain();
+
                 unlockGain.gain.value = 0.001; // Nearly silent
                 source.connect(unlockGain);
                 unlockGain.connect(ctx.destination);
@@ -99,7 +107,7 @@ export const MusicRadio: FC = () => {
                     addLog('iOS: Audio context successfully unlocked');
 
                     // Clean up event listeners
-                    events.forEach(event => {
+                    events.forEach((event) => {
                         document.body.removeEventListener(event, unlockAudioContext);
                     });
 
@@ -108,27 +116,34 @@ export const MusicRadio: FC = () => {
                         try {
                             source.disconnect();
                             unlockGain.disconnect();
-                        } catch (e) {
+                        } catch {
                             // Ignore cleanup errors
                         }
                     }, 100);
                 } else {
-                    addLog(`iOS: Context still not running after unlock attempt: ${ctx.state}`, 'error');
+                    addLog(
+                        `iOS: Context still not running after unlock attempt: ${ctx.state}`,
+                        'error'
+                    );
                 }
             } catch (e) {
-                addLog(`iOS: Failed to unlock audio context: ${e instanceof Error ? e.message : 'Unknown error'}`, 'error');
+                addLog(
+                    `iOS: Failed to unlock audio context: ${e instanceof Error ? e.message : 'Unknown error'}`,
+                    'error'
+                );
                 hasUnlockedRef.current = false; // Allow retry on failure
             }
         };
 
         // Add event listeners for both touchstart and touchend
         const events = ['touchstart', 'touchend'];
-        events.forEach(event => {
+
+        events.forEach((event) => {
             document.body.addEventListener(event, unlockAudioContext, false);
         });
 
         return () => {
-            events.forEach(event => {
+            events.forEach((event) => {
                 document.body.removeEventListener(event, unlockAudioContext);
             });
         };
@@ -148,7 +163,7 @@ export const MusicRadio: FC = () => {
             const context = new AudioContextClass({
                 // Use a lower sampleRate for iOS
                 sampleRate: isIOS ? 44100 : 48000,
-                latencyHint: 'playback'
+                latencyHint: 'playback',
             });
 
             audioContextRef.current = context;
@@ -156,6 +171,7 @@ export const MusicRadio: FC = () => {
 
             // Create gain node and initialize it with current volume state
             const gainNode = context.createGain();
+
             gainNode.gain.value = volume; // Initialize with current volume
             gainNode.connect(context.destination);
             gainNodeRef.current = gainNode;
@@ -164,13 +180,16 @@ export const MusicRadio: FC = () => {
             // Load audio file
             addLog('Fetching audio file...');
             const response = await fetch(audioUrl);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+
             addLog('Audio file fetched, decoding...');
 
             const arrayBuffer = await response.arrayBuffer();
             const audioBuffer = await context.decodeAudioData(arrayBuffer);
+
             audioBufferRef.current = audioBuffer;
 
             addLog(`Audio decoded successfully, duration: ${audioBuffer.duration.toFixed(2)}s`);
@@ -181,6 +200,7 @@ export const MusicRadio: FC = () => {
             }
         } catch (err) {
             const errorMsg = `Failed to initialize audio: ${err instanceof Error ? err.message : 'Unknown error'}`;
+
             addLog(errorMsg, 'error');
             setLoadingError(errorMsg);
         } finally {
@@ -209,11 +229,15 @@ export const MusicRadio: FC = () => {
     // Add volume control handler
     const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newVolume = parseFloat(event.target.value);
+
         setVolume(newVolume);
 
         // Update gain node if it exists, regardless of mute state
         if (gainNodeRef.current) {
-            gainNodeRef.current.gain.setValueAtTime(newVolume, audioContextRef.current?.currentTime || 0);
+            gainNodeRef.current.gain.setValueAtTime(
+                newVolume,
+                audioContextRef.current?.currentTime || 0
+            );
             addLog(`Volume preset to ${newVolume.toFixed(2)}`);
         }
     };
@@ -222,14 +246,18 @@ export const MusicRadio: FC = () => {
     const toggleAudio = async () => {
         try {
             if (isIOS && !isAudioContextUnlocked) {
-                addLog('iOS: Audio context not unlocked yet - tap anywhere on the screen first', 'error');
+                addLog(
+                    'iOS: Audio context not unlocked yet - tap anywhere on the screen first',
+                    'error'
+                );
+
                 return;
             }
 
             if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
                 addLog('First interaction: initializing audio...');
                 await initializeAudio();
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise((resolve) => setTimeout(resolve, 500));
             }
 
             const ctx = audioContextRef.current;
@@ -238,13 +266,14 @@ export const MusicRadio: FC = () => {
 
             if (!ctx || !buffer || !gain) {
                 addLog('Audio resources not ready yet - please try again', 'error');
+
                 return;
             }
 
             if (ctx.state === 'suspended') {
                 addLog('Resuming suspended audio context...');
                 await ctx.resume();
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise((resolve) => setTimeout(resolve, 100));
                 addLog(`Context resumed, state: ${ctx.state}`);
             }
 
@@ -255,17 +284,22 @@ export const MusicRadio: FC = () => {
             }
 
             const newMutedState = !isMuted;
+
             addLog(`Toggling audio state to ${newMutedState ? 'muted' : 'unmuted'}`);
 
             if (newMutedState) {
                 // Muting - for iOS, we need to use the gain node method
                 if (gainNodeRef.current) {
                     const currentGain = gainNodeRef.current.gain.value;
+
                     addLog(`Current gain before mute: ${currentGain}`);
 
                     gainNodeRef.current.gain.cancelScheduledValues(ctx.currentTime);
                     gainNodeRef.current.gain.setValueAtTime(currentGain, ctx.currentTime);
-                    gainNodeRef.current.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    gainNodeRef.current.gain.exponentialRampToValueAtTime(
+                        0.001,
+                        ctx.currentTime + 0.1
+                    );
                     gainNodeRef.current.gain.setValueAtTime(0, ctx.currentTime + 0.11);
 
                     // Verify the gain change
@@ -273,6 +307,7 @@ export const MusicRadio: FC = () => {
                         addLog(`Gain after mute: ${gainNodeRef.current?.gain.value}`);
                     }, 200);
                 }
+
                 setIsPlaying(false);
                 addLog('Audio muted');
             } else {
@@ -283,10 +318,12 @@ export const MusicRadio: FC = () => {
                 // Recheck context and gain node
                 if (!audioContextRef.current || !audioBufferRef.current || !gainNodeRef.current) {
                     addLog('Audio resources lost during playback', 'error');
+
                     return;
                 }
 
                 const source = audioContextRef.current.createBufferSource();
+
                 source.buffer = audioBufferRef.current;
                 source.connect(gainNodeRef.current);
                 source.loop = true;
@@ -303,11 +340,14 @@ export const MusicRadio: FC = () => {
                 audioSourceRef.current = source;
                 setIsPlaying(true);
 
-                addLog(`Playback started at ${startOffsetSec.toFixed(2)}s, context: ${audioContextRef.current.state}, gain: ${gainNodeRef.current.gain.value}`);
+                addLog(
+                    `Playback started at ${startOffsetSec.toFixed(2)}s, context: ${audioContextRef.current.state}, gain: ${gainNodeRef.current.gain.value}`
+                );
 
                 // Verify the gain change
                 setTimeout(() => {
                     const currentGain = gainNodeRef.current?.gain.value;
+
                     addLog(`Gain 200ms after unmute: ${currentGain}`);
                 }, 200);
 
@@ -316,29 +356,43 @@ export const MusicRadio: FC = () => {
                     setTimeout(() => {
                         const currentCtx = audioContextRef.current;
                         const currentGain = gainNodeRef.current?.gain.value;
+
                         if (currentCtx) {
-                            addLog(`iOS: State check - Context: ${currentCtx.state}, Gain: ${currentGain}, Time: ${currentCtx.currentTime}`);
+                            addLog(
+                                `iOS: State check - Context: ${currentCtx.state}, Gain: ${currentGain}, Time: ${currentCtx.currentTime}`
+                            );
+
                             if (currentCtx.state !== 'running') {
-                                addLog('iOS: Context not running after playback start, attempting resume...', 'error');
-                                currentCtx.resume().catch(() => { });
+                                addLog(
+                                    'iOS: Context not running after playback start, attempting resume...',
+                                    'error'
+                                );
+                                currentCtx.resume().catch(() => {});
                             }
                         }
                     }, 100);
                 }
 
                 // Verify playback state
-                setTimeout(() => {
-                    const currentCtx = audioContextRef.current;
-                    const currentGain = gainNodeRef.current;
-                    if (currentCtx && currentGain) {
-                        addLog(`Playback check - Context: ${currentCtx.state}, Gain: ${currentGain.gain.value}, Playing: ${Boolean(audioSourceRef.current)}, iOS: ${isIOS}`);
-                    }
-                }, isIOS ? 500 : 100);
+                setTimeout(
+                    () => {
+                        const currentCtx = audioContextRef.current;
+                        const currentGain = gainNodeRef.current;
+
+                        if (currentCtx && currentGain) {
+                            addLog(
+                                `Playback check - Context: ${currentCtx.state}, Gain: ${currentGain.gain.value}, Playing: ${Boolean(audioSourceRef.current)}, iOS: ${isIOS}`
+                            );
+                        }
+                    },
+                    isIOS ? 500 : 100
+                );
             }
 
             setIsMuted(newMutedState);
         } catch (error) {
             const errorMsg = `Audio error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+
             addLog(errorMsg, 'error');
             setLoadingError(errorMsg);
         }
@@ -358,22 +412,32 @@ export const MusicRadio: FC = () => {
                     <div className="flex items-center">
                         <div className="pb-1">
                             <div className="relative flex items-center justify-center w-8 h-4 scale-75">
-                                <div className={`w-4 h-4 ${isPlaying ? 'bg-accent' : 'bg-yellow-500'} rounded-full z-10`}></div>
+                                <div
+                                    className={`w-4 h-4 ${isPlaying ? 'bg-accent' : 'bg-yellow-500'} rounded-full z-10`}
+                                ></div>
 
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className={`w-4 h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring`}></div>
+                                    <div
+                                        className={`w-4 h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring`}
+                                    ></div>
                                 </div>
 
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className={`w-12 h-12 size-12 max-w-4 max-h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring-delay-1`}></div>
+                                    <div
+                                        className={`w-12 h-12 size-12 max-w-4 max-h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring-delay-1`}
+                                    ></div>
                                 </div>
 
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className={`w-16 h-16 size-16 max-w-4 max-h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring-delay-2`}></div>
+                                    <div
+                                        className={`w-16 h-16 size-16 max-w-4 max-h-4 border-2 ${isPlaying ? 'border-accent' : 'border-yellow-500'} rounded-full animate-pulse-ring-delay-2`}
+                                    ></div>
                                 </div>
                             </div>
                         </div>
-                        <span className="text-accent text-sm font-medium flex items-center">LIVE</span>
+                        <span className="text-accent text-sm font-medium flex items-center">
+                            LIVE
+                        </span>
                     </div>
                 </div>
             </div>
@@ -401,14 +465,19 @@ export const MusicRadio: FC = () => {
                     </div>
                     <div className="space-y-1 max-h-40 overflow-y-auto">
                         {logs.map((log, i) => (
-                            <div key={i} className={`${log.type === 'error' ? 'text-red-500' : 'text-secondary'}`}>
+                            <div
+                                key={i}
+                                className={`${log.type === 'error' ? 'text-red-500' : 'text-secondary'}`}
+                            >
                                 <span className="opacity-50">[{log.time}]</span> {log.message}
                             </div>
                         ))}
                     </div>
                     <div className="mt-2 space-y-1 border-t border-black/10 pt-2">
                         <div>Device: {isIOS ? 'iOS' : 'Other'}</div>
-                        <div>Context State: {audioContextRef.current?.state || 'not initialized'}</div>
+                        <div>
+                            Context State: {audioContextRef.current?.state || 'not initialized'}
+                        </div>
                         <div>Audio Ready: {isAudioReady ? 'yes' : 'no'}</div>
                         <div>Playing: {isPlaying ? 'yes' : 'no'}</div>
                         <div>Muted: {isMuted ? 'yes' : 'no'}</div>
@@ -418,15 +487,31 @@ export const MusicRadio: FC = () => {
             )}
 
             <div className="flex items-center gap-2">
-                <button className="h-full aspect-square bg-tertiary p-1 rounded-md size-16 flex items-center justify-center" onClick={toggleAudio}>
-                    <div className={`h-full aspect-square relative ${isPlaying ? 'animate-zoom' : 'opacity-50'}`}>
-                        <img src="/speaker.png" alt="Radio" className="w-full h-full object-contain" />
+                <button
+                    className="h-full aspect-square bg-tertiary p-1 rounded-md size-16 flex items-center justify-center"
+                    onClick={toggleAudio}
+                >
+                    <div
+                        className={`h-full aspect-square relative ${isPlaying ? 'animate-zoom' : 'opacity-50'}`}
+                    >
+                        <img
+                            src="/speaker.png"
+                            alt="Radio"
+                            className="w-full h-full object-contain"
+                        />
                     </div>
                 </button>
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-sm mt-2 text-secondary">
-                            Status: {!isAudioReady ? (isIOS ? 'Tap Listen to start' : 'Tuning in...') : isPlaying ? 'Playing' : 'Live'}
+                            Status:{' '}
+                            {!isAudioReady
+                                ? isIOS
+                                    ? 'Tap Listen to start'
+                                    : 'Tuning in...'
+                                : isPlaying
+                                  ? 'Playing'
+                                  : 'Live'}
                         </p>
                         <button
                             onClick={toggleAudio}
@@ -451,7 +536,6 @@ export const MusicRadio: FC = () => {
                             {Math.round(volume * 100)}%
                         </span>
                     </div>
-
                 </div>
             </div>
         </div>

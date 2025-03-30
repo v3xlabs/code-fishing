@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/party": {
+    '/party': {
         parameters: {
             query?: never;
             header?: never;
@@ -26,7 +26,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json; charset=utf-8": components["schemas"]["PartyCreateRequest"];
+                    'application/json; charset=utf-8': components['schemas']['PartyCreateRequest'];
                 };
             };
             responses: {
@@ -35,7 +35,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["PartyCreateResponse"];
+                        'application/json; charset=utf-8': components['schemas']['PartyCreateResponse'];
                     };
                 };
             };
@@ -46,7 +46,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/party/{party_id}": {
+    '/party/{party_id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -73,7 +73,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["Party"];
+                        'application/json; charset=utf-8': components['schemas']['Party'];
                     };
                 };
             };
@@ -86,7 +86,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/party/{party_id}/events": {
+    '/party/{party_id}/events': {
         parameters: {
             query?: never;
             header?: never;
@@ -115,7 +115,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["PartyEvent"][];
+                        'application/json; charset=utf-8': components['schemas']['PartyEvent'][];
                     };
                 };
             };
@@ -136,7 +136,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json; charset=utf-8": components["schemas"]["PartyEventData"];
+                    'application/json; charset=utf-8': components['schemas']['PartyEventData'];
                 };
             };
             responses: {
@@ -145,7 +145,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["PartyEvent"];
+                        'application/json; charset=utf-8': components['schemas']['PartyEvent'];
                     };
                 };
             };
@@ -156,7 +156,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/maps/search": {
+    '/maps/search': {
         parameters: {
             query?: never;
             header?: never;
@@ -183,7 +183,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["SearchResponse"];
+                        'application/json; charset=utf-8': components['schemas']['SearchResponse'];
                     };
                 };
             };
@@ -196,7 +196,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/maps/get": {
+    '/maps/get': {
         parameters: {
             query?: never;
             header?: never;
@@ -223,7 +223,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["MapResponse"];
+                        'application/json; charset=utf-8': components['schemas']['MapResponse'];
                     };
                 };
             };
@@ -236,7 +236,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/guest": {
+    '/auth/guest': {
         parameters: {
             query?: never;
             header?: never;
@@ -267,7 +267,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["GuestResponse"];
+                        'application/json; charset=utf-8': components['schemas']['GuestResponse'];
                     };
                 };
             };
@@ -278,7 +278,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/user": {
+    '/auth/user': {
         parameters: {
             query?: never;
             header?: never;
@@ -303,7 +303,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["User"];
+                        'application/json; charset=utf-8': components['schemas']['User'];
                     };
                 };
             };
@@ -316,7 +316,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/user/{user_id}": {
+    '/auth/user/{user_id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -343,7 +343,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["User"];
+                        'application/json; charset=utf-8': components['schemas']['User'];
                     };
                 };
             };
@@ -356,7 +356,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/oauth/steam": {
+    '/auth/oauth/steam': {
         parameters: {
             query?: never;
             header?: never;
@@ -381,7 +381,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/html; charset=utf-8": string;
+                        'text/html; charset=utf-8': string;
                     };
                 };
             };
@@ -394,7 +394,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/oauth/steam/callback": {
+    '/auth/oauth/steam/callback': {
         parameters: {
             query?: never;
             header?: never;
@@ -419,7 +419,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain; charset=utf-8": string;
+                        'text/plain; charset=utf-8': string;
                     };
                 };
             };
@@ -432,7 +432,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/bm/recent": {
+    '/bm/recent': {
         parameters: {
             query?: never;
             header?: never;
@@ -458,7 +458,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["BattleMetricsRecentServers"];
+                        'application/json; charset=utf-8': components['schemas']['BattleMetricsRecentServers'];
                     };
                 };
             };
@@ -471,7 +471,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/inventory/total": {
+    '/inventory/total': {
         parameters: {
             query?: never;
             header?: never;
@@ -482,7 +482,7 @@ export interface paths {
          * /inventory/total
          * @description Get the total inventory value & size of the queried user
          */
-        get: operations["get_total_inventory"];
+        get: operations['get_total_inventory'];
         put?: never;
         post?: never;
         delete?: never;
@@ -558,12 +558,12 @@ export interface components {
         };
         /** BattleMetricsRecentServers */
         BattleMetricsRecentServers: {
-            servers: components["schemas"]["BattleMetricsRecentServer"][];
+            servers: components['schemas']['BattleMetricsRecentServer'][];
         };
         /** GuestResponse */
         GuestResponse: {
             token: string;
-            user: components["schemas"]["User"];
+            user: components['schemas']['User'];
         };
         /** MapData */
         MapData: {
@@ -600,8 +600,8 @@ export interface components {
         };
         /** MapResponse */
         MapResponse: {
-            meta: components["schemas"]["MapMeta"];
-            data: components["schemas"]["MapData"];
+            meta: components['schemas']['MapMeta'];
+            data: components['schemas']['MapData'];
         };
         /** Party */
         Party: {
@@ -623,7 +623,7 @@ export interface components {
             /** Format: int32 */
             event_id: number;
             user_id: string;
-            data: components["schemas"]["PartyEventData"];
+            data: components['schemas']['PartyEventData'];
             /** Format: date-time */
             created_at: string;
         };
@@ -659,56 +659,63 @@ export interface components {
             /** Format: uint32 */
             size: number;
         };
-        PartyEventData: components["schemas"]["PartyEventData_PartyEventCreated"] | components["schemas"]["PartyEventData_PartyEventOwnerChanged"] | components["schemas"]["PartyEventData_PartyEventJoinLeave"] | components["schemas"]["PartyEventData_PartyEventCodesSubmitted"] | components["schemas"]["PartyEventData_PartyEventCursorUpdate"] | components["schemas"]["PartyEventData_PartyEventChatMessage"] | components["schemas"]["PartyEventData_PartyEventListOrderChanged"];
+        PartyEventData:
+            | components['schemas']['PartyEventData_PartyEventCreated']
+            | components['schemas']['PartyEventData_PartyEventOwnerChanged']
+            | components['schemas']['PartyEventData_PartyEventJoinLeave']
+            | components['schemas']['PartyEventData_PartyEventCodesSubmitted']
+            | components['schemas']['PartyEventData_PartyEventCursorUpdate']
+            | components['schemas']['PartyEventData_PartyEventChatMessage']
+            | components['schemas']['PartyEventData_PartyEventListOrderChanged'];
         PartyEventData_PartyEventChatMessage: {
             /**
              * @example PartyChatMessage
              * @enum {string}
              */
-            type: "PartyChatMessage";
-        } & components["schemas"]["PartyEventChatMessage"];
+            type: 'PartyChatMessage';
+        } & components['schemas']['PartyEventChatMessage'];
         PartyEventData_PartyEventCodesSubmitted: {
             /**
              * @example PartyCodesSubmitted
              * @enum {string}
              */
-            type: "PartyCodesSubmitted";
-        } & components["schemas"]["PartyEventCodesSubmitted"];
+            type: 'PartyCodesSubmitted';
+        } & components['schemas']['PartyEventCodesSubmitted'];
         PartyEventData_PartyEventCreated: {
             /**
              * @example PartyCreated
              * @enum {string}
              */
-            type: "PartyCreated";
-        } & components["schemas"]["PartyEventCreated"];
+            type: 'PartyCreated';
+        } & components['schemas']['PartyEventCreated'];
         PartyEventData_PartyEventCursorUpdate: {
             /**
              * @example PartyCursorUpdate
              * @enum {string}
              */
-            type: "PartyCursorUpdate";
-        } & components["schemas"]["PartyEventCursorUpdate"];
+            type: 'PartyCursorUpdate';
+        } & components['schemas']['PartyEventCursorUpdate'];
         PartyEventData_PartyEventJoinLeave: {
             /**
              * @example PartyJoinLeave
              * @enum {string}
              */
-            type: "PartyJoinLeave";
-        } & components["schemas"]["PartyEventJoinLeave"];
+            type: 'PartyJoinLeave';
+        } & components['schemas']['PartyEventJoinLeave'];
         PartyEventData_PartyEventListOrderChanged: {
             /**
              * @example PartyListOrderChanged
              * @enum {string}
              */
-            type: "PartyListOrderChanged";
-        } & components["schemas"]["PartyEventListOrderChanged"];
+            type: 'PartyListOrderChanged';
+        } & components['schemas']['PartyEventListOrderChanged'];
         PartyEventData_PartyEventOwnerChanged: {
             /**
              * @example PartyOwnerChanged
              * @enum {string}
              */
-            type: "PartyOwnerChanged";
-        } & components["schemas"]["PartyEventOwnerChanged"];
+            type: 'PartyOwnerChanged';
+        } & components['schemas']['PartyEventOwnerChanged'];
         /**
          * PartyEventJoinLeave
          * @description TODO: This event is unimplemented at this time
@@ -746,8 +753,8 @@ export interface components {
         };
         /** SearchResponse */
         SearchResponse: {
-            meta: components["schemas"]["SearchMeta"];
-            data: components["schemas"]["Server"][];
+            meta: components['schemas']['SearchMeta'];
+            data: components['schemas']['Server'][];
         };
         /** Server */
         Server: {
@@ -804,7 +811,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json; charset=utf-8": components["schemas"]["SCMMTotalInventoryResponse"];
+                    'application/json; charset=utf-8': components['schemas']['SCMMTotalInventoryResponse'];
                 };
             };
         };

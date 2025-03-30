@@ -1,32 +1,31 @@
-import { User, useUser, useUserById } from "@/api/auth";
-import { FC } from "react";
-import { Avatar } from "../../../auth/Avatar";
-import { PartyMemberPreview } from "./PartyMemberPreview";
-import { usePartyEvents } from "@/api/party";
+import { useUserById } from '@/api/auth';
+import { FC } from 'react';
+import { Avatar } from '../../../auth/Avatar';
+import { PartyMemberPreview } from './PartyMemberPreview';
+import { usePartyEvents } from '@/api/party';
 
 export const PartyMembers = ({ party_id }: { party_id: string }) => {
-    const { data: user } = useUser();
     const { data: events } = usePartyEvents(party_id);
 
-    const members = new Set(events?.pages.flatMap((page) => page.map((event) => event.user_id)).filter(Boolean));
+    const members = new Set(
+        events?.pages.flatMap((page) => page.map((event) => event.user_id)).filter(Boolean)
+    );
 
-    return <div className="flex flex-col gap-2 card w-full h-full text no-padding">
-        <div className="flex items-center justify-between p-4 pb-0">
-            <h3>Members</h3>
-            <span className="text-secondary">
-                {members.size}
-            </span>
-        </div>
-        <ul className="px-2 pb-2">
-            {
-                Array.from(members).map((member) => (
+    return (
+        <div className="flex flex-col gap-2 card w-full h-full text no-padding">
+            <div className="flex items-center justify-between p-4 pb-0">
+                <h3>Members</h3>
+                <span className="text-secondary">{members.size}</span>
+            </div>
+            <ul className="px-2 pb-2">
+                {Array.from(members).map((member) => (
                     <li key={member}>
                         <PartyMember user_id={member} />
                     </li>
-                ))
-            }
-        </ul>
-    </div>;
+                ))}
+            </ul>
+        </div>
+    );
 };
 
 export const PartyMember: FC<{ user_id: string }> = ({ user_id }) => {
