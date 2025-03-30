@@ -1,5 +1,6 @@
 // Given a list of codes, return a list of codes but only the first unique ones,
 
+import { ANGEL_NUMBERS } from "@/lists/angel";
 import { MATHS_SEQUENCES } from "@/lists/math";
 import { RANDOM_BIRTHYEARS } from "@/lists/random";
 import { RUSTTIPS_10000 } from "@/lists/rusttips";
@@ -25,5 +26,6 @@ export type CodeList = {
 export const LISTS: CodeList[] = [
     MATHS_SEQUENCES,
     RANDOM_BIRTHYEARS,
-    RUSTTIPS_10000
+    ANGEL_NUMBERS,
+    RUSTTIPS_10000,
 ];
