@@ -1,8 +1,10 @@
-import { useUserById } from '@/api/auth';
 import { FC } from 'react';
+
+import { useUserById } from '@/api/auth';
+import { usePartyEvents } from '@/api/party';
+
 import { Avatar } from '../../../auth/Avatar';
 import { PartyMemberPreview } from './PartyMemberPreview';
-import { usePartyEvents } from '@/api/party';
 
 export const PartyMembers = ({ party_id }: { party_id: string }) => {
     const { data: events } = usePartyEvents(party_id);

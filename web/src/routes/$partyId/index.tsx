@@ -1,15 +1,7 @@
-import { Switch } from '@/components/input/Switch';
-import { Modal } from '@/components/modal/Modal';
-import { MusicRadio } from '@/components/party/fun/MusicRadio';
-import { CodeEntryMod } from '@/components/party/codes/CodeEntryMod';
-import { CodeListOrder } from '@/components/party/codes/CodeListOrder';
-import { PartyProgress } from '@/components/party/codes/PartyProgress';
-import { PartyInviteCard } from '@/components/party/management/PartyInvite';
-import { ServerFinder } from '@/components/party/management/ServerFinder';
-import { PartyMembers } from '@/components/party/management/members/PartyMembers';
 import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 import { createFileRoute } from '@tanstack/react-router';
-import { PartyChat } from '@/components/party/fun/PartyChat';
+
+import { CodeEntryMod, CodeListOrder, Modal, MusicRadio, PartyChat, PartyInviteCard, PartyMembers, PartyProgress, ServerFinder, Switch } from '@/components';
 
 export const Route = createFileRoute('/$partyId/')({
     component: RouteComponent,

@@ -1,6 +1,7 @@
-import { queryClient } from '@/util/query';
 import { createStore } from '@xstate/store';
 import { useEffect, useState } from 'react';
+
+import { queryClient } from '@/util/query';
 
 interface AuthState {
     token: string | null;

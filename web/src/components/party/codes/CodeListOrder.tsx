@@ -1,13 +1,11 @@
-import { LISTS } from '@/util/lists';
-import { FC } from 'react';
 import {
-    DndContext,
     closestCenter,
+    DndContext,
+    DragEndEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
-    DragEndEvent,
 } from '@dnd-kit/core';
 import {
     arrayMove,
@@ -17,9 +15,12 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Tooltip } from '@/components/helpers/Tooltip';
-import { CodeListEntry, usePartyListOrder } from '@/api/party';
+import { FC } from 'react';
 import { LuArrowUpDown } from 'react-icons/lu';
+
+import { CodeListEntry, usePartyListOrder } from '@/api/party';
+import { Tooltip } from '@/components/helpers/Tooltip';
+import { LISTS } from '@/util/lists';
 
 const SortableItem = ({
     item,

@@ -1,7 +1,7 @@
-import { NotImplemented } from '@/components/modal/NotImplemented';
 import { FC, useMemo, useState } from 'react';
 import { LuArrowBigRight, LuCheck } from 'react-icons/lu';
-import { Tooltip } from '@/components/helpers/Tooltip';
+
+import { NotImplemented , Tooltip } from '@/components';
 import { LISTS, setifyList } from '@/util/lists';
 
 export const CodeEntryMod: FC = () => {

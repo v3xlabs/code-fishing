@@ -1,12 +1,14 @@
 // search menu that lets you search through servers
-import { useState, useEffect, useRef } from 'react';
-import { ServerResult, useMap, useServerSearch } from '@/api/maps';
-import { formatDistanceToNow } from 'date-fns';
-import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
-import { Modal } from '@/components/modal/Modal';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, Marker, Tooltip, AttributionControl } from 'react-leaflet';
+
+import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
+import { formatDistanceToNow } from 'date-fns';
 import L from 'leaflet';
+import { useEffect, useRef,useState } from 'react';
+import { AttributionControl,MapContainer, Marker, Tooltip } from 'react-leaflet';
+
+import { ServerResult, useMap, useServerSearch } from '@/api/maps';
+import { Modal } from '@/components/modal/Modal';
 
 // Component to fix Leaflet's default icon issue in React
 const LeafletIconFix = () => {
@@ -158,7 +160,7 @@ export const ServerMapModel = ({
                                 {map.data.monuments &&
                                     map.data.monuments.map((monument, index) => {
                                         // Convert monument coordinates to match the map scale
-                                        const x = monument.coordinates.x;
+                                        const { x } = monument.coordinates;
                                         const y = -monument.coordinates.y; // Negate y as Leaflet's y axis is inverted
 
                                         // Create custom icon using monument.iconPath

@@ -1,23 +1,25 @@
-import { useAuth } from '@/hooks/auth';
 import { Dialog, DialogClose } from '@radix-ui/react-dialog';
-import { Link } from '@tanstack/react-router';
-import { FC } from 'react';
-import { Modal } from './modal/Modal';
-import { FaSteam } from 'react-icons/fa';
-import { useGuestAuth, useUser } from '@/api/auth';
-import { Avatar } from './auth/Avatar';
-import { LuLogOut, LuSettings } from 'react-icons/lu';
-import { toast } from 'sonner';
-import { baseUrl } from '@/api/api';
-import { useApp } from '@/hooks/context';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
-import { NotImplemented } from './modal/NotImplemented';
+import { Link } from '@tanstack/react-router';
+import { FC } from 'react';
+import { FaSteam } from 'react-icons/fa';
+import { LuLogOut, LuSettings } from 'react-icons/lu';
+import { toast } from 'sonner';
+
+import { baseUrl } from '@/api/api';
+import { useGuestAuth, useUser } from '@/api/auth';
+import { useAuth } from '@/hooks/auth';
+import { useApp } from '@/hooks/context';
+
+import { Avatar } from './auth/Avatar';
 import { FontSwitch } from './helpers/FontSwitch';
+import { Modal } from './modal/Modal';
+import { NotImplemented } from './modal/NotImplemented';
 
 export const Navbar = () => {
     return (

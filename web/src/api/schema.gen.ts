@@ -659,14 +659,7 @@ export interface components {
             /** Format: uint32 */
             size: number;
         };
-        PartyEventData:
-            | components['schemas']['PartyEventData_PartyEventCreated']
-            | components['schemas']['PartyEventData_PartyEventOwnerChanged']
-            | components['schemas']['PartyEventData_PartyEventJoinLeave']
-            | components['schemas']['PartyEventData_PartyEventCodesSubmitted']
-            | components['schemas']['PartyEventData_PartyEventCursorUpdate']
-            | components['schemas']['PartyEventData_PartyEventChatMessage']
-            | components['schemas']['PartyEventData_PartyEventListOrderChanged'];
+        PartyEventData: components['schemas']['PartyEventData_PartyEventCreated'] | components['schemas']['PartyEventData_PartyEventOwnerChanged'] | components['schemas']['PartyEventData_PartyEventJoinLeave'] | components['schemas']['PartyEventData_PartyEventCodesSubmitted'] | components['schemas']['PartyEventData_PartyEventCursorUpdate'] | components['schemas']['PartyEventData_PartyEventChatMessage'] | components['schemas']['PartyEventData_PartyEventListOrderChanged'];
         PartyEventData_PartyEventChatMessage: {
             /**
              * @example PartyChatMessage
@@ -772,8 +765,8 @@ export interface components {
          *       "name": "John D.",
          *       "avatar_url": "https://avatars.akamai.steamstatic.com/0000000000000000.jpg",
          *       "profile_url": "https://steamcommunity.com/id/john_doe",
-         *       "created_at": "2025-03-30T14:09:35.991942909+00:00",
-         *       "updated_at": "2025-03-30T14:09:35.991944979+00:00"
+         *       "created_at": "2025-03-30T18:27:00.484041546+00:00",
+         *       "updated_at": "2025-03-30T18:27:00.484044396+00:00"
          *     }
          */
         User: {

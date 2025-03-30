@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { components } from './schema.gen';
-import { useApi } from './api';
+
 import { useAuth } from '@/hooks/auth';
+
+import { useApi } from './api';
 import { useUser } from './auth';
+import { components } from './schema.gen';
 
 export type BattleMetricsRecentServers = components['schemas']['BattleMetricsRecentServers'];
 

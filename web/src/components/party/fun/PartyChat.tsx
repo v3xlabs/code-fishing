@@ -1,8 +1,9 @@
+import { FC, useEffect,useRef, useState } from 'react';
+
 import { useUserById } from '@/api/auth';
 import { PartyEvent, usePartyEvents, usePartyEventSubmit } from '@/api/party';
 import { Avatar } from '@/components/auth/Avatar';
 import { Tooltip } from '@/components/helpers/Tooltip';
-import { FC, useRef, useState, useEffect } from 'react';
 
 export const PartyChat: FC<{ party_id: string }> = ({ party_id }) => {
     const { mutate: submitEvent } = usePartyEventSubmit(party_id);

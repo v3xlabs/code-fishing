@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { Navbar } from '@/components/Navbar';
+import { createRootRoute,Outlet } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
+
+import { Navbar } from '@/components/Navbar';
 import { AppWrapper } from '@/hooks/context';
 
 export const Route = createRootRoute({

@@ -1,7 +1,9 @@
 import { MutationOptions, useMutation, useQuery } from '@tanstack/react-query';
-import { components } from './schema.gen';
-import { useApi } from './api';
+
 import { useAuth } from '@/hooks/auth';
+
+import { useApi } from './api';
+import { components } from './schema.gen';
 
 export type GuestResponse = components['schemas']['GuestResponse'];
 export type User = components['schemas']['User'];

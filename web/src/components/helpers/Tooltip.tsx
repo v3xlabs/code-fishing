@@ -1,6 +1,6 @@
+import * as RadixTooltip from '@radix-ui/react-tooltip';
 import { FC, ReactElement, ReactNode } from 'react';
 import { LuInfo } from 'react-icons/lu';
-import * as RadixTooltip from '@radix-ui/react-tooltip';
 
 interface ToolTipProps {
     children: ReactNode;

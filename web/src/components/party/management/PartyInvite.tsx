@@ -1,6 +1,6 @@
-import { FC, useState } from 'react';
-import { LuClipboard, LuClipboardList, LuEye, LuEyeOff, LuClipboardX } from 'react-icons/lu';
 import { QRCodeSVG } from 'qrcode.react';
+import { FC, useState } from 'react';
+import { LuClipboard, LuClipboardList, LuClipboardX,LuEye, LuEyeOff } from 'react-icons/lu';
 import { toast } from 'sonner';
 
 const copyToClipboard = async (text: string): Promise<boolean> => {

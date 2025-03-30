@@ -1,5 +1,5 @@
-import { FC } from 'react';
 import { Switch as SwitchPrimitive, SwitchThumb } from '@radix-ui/react-switch';
+import { FC } from 'react';
 
 interface SwitchProps {
     checked?: boolean;

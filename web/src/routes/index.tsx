@@ -1,13 +1,11 @@
-// import { CodeListOrder } from '@/components/CodeListOrder'
-// import { PartyProgress } from '@/components/PartyProgress'
-// import { ServerFinder } from '@/components/ServerFinder'
-import { useUser } from '@/api/auth';
-import { usePartyCreate } from '@/api/party';
-import { SteamRecentServers } from '@/components/bm/SteamRecentServers';
-import { useApp } from '@/hooks/context';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { LuGithub, LuHeart } from 'react-icons/lu';
+
+import { useUser } from '@/api/auth';
+import { usePartyCreate } from '@/api/party';
+import { SteamRecentServers } from '@/components';
+import { useApp } from '@/hooks/context';
 
 export const Route = createFileRoute('/')({
     component: RouteComponent,

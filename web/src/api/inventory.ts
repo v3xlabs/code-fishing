@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { components } from './schema.gen';
+
 import { useApi } from './api';
+import { components } from './schema.gen';
 
 export type InventoryResponse = components['schemas']['SCMMTotalInventoryResponse'];
 

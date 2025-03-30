@@ -1,6 +1,6 @@
 // https://www.youtube.com/watch?v=lp74O7UwBIQ
 
-import { useState, useEffect, useRef, type FC } from 'react';
+import { type FC,useEffect, useRef, useState } from 'react';
 
 export const MusicRadio: FC = () => {
     // Device detection

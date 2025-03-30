@@ -1,8 +1,10 @@
-import { useBattleMetricsRecentServers } from '@/api/bm';
+import { formatDistanceToNow,parseISO } from 'date-fns';
 import { FC } from 'react';
 import { LuClock, LuGlobe, LuGlobeLock, LuMapPin, LuUser } from 'react-icons/lu';
+
+import { useBattleMetricsRecentServers } from '@/api/bm';
+
 import { Tooltip } from '../helpers/Tooltip';
-import { parseISO, formatDistanceToNow } from 'date-fns';
 
 // Add this helper function
 const formatTimePlayed = (timeInSeconds: number): string => {

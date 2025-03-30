@@ -1,23 +1,24 @@
+import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
+import { FC, PropsWithChildren } from 'react';
+import { FaSteam } from 'react-icons/fa';
+import {
+    LuActivity,
+    LuBan,
+    LuCalendarDays,
+    LuCheck,
+    LuCoins,
+    LuCrosshair,
+    LuHourglass,
+    LuMedal,
+    LuUser,
+} from 'react-icons/lu';
+
 import { User } from '@/api/auth';
 import { useSteamInventoryTotal } from '@/api/inventory';
 import { useStats } from '@/api/stats';
 import { Avatar } from '@/components/auth/Avatar';
 import { Tooltip } from '@/components/helpers/Tooltip';
 import { Modal } from '@/components/modal/Modal';
-import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
-import { FC, PropsWithChildren } from 'react';
-import { FaSteam } from 'react-icons/fa';
-import {
-    LuCalendarDays,
-    LuBan,
-    LuCheck,
-    LuHourglass,
-    LuUser,
-    LuCrosshair,
-    LuActivity,
-    LuMedal,
-    LuCoins,
-} from 'react-icons/lu';
 
 export const PartyMemberPreview: FC<PropsWithChildren<{ member?: User }>> = ({
     member,

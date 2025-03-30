@@ -1,5 +1,5 @@
-import { FC, useMemo } from 'react';
 import * as RadixAvatar from '@radix-ui/react-avatar';
+import { FC, useMemo } from 'react';
 import { FaCat } from 'react-icons/fa';
 
 export const Avatar: FC<{ src?: string; seed?: string }> = ({ src, seed }) => {

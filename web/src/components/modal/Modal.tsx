@@ -1,7 +1,7 @@
 import { DialogClose, DialogContent, DialogOverlay, DialogPortal } from '@radix-ui/react-dialog';
+import clsx from 'classnames';
 import { FC, PropsWithChildren } from 'react';
 import { LuPlus } from 'react-icons/lu';
-import clsx from 'classnames';
 
 export const Modal: FC<PropsWithChildren<{ size?: 'small' | 'medium' | 'large' | 'wide' }>> = ({
     children,

@@ -1,6 +1,7 @@
-import { FC, PropsWithChildren } from 'react';
-import { Modal } from './Modal';
 import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
+import { FC, PropsWithChildren } from 'react';
+
+import { Modal } from './Modal';
 
 export const NotImplemented: FC<PropsWithChildren> = ({ children }) => {
     return (

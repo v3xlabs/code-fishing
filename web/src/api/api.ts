@@ -1,7 +1,9 @@
 import { createFetch } from 'openapi-hooks';
-import { paths } from './schema.gen';
-import { authStore } from '@/hooks/auth';
 import { toast } from 'sonner';
+
+import { authStore } from '@/hooks/auth';
+
+import { paths } from './schema.gen';
 
 export const baseUrl = new URL('/api/', window.location.origin);
 
