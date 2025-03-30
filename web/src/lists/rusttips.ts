@@ -2,6 +2,7 @@ import { CodeList } from "@/util/lists";
 
 export const RUSTTIPS_10000: CodeList = {
     name: 'Rusttips 10.000',
+    description: 'This is the original 10.000 codes list from Rusttips.com',
     source: 'https://rusttips.com/top-10000-rust-door-lock-codes/',
     codes: [
         "1234",

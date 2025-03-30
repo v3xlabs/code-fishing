@@ -91,6 +91,10 @@ input.input {
     @apply px-2.5 py-1 rounded-sm bg-primary text-secondary outline-accent hover:border-none outline-offset-4 max-w-full;
 }
 
+.link {
+    @apply text-accent hover:text-tertiary;
+}
+
 @keyframes zoom {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }

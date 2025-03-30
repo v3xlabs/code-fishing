@@ -2,6 +2,7 @@ import { CodeList } from "@/util/lists";
 
 export const MATHS_SEQUENCES: CodeList = {
     name: 'Sequential Numbers',
+    description: 'These are the sequential numbers from 0000 to 9999',
     codes: [
         "1111",
         "2222",
@@ -15,7 +16,8 @@ export const MATHS_SEQUENCES: CodeList = {
         "0000",
         "1234",
         "4321",
-        // "1230",
-        // "0304"
+        "4567",
+        "7654",
+        "1230"
     ]
 }

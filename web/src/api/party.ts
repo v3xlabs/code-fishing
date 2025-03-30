@@ -4,7 +4,7 @@ import { useApi } from "./api";
 import * as React from 'react';
 import { queryClient } from "@/util/query";
 import { LISTS } from "@/util/lists";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export type PartyCreateResponse = components['schemas']['PartyCreateResponse'];
 export type PartyCreateRequest = components['schemas']['PartyCreateRequest'];
@@ -200,15 +200,18 @@ export type CodeListEntry = {
 export type CodeListOrder = CodeListEntry[];
 
 // default order
-const defaultListOrder: CodeListOrder = LISTS.map(list => ({
+export const defaultListOrder: CodeListOrder = LISTS.map(list => ({
     name: list.name,
     reverse: false,
 }));
 
-export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => void } => {
+export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, update: (updater: (listOrder: CodeListOrder) => CodeListOrder) => void, reset: () => void, isDefault: boolean } => {
     const { data: events } = usePartyEvents(party_id);
     const { mutate: submitEvent } = usePartyEventSubmit(party_id);
     const [localOrder, setLocalOrder] = useState<CodeListOrder>(defaultListOrder);
+    const isDefault = useMemo(() => {
+        return localOrder.every((entry, index) => entry.name === defaultListOrder[index].name && entry.reverse === defaultListOrder[index].reverse);
+    }, [localOrder]);
 
     // todo update order based on recent party events
     React.useEffect(() => {
@@ -235,6 +238,17 @@ export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, upd
                 type: 'PartyListOrderChanged',
                 order: compute,
             });
-        }
+        },
+        reset: () => {
+            setLocalOrder(defaultListOrder);
+
+            console.log('Resetting code list order', defaultListOrder);
+
+            submitEvent({
+                type: 'PartyListOrderChanged',
+                order: defaultListOrder,
+            });
+        },
+        isDefault,
     };
 }

@@ -17,6 +17,7 @@ export const setifyList = (list: string[]) => {
 
 export type CodeList = {
     name: string;
+    description?: string;
     source?: string;
     codes: string[];
 }
