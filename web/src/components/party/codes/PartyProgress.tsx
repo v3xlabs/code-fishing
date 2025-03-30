@@ -1,11 +1,40 @@
-import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo, FC } from "react";
 import { LISTS, setifyList } from "@/util/lists";
 import cx from "classnames";
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Tooltip } from "@/components/helpers/Tooltip";
+import { usePartyListOrder } from "@/api/party";
 
-export const PartyProgress = () => {
-    const codes = setifyList(LISTS.flatMap(list => list.codes));
+export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
+    const { data: listOrder } = usePartyListOrder(party_id);
+
+    // sort LISTS by listOrder and unwrap it to
+    const orderedCodes = useMemo(() => {
+        // If listOrder doesn't exist yet, just use LISTS as is
+        if (!listOrder) {
+            return setifyList(LISTS.flatMap(list => list.codes));
+        }
+        
+        // Create a map for quick lookup of lists by name
+        const listsByName = new Map(LISTS.map(list => [list.name, list]));
+        
+        // Collect all codes in the specified order, applying reversals where needed
+        const allCodes = listOrder.flatMap(entry => {
+            const list = listsByName.get(entry.name);
+            if (!list) return []; // Skip if list doesn't exist
+            
+            // Return the codes array, reversed if needed
+            return entry.reverse ? [...list.codes].reverse() : list.codes;
+        });
+        
+        // Return the deduplicated list of codes
+        return setifyList(allCodes);
+    }, [listOrder]);
+
+    const codes = orderedCodes;
+
+    console.log('coderaid rerender', listOrder);
+
     const parentRef = useRef<HTMLDivElement>(null);
 
     const progress = 5;

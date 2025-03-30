@@ -215,6 +215,11 @@ export const usePartyListOrder = (party_id: string): { data?: CodeListOrder, upd
         if (events) {
             const fEvents = events.pages.flatMap(page => page).filter(event => event.data.type == 'PartyListOrderChanged');
             console.log('fEvents', fEvents);
+            // @ts-ignore
+            const lastEvent = fEvents.at(-1);
+            if (lastEvent) {
+                setLocalOrder(lastEvent.data.order);
+            }
         }
     }, [events]);
 

@@ -51,7 +51,7 @@ function RouteComponent() {
     <CodeEntryMod />
     <PartyChat party_id={partyId} />
     <MusicRadio />
-    <PartyProgress />
+    <PartyProgress party_id={partyId} />
   </div>);
 }
 
