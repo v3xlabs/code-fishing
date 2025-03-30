@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 export const baseUrl = new URL('/api/', window.location.origin);
 
-let tokenProxy = {
+const tokenProxy = {
     get value() {
         return authStore.getSnapshot().context.token;
     },

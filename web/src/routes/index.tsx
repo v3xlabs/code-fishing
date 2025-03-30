@@ -53,9 +53,9 @@ function RouteComponent() {
     </div>
     <div className="w-full flex items-center justify-center text-secondary gap-4 text-sm">
       <div className="flex items-center gap-1">
-        Made with <LuHeart className="size-4" /> by <a href="https://v3x.company" className="text-accent" target="_blank">v3xlabs</a>
+        Made with <LuHeart className="size-4" /> by <a href="https://v3x.company" className="text-accent" target="_blank" rel="noreferrer">v3xlabs</a>
       </div>
-      <a href="https://github.com/v3xlabs/code-fishing" className="hover:text-accent transition-colors flex items-center gap-1" target="_blank">
+      <a href="https://github.com/v3xlabs/code-fishing" className="hover:text-accent transition-colors flex items-center gap-1" target="_blank" rel="noreferrer">
         <LuGithub className="size-4" />
         <span>Contribute</span>
       </a>

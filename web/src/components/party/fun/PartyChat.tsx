@@ -64,7 +64,7 @@ export const PartyChat: FC<{ party_id: string }> = ({ party_id }) => {
     const chatWindowRef = useRef<HTMLDivElement>(null);
     const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
 
-    let messages = events?.pages.flatMap(page => page).filter(event => event.data.type == 'PartyChatMessage') ?? [];
+    const messages = events?.pages.flatMap(page => page).filter(event => event.data.type == 'PartyChatMessage') ?? [];
 
     // Check if user is at bottom when messages change
     useEffect(() => {

@@ -7,6 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "pnpm api-schema && vite --host",
         "build": "vite build && rm -rf ../app/www && cp -r dist ../app/www",
+        "lint": "eslint . --ext .ts,.tsx",
         "api-schema": "openapi-typescript http://localhost:3000/openapi.json --output ./src/api/schema.gen.ts"
     },
     "keywords": [],
@@ -54,6 +55,11 @@
         "vite-tsconfig-paths": "^5.1.4"
     },
     "devDependencies": {
-        "openapi-typescript": "^7.6.1"
+        "@eslint/js": "^9.23.0",
+        "eslint": "^9.23.0",
+        "eslint-plugin-react": "^7.37.4",
+        "globals": "^16.0.0",
+        "openapi-typescript": "^7.6.1",
+        "typescript-eslint": "^8.28.0"
     }
 }
