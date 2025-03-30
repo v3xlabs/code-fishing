@@ -81,7 +81,7 @@ impl PartyApi {
     async fn get_events(
         &self,
         state: Data<&AppState>,
-        party_id: Path<String>,
+        #[oai(style = "simple")] party_id: Path<String>,
         #[oai(style = "simple")] cursor: Query<Option<i32>>,
     ) -> Result<Json<Vec<PartyEvent>>> {
         tracing::info!("{:?}", party_id.0);
@@ -100,7 +100,11 @@ impl PartyApi {
     /// 
     /// Submit an event to a party
     #[oai(path = "/party/:party_id/events", method = "post", tag = "ApiTags::Party")]
-    async fn submit_event(&self, state: Data<&AppState>, user: AuthUser, party_id: Path<String>, body: Json<PartyEventData>) -> Result<Json<PartyEvent>> {
+    async fn submit_event(&self,
+        state: Data<&AppState>,
+        user: AuthUser,
+        #[oai(style = "simple")] party_id: Path<String>,
+        body: Json<PartyEventData>) -> Result<Json<PartyEvent>> {
         tracing::info!("{:?}", party_id.0);
 
         let user = user.require_user()?;
