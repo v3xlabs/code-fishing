@@ -293,3 +293,52 @@ export const usePartyListOrder = (
         isDefault,
     };
 };
+
+export type PartySettings = {
+    private: boolean;
+    steam_only: boolean;
+    [key: string]: any;
+};
+
+export const usePartySettings = (party_id: string) => {
+    const { data: events } = usePartyEvents(party_id);
+
+    const { mutate: submitEvent } = usePartyEventSubmit(party_id);
+
+    const [localSettings, setLocalSettings] = useState<PartySettings>({
+        private: false,
+        steam_only: false,
+    });
+
+    React.useEffect(() => {
+        if (events) {
+            const fEvents = events.pages
+                .flatMap((page) => page)
+                .filter((event) => event.data.type == 'PartySettingChanged');
+
+            const settings: PartySettings = {
+                private: false,
+                steam_only: false,
+            };
+
+            for (const event of fEvents) {
+                if (event.data.type == 'PartySettingChanged') {
+                    settings[event.data.setting] = event.data.value;
+                }
+            }
+
+            setLocalSettings(settings);
+        }
+    }, [events]);
+
+    return {
+        data: localSettings,
+        update: (key: keyof PartySettings, value: unknown) => {
+            submitEvent({
+                type: 'PartySettingChanged',
+                setting: key as string,
+                value: value,
+            });
+        },
+    };
+};
