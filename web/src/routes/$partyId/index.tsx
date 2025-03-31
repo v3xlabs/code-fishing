@@ -25,7 +25,9 @@ function RouteComponent() {
     );
 }
 
-export const LocationPicker = () => {
+export const LocationPicker = ({partyId}: {
+    partyId: string;
+}) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -33,7 +35,7 @@ export const LocationPicker = () => {
             </DialogTrigger>
             <Modal size="medium">
                 <h3>Select Server</h3>
-                <ServerFinder />
+                <ServerFinder partyId={partyId} />
             </Modal>
         </Dialog>
     );

@@ -36,7 +36,7 @@ export const PartySettings: FC<{party_id: string}> = ({ party_id }) => {
                     <ul className="text-secondary w-full">
                         <li className="flex items-center justify-between gap-2">
                             <h3>Location</h3>
-                            <LocationPicker />
+                            <LocationPicker partyId={party_id} />
                         </li>
                     </ul>
             </div>

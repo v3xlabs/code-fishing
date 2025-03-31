@@ -9,6 +9,7 @@ import { AttributionControl,MapContainer, Marker, Tooltip } from 'react-leaflet'
 
 import { ServerResult, useMap, useServerSearch } from '@/api/maps';
 import { Modal } from '@/components/modal/Modal';
+import { usePartyEventSubmit } from '@/api/party';
 
 // Component to fix Leaflet's default icon issue in React
 const LeafletIconFix = () => {
@@ -26,7 +27,11 @@ const LeafletIconFix = () => {
     return null;
 };
 
-export const ServerFinder = () => {
+export const ServerFinder = ({
+    partyId,
+}: {
+    partyId: string;
+}) => {
     const [input, setInput] = useState('');
     const { data } = useServerSearch(input);
 
@@ -45,7 +50,7 @@ export const ServerFinder = () => {
                 </button>
             </div>
             <ul className="flex flex-col gap-4">
-                {data?.data.map((server) => <ServerPreview key={server.name} server={server} />)}
+                {data?.data.map((server) => <ServerPreview key={server.name} server={server} partyId={partyId} />)}
                 {input.trim().length == 0 && (
                     <div className="flex flex-col gap-2 text-center">
                         <p>Type the server name</p>
@@ -68,9 +73,11 @@ const tileMapIconOverride = {
 export const ServerMapModel = ({
     server,
     children,
+    partyId,
 }: {
     server: ServerResult;
     children: React.ReactNode;
+    partyId: string;
 }) => {
     const { data: map } = useMap(server.map_id);
     const mapRef = useRef<L.Map | null>(null);
@@ -196,19 +203,52 @@ export const ServerMapModel = ({
                             </MapContainer>
                         </div>
                     )}
+                    <ServerSelectButton
+                        server={server}
+                        partyId={partyId}
+                        location={mapRef.current?.getCenter()}
+                    />
                 </div>
-                <button className='bg-rust p-8 text-white rounded-lg'>Select</button>
+
             </Modal>
         </Dialog>
     );
 };
 
-export const ServerPreview = ({ server }: { server: ServerResult }) => {
+export const ServerSelectButton = ({
+    server,
+    partyId,
+    location
+}: {
+    server: ServerResult;
+    partyId: string;
+    location?: L.LatLng;
+}) => {
+    const hook = usePartyEventSubmit(partyId);
+    
+    const handler = () => {
+        hook.mutate({
+            type: "PartySettingChanged",
+            setting: "location",
+            value: {
+                map_id: server.map_id,
+                lng: location?.lng || 0,
+                lat: location?.lat || 0,
+            },
+        });
+    }
+
+    return (
+        <button className='bg-rust p-8 text-white rounded-lg' onClick={handler}>Select</button>
+    )
+}
+
+export const ServerPreview = ({ server, partyId }: { server: ServerResult, partyId: string }) => {
     const { data: map } = useMap(server.map_id);
 
     return (
         <li key={server.name} className="flex flex-col gap-2">
-            <ServerMapModel server={server}>
+            <ServerMapModel server={server} partyId={partyId}>
                 <button className="bg-secondary p-4 rounded-md flex gap-4 items-center text-start font-mono hover:bg-primary hover:text-tertiary transition-colors">
                     <div className="w-32 h-32 border border-accent rounded-sm">
                         {map && (
