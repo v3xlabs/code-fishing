@@ -108,6 +108,19 @@ export const ServerMapModel = ({
         });
 
         tileLayer.addTo(mapInstance);
+
+        const crosshairIcon = L.icon({
+            iconUrl: '/crosshair.svg',
+            iconSize: [64, 64], // size of the icon
+            iconAnchor: [32, 32] // point of the icon which will correspond to marker's location
+        });
+
+        const crosshairMarker = L.marker(mapInstance.getCenter(), { icon: crosshairIcon }).addTo(mapInstance);
+
+        mapInstance.on('move', () => {
+            crosshairMarker.setLatLng(mapInstance.getCenter());
+        });
+
     };
 
     // Update the tile layer when map data changes
@@ -139,7 +152,7 @@ export const ServerMapModel = ({
                                 center={[0, 0]}
                                 zoom={0}
                                 zoomDelta={0.25}
-                                style={{ height: '100%', width: '100%' }}
+                                style={{ height: '100%', width: '100%'}}
                                 crs={L.CRS.Simple}
                                 minZoom={-3}
                                 maxZoom={3}
@@ -155,7 +168,6 @@ export const ServerMapModel = ({
                                 }}
                             >
                                 {/* We'll create the TileLayer manually in the handleMapCreated function */}
-
                                 {/* Add monuments as markers */}
                                 {map.data.monuments &&
                                     map.data.monuments.map((monument, index) => {
@@ -197,6 +209,7 @@ export const ServerMapModel = ({
                         </div>
                     )}
                 </div>
+                <button className='bg-rust p-8 text-white rounded-lg'>Select</button>
             </Modal>
         </Dialog>
     );
