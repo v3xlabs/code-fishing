@@ -56,6 +56,8 @@ pub enum PartyEventData {
     PartyChatMessage(PartyEventChatMessage),
     #[serde(rename = "party_list_order_changed")]
     PartyListOrderChanged(PartyEventListOrderChanged),
+    #[serde(rename = "party_setting_changed")]
+    PartySettingChanged(PartyEventSettingChanged),
 }
 
 /// Auto generated event when a party is created
@@ -101,6 +103,12 @@ pub struct PartyEventChatMessage {
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventListOrderChanged {
     pub order: Vec<serde_json::Value>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Object)]
+pub struct PartyEventSettingChanged {
+    pub setting: String,
+    pub value: serde_json::Value,
 }
 
 impl PartyEvent {

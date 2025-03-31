@@ -10,7 +10,7 @@ import tseslint from 'typescript-eslint';
 export default [
     // Ignore patterns
     {
-        ignores: ['dist/**', 'node_modules/**'],
+        ignores: ['dist/**', 'node_modules/**', '**/*.gen.ts'],
     },
 
     // Base configs
