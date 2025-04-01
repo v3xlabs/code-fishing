@@ -98,7 +98,7 @@ export const ServerMapModelInner = ({
     partyId: string;
 }) => {
     const { data: map } = useMap(server.map_id);
-    const mapRef = useRef<L.Map | null>(null);
+    const mapRef = useRef<L.Map>(null);
     const { data: partySettings } = usePartySettings(partyId);
 
     // Handle map initialization and manually create our TileLayer
@@ -134,10 +134,14 @@ export const ServerMapModelInner = ({
         });
 
         tileLayer.addTo(mapInstance);
-
+        
         if (partySettings?.location) {
+            console.log("Initializing map to party location", partySettings.location);
             const { lng, lat } = partySettings.location;
             mapInstance.setView([lat, lng], 0);
+        }
+        else {
+            console.log("Initializing map to center");
         }
     }, [map?.data?.extra?.tileBaseUrl]);
 
@@ -227,7 +231,7 @@ export const ServerMapModelInner = ({
                     <ServerSelectButton
                         server={server}
                         partyId={partyId}
-                        location={mapRef.current?.getCenter()}
+                        mapRef={mapRef as React.RefObject<L.Map>}
                     />
                 </div>
     );
@@ -236,19 +240,19 @@ export const ServerMapModelInner = ({
 export const ServerSelectButton = ({
     server,
     partyId,
-    location,
+    mapRef,
 }: {
     server: ServerResult;
     partyId: string;
-    location?: L.LatLng;
+    mapRef: React.RefObject<L.Map>;
 }) => {
     const partySettings = usePartySettings(partyId);
 
     const handler = () => {
         partySettings.update("location", {
             map_id: server.map_id,
-            lng: location?.lng || 0,
-            lat: location?.lat || 0,
+            lng: mapRef.current.getCenter().lng || 0,
+            lat: mapRef.current.getCenter().lat || 0,
         });
     };
 

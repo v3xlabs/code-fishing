@@ -328,13 +328,25 @@ export const usePartySettings = (party_id: string) => {
 
             for (const event of fEvents) {
                 if (event.data.type == 'PartySettingChanged') {
+                    if (event.data.setting == 'location') {
+                        const data = event.data.value as {
+                            lat: number;
+                            lng: number;
+                            map_id: string;
+                        };
+                        settings.location = {
+                            lat: data.lat,
+                            lng: data.lng,
+                            map_id: data.map_id,
+                        };
+                    }
                     settings[event.data.setting] = event.data.value;
                 }
             }
 
             setLocalSettings(settings);
         }
-    }, [events]);
+    }, [events, setLocalSettings]);
 
     return {
         data: localSettings,
