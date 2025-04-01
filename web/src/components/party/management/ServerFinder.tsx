@@ -100,11 +100,6 @@ export const ServerMapModelInner = ({
     const { data: map } = useMap(server.map_id);
     const mapRef = useRef<L.Map | null>(null);
     const { data: partySettings } = usePartySettings(partyId);
-    console.log(partySettings)
-    console.log({
-        msg: "These are the party settings",
-        partySettings,
-    })
 
     // Handle map initialization and manually create our TileLayer
     const handleMapCreated = useCallback((mapInstance: L.Map) => {
