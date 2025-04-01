@@ -297,6 +297,11 @@ export const usePartyListOrder = (
 export type PartySettings = {
     private: boolean;
     steam_only: boolean;
+    location?: {
+        lat: number;
+        lng: number;
+        map_id: string;
+    }
     [key: string]: any;
 };
 

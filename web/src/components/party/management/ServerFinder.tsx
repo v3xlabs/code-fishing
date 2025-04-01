@@ -4,12 +4,12 @@ import 'leaflet/dist/leaflet.css';
 import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 import { formatDistanceToNow } from 'date-fns';
 import L from 'leaflet';
-import { useEffect, useRef,useState } from 'react';
-import { AttributionControl,MapContainer, Marker, Tooltip } from 'react-leaflet';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { AttributionControl, MapContainer, Marker, Tooltip } from 'react-leaflet';
 
 import { ServerResult, useMap, useServerSearch } from '@/api/maps';
 import { Modal } from '@/components/modal/Modal';
-import { usePartyEventSubmit } from '@/api/party';
+import { usePartySettings } from '@/api/party';
 
 // Component to fix Leaflet's default icon issue in React
 const LeafletIconFix = () => {
@@ -78,12 +78,36 @@ export const ServerMapModel = ({
     server: ServerResult;
     children: React.ReactNode;
     partyId: string;
+}) => (
+    <Dialog>
+        <DialogTrigger asChild>{children}</DialogTrigger>
+        <Modal size='large'>
+            <ServerMapModelInner
+                server={server}
+                partyId={partyId}
+            />
+        </Modal>
+    </Dialog>
+)
+
+export const ServerMapModelInner = ({
+    server,
+    partyId,
+}: {
+    server: ServerResult;
+    partyId: string;
 }) => {
     const { data: map } = useMap(server.map_id);
     const mapRef = useRef<L.Map | null>(null);
+    const { data: partySettings } = usePartySettings(partyId);
+    console.log(partySettings)
+    console.log({
+        msg: "These are the party settings",
+        partySettings,
+    })
 
     // Handle map initialization and manually create our TileLayer
-    const handleMapCreated = (mapInstance: L.Map) => {
+    const handleMapCreated = useCallback((mapInstance: L.Map) => {
         mapRef.current = mapInstance;
 
         // Set background color for the map
@@ -115,19 +139,21 @@ export const ServerMapModel = ({
         });
 
         tileLayer.addTo(mapInstance);
-    };
+
+        if (partySettings?.location) {
+            const { lng, lat } = partySettings.location;
+            mapInstance.setView([lat, lng], 0);
+        }
+    }, [map?.data?.extra?.tileBaseUrl]);
 
     // Update the tile layer when map data changes
     useEffect(() => {
         if (mapRef.current && map?.data?.extra?.tileBaseUrl) {
             handleMapCreated(mapRef.current);
         }
-    }, [map]);
+    }, [map?.data?.extra?.tileBaseUrl, handleMapCreated]);
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>{children}</DialogTrigger>
-            <Modal size="large">
                 <div className="flex flex-col gap-4">
                     <h3 className="font-bold text-lg">{server.name}</h3>
                     <div className="flex gap-2 text-sm">
@@ -209,39 +235,34 @@ export const ServerMapModel = ({
                         location={mapRef.current?.getCenter()}
                     />
                 </div>
-
-            </Modal>
-        </Dialog>
     );
 };
 
 export const ServerSelectButton = ({
     server,
     partyId,
-    location
+    location,
 }: {
     server: ServerResult;
     partyId: string;
     location?: L.LatLng;
 }) => {
-    const hook = usePartyEventSubmit(partyId);
-    
+    const partySettings = usePartySettings(partyId);
+
     const handler = () => {
-        hook.mutate({
-            type: "PartySettingChanged",
-            setting: "location",
-            value: {
-                map_id: server.map_id,
-                lng: location?.lng || 0,
-                lat: location?.lat || 0,
-            },
+        partySettings.update("location", {
+            map_id: server.map_id,
+            lng: location?.lng || 0,
+            lat: location?.lat || 0,
         });
-    }
+    };
 
     return (
-        <button className='bg-rust p-8 text-white rounded-lg' onClick={handler}>Select</button>
-    )
-}
+        <button className="bg-rust p-8 text-white rounded-lg" onClick={handler}>
+            Select
+        </button>
+    );
+};
 
 export const ServerPreview = ({ server, partyId }: { server: ServerResult, partyId: string }) => {
     const { data: map } = useMap(server.map_id);
