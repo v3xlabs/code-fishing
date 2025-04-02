@@ -13,6 +13,10 @@
     z-index: 0 !important;
 }
 
+:root {
+    color-scheme: dark;
+}
+
 @font-face {
     font-family: 'Rust';
     src: url('/Rust.otf') format('opentype');
