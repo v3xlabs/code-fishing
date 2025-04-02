@@ -13,6 +13,7 @@ import {
 } from '@/components';
 import { MapPreview } from '@/components/party/management/MapPreview';
 import { PartySettings } from '@/components/party/management/PartySettings';
+import { usePartySettings } from '@/api/party';
 
 export const Route = createFileRoute('/$partyId/')({
     component: RouteComponent,
@@ -37,10 +38,12 @@ function RouteComponent() {
 }
 
 export const LocationPicker = ({ partyId }: { partyId: string }) => {
+    const { data: settings } = usePartySettings(partyId);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button className="button">Not Set</button>
+                <button className="button">{settings.location ? 'Configured' : 'Not set'}</button>
             </DialogTrigger>
             <Modal size="medium">
                 <h3>Select Server</h3>

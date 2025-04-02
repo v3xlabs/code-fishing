@@ -2,7 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+.leaflet-control {
+    z-index: 0 !important;
+}
+.leaflet-pane {
+    z-index: 0 !important;
+}
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 0 !important;
 }
 
 @font-face {
@@ -24,24 +32,27 @@
     font-style: normal;
 }
 
-*[data-font="roboto"] {
+*[data-font='roboto'] {
     .text {
         font-family: 'Roboto Condensed', sans-serif;
         font-weight: 500;
         font-size-adjust: 0.6;
     }
-    
-    .text h3, h3.text, .text h2, h2.text {
+
+    .text h3,
+    h3.text,
+    .text h2,
+    h2.text {
         font-family: 'Roboto Condensed', sans-serif;
         font-weight: 700;
         text-transform: uppercase;
     }
-    
+
     .bold-text {
         font-family: 'Roboto Condensed', sans-serif;
         font-weight: 700;
     }
-    
+
     .medium-text {
         font-family: 'Roboto Condensed', sans-serif;
         font-weight: 500;
@@ -54,7 +65,8 @@
     font-size-adjust: 0.6;
 }
 
-html, body {
+html,
+body {
     @apply bg-tertiary text-primary;
     font-family: 'Rust', sans-serif;
     letter-spacing: 0.06em;
@@ -96,7 +108,13 @@ input.input {
 }
 
 @keyframes zoom {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

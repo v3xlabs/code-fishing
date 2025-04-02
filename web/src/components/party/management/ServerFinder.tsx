@@ -108,10 +108,12 @@ export const ServerMapModelInner = ({
     mapId,
     partyId,
     mapRef,
+    frozen = false,
 }: {
     mapId: string;
     partyId: string;
     mapRef: React.RefObject<L.Map | null>;
+    frozen?: boolean;
 }) => {
     const { data: map } = useMap(mapId);
     const { data: partySettings } = usePartySettings(partyId);
@@ -172,18 +174,24 @@ export const ServerMapModelInner = ({
                         crs={L.CRS.Simple}
                         minZoom={-3}
                         maxZoom={3}
-                        zoomControl={true}
+                        zoomControl={!frozen}
                         inertia={false}
                         zoomAnimation={true}
                         bounceAtZoomLimits={true}
                         attributionControl={false}
+                        dragging={!frozen}
+                        touchZoom={!frozen}
+                        doubleClickZoom={!frozen}
+                        boxZoom={!frozen}
+                        keyboard={false}
+                        scrollWheelZoom={!frozen}
                         ref={(mapInstance: L.Map | null) => {
                             if (mapInstance) {
                                 handleMapCreated(mapInstance);
                             }
                         }}
                     >
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[1000] w-16 h-16 bg-[url('/crosshair.svg')] bg-contain bg-center bg-no-repeat" />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-16 h-16 bg-[url('/crosshair.svg')] bg-contain bg-center bg-no-repeat" />
                         {/* We'll create the TileLayer manually in the handleMapCreated function */}
                         {/* Add monuments as markers */}
                         {map.data.monuments &&
