@@ -14,6 +14,7 @@ import {
 import { MapPreview } from '@/components/party/management/MapPreview';
 import { PartySettings } from '@/components/party/management/PartySettings';
 import { usePartySettings } from '@/api/party';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/$partyId/')({
     component: RouteComponent,
@@ -39,15 +40,23 @@ function RouteComponent() {
 
 export const LocationPicker = ({ partyId }: { partyId: string }) => {
     const { data: settings } = usePartySettings(partyId);
+    const [modalOpen, setModalOpen] = useState(false);
 
     return (
-        <Dialog>
+        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
             <DialogTrigger asChild>
-                <button className="button">{settings.location ? 'Configured' : 'Not set'}</button>
+                <button className="button">
+                    {settings.location ? 'Reconfigure' : 'Configure'}
+                </button>
             </DialogTrigger>
             <Modal size="medium">
                 <h3>Select Server</h3>
-                <ServerFinder partyId={partyId} />
+                <ServerFinder
+                    partyId={partyId}
+                    finished={() => {
+                        setModalOpen(false);
+                    }}
+                />
             </Modal>
         </Dialog>
     );

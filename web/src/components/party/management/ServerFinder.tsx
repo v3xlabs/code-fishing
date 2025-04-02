@@ -27,7 +27,7 @@ const LeafletIconFix = () => {
     return null;
 };
 
-export const ServerFinder = ({ partyId }: { partyId: string }) => {
+export const ServerFinder = ({ partyId, finished }: { partyId: string; finished: () => void }) => {
     const [input, setInput] = useState('');
     const { data } = useServerSearch(input);
 
@@ -47,7 +47,12 @@ export const ServerFinder = ({ partyId }: { partyId: string }) => {
             </div>
             <ul className="flex flex-col gap-4">
                 {data?.data.map((server) => (
-                    <ServerPreview key={server.name} server={server} partyId={partyId} />
+                    <ServerPreview
+                        key={server.name}
+                        server={server}
+                        partyId={partyId}
+                        finished={finished}
+                    />
                 ))}
                 {input.trim().length == 0 && (
                     <div className="flex flex-col gap-2 text-center">
@@ -72,15 +77,18 @@ export const ServerMapModel = ({
     server,
     children,
     partyId,
+    finished,
 }: {
     server: ServerResult;
     children: React.ReactNode;
     partyId: string;
+    finished: () => void;
 }) => {
     const mapRef = useRef<L.Map | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
             <Modal size="large">
                 <h3 className="font-bold text-lg">{server.name}</h3>
@@ -98,6 +106,10 @@ export const ServerMapModel = ({
                     server={server}
                     partyId={partyId}
                     mapRef={mapRef as React.RefObject<L.Map>}
+                    finished={() => {
+                        setIsOpen(false);
+                        finished();
+                    }}
                 />
             </Modal>
         </Dialog>
@@ -241,10 +253,12 @@ export const ServerSelectButton = ({
     server,
     partyId,
     mapRef,
+    finished,
 }: {
     server: ServerResult;
     partyId: string;
     mapRef: React.RefObject<L.Map>;
+    finished: () => void;
 }) => {
     const partySettings = usePartySettings(partyId);
 
@@ -254,6 +268,7 @@ export const ServerSelectButton = ({
             lng: mapRef.current.getCenter().lng || 0,
             lat: mapRef.current.getCenter().lat || 0,
         });
+        finished();
     };
 
     return (
@@ -263,12 +278,20 @@ export const ServerSelectButton = ({
     );
 };
 
-export const ServerPreview = ({ server, partyId }: { server: ServerResult; partyId: string }) => {
+export const ServerPreview = ({
+    server,
+    partyId,
+    finished,
+}: {
+    server: ServerResult;
+    partyId: string;
+    finished: () => void;
+}) => {
     const { data: map } = useMap(server.map_id);
 
     return (
         <li key={server.name} className="flex flex-col gap-2">
-            <ServerMapModel server={server} partyId={partyId}>
+            <ServerMapModel server={server} partyId={partyId} finished={finished}>
                 <button className="bg-secondary p-4 rounded-md flex gap-4 items-center text-start font-mono hover:bg-primary hover:text-tertiary transition-colors">
                     <div className="w-32 h-32 border border-accent rounded-sm">
                         {map && (
