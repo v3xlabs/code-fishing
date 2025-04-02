@@ -76,24 +76,44 @@ export const ServerMapModel = ({
     server: ServerResult;
     children: React.ReactNode;
     partyId: string;
-}) => (
-    <Dialog>
-        <DialogTrigger asChild>{children}</DialogTrigger>
-        <Modal size="large">
-            <ServerMapModelInner server={server} partyId={partyId} />
-        </Modal>
-    </Dialog>
-);
+}) => {
+    const mapRef = useRef<L.Map | null>(null);
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <Modal size="large">
+                <h3 className="font-bold text-lg">{server.name}</h3>
+                <div className="flex gap-2 text-sm">
+                    <p>Map ID {server.map_id}</p>
+                    <p>•</p>
+                    <p>
+                        Server: {server.ip}:{server.game_port}
+                    </p>
+                    <p>•</p>
+                    <p>Wiped {formatDistanceToNow(new Date(server.last_wipe_utc))} ago</p>
+                </div>
+                <ServerMapModelInner mapId={server.map_id} partyId={partyId} mapRef={mapRef} />
+                <ServerSelectButton
+                    server={server}
+                    partyId={partyId}
+                    mapRef={mapRef as React.RefObject<L.Map>}
+                />
+            </Modal>
+        </Dialog>
+    );
+};
 
 export const ServerMapModelInner = ({
-    server,
+    mapId,
     partyId,
+    mapRef,
 }: {
-    server: ServerResult;
+    mapId: string;
     partyId: string;
+    mapRef: React.RefObject<L.Map | null>;
 }) => {
-    const { data: map } = useMap(server.map_id);
-    const mapRef = useRef<L.Map | null>(null);
+    const { data: map } = useMap(mapId);
     const { data: partySettings } = usePartySettings(partyId);
 
     // Handle map initialization and manually create our TileLayer
@@ -141,16 +161,6 @@ export const ServerMapModelInner = ({
 
     return (
         <div className="flex flex-col gap-4">
-            <h3 className="font-bold text-lg">{server.name}</h3>
-            <div className="flex gap-2 text-sm">
-                <p>Map ID {server.map_id}</p>
-                <p>•</p>
-                <p>
-                    Server: {server.ip}:{server.game_port}
-                </p>
-                <p>•</p>
-                <p>Wiped {formatDistanceToNow(new Date(server.last_wipe_utc))} ago</p>
-            </div>
             {map && map.data && map.data.extra?.tileBaseUrl && (
                 <div className="w-full h-[600px] relative rounded-md overflow-hidden border border-accent bg-[#0B3B4B]">
                     <LeafletIconFix />
@@ -215,11 +225,6 @@ export const ServerMapModelInner = ({
                     </MapContainer>
                 </div>
             )}
-            <ServerSelectButton
-                server={server}
-                partyId={partyId}
-                mapRef={mapRef as React.RefObject<L.Map>}
-            />
         </div>
     );
 };

@@ -1,7 +1,17 @@
 import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 import { createFileRoute } from '@tanstack/react-router';
 
-import { CodeEntryMod, CodeListOrder, Modal, MusicRadio, PartyChat, PartyInviteCard, PartyMembers, PartyProgress, ServerFinder, Switch } from '@/components';
+import {
+    CodeEntryMod,
+    CodeListOrder,
+    Modal,
+    MusicRadio,
+    PartyChat,
+    PartyInviteCard,
+    PartyProgress,
+    ServerFinder,
+} from '@/components';
+import { MapPreview } from '@/components/party/management/MapPreview';
 import { PartySettings } from '@/components/party/management/PartySettings';
 
 export const Route = createFileRoute('/$partyId/')({
@@ -16,6 +26,7 @@ function RouteComponent() {
         <div className="p-2 grid gap-2 grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:grid-flow-row-dense">
             <PartyInviteCard partyId={partyId} />
             <PartySettings party_id={partyId} />
+            <MapPreview party_id={partyId} />
             <CodeListOrder party_id={partyId} />
             <CodeEntryMod />
             <PartyChat party_id={partyId} />
@@ -25,9 +36,7 @@ function RouteComponent() {
     );
 }
 
-export const LocationPicker = ({partyId}: {
-    partyId: string;
-}) => {
+export const LocationPicker = ({ partyId }: { partyId: string }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
