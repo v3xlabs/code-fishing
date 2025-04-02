@@ -301,7 +301,7 @@ export type PartySettings = {
         lat: number;
         lng: number;
         map_id: string;
-    }
+    };
     [key: string]: any;
 };
 
@@ -334,12 +334,14 @@ export const usePartySettings = (party_id: string) => {
                             lng: number;
                             map_id: string;
                         };
+
                         settings.location = {
                             lat: data.lat,
                             lng: data.lng,
                             map_id: data.map_id,
                         };
                     }
+
                     settings[event.data.setting] = event.data.value;
                 }
             }
