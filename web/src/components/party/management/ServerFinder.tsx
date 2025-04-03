@@ -101,12 +101,7 @@ export const ServerMapModel = ({
                     <p>•</p>
                     <p>Wiped {formatDistanceToNow(new Date(server.last_wipe_utc))} ago</p>
                 </div>
-                <ServerMapModelInner
-                    mapId={server.map_id}
-                    partyId={partyId}
-                    mapRef={mapRef}
-                    parentClassName="h-[600px]"
-                />
+                <ServerMapModelInner mapId={server.map_id} partyId={partyId} mapRef={mapRef} />
                 <ServerSelectButton
                     server={server}
                     partyId={partyId}
@@ -126,13 +121,11 @@ export const ServerMapModelInner = ({
     partyId,
     mapRef,
     frozen = false,
-    parentClassName = '',
 }: {
     mapId: string;
     partyId: string;
     mapRef: React.RefObject<L.Map | null>;
     frozen?: boolean;
-    parentClassName?: string;
 }) => {
     const { data: map } = useMap(mapId);
     const { data: partySettings } = usePartySettings(partyId);
@@ -180,19 +173,10 @@ export const ServerMapModelInner = ({
         }
     }, [partySettings]);
 
-    const cx = (...classes: string[]) => {
-        return classes.filter(Boolean).join(' ');
-    };
-
     return (
         <div className="flex flex-col gap-4">
             {map && map.data && map.data.extra?.tileBaseUrl && (
-                <div
-                    className={cx(
-                        'w-full relative rounded-md overflow-hidden border border-accent bg-[#0B3B4B]',
-                        parentClassName
-                    )}
-                >
+                <div className="w-full h-[600px] relative rounded-md overflow-hidden border border-accent bg-[#0B3B4B]">
                     <LeafletIconFix />
                     <MapContainer
                         center={[0, 0]}
