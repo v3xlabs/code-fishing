@@ -10,14 +10,18 @@ export const MapPreview = ({ party_id }: { party_id: string }) => {
     const mapRef = useRef<L.Map | null>(null);
 
     return (
-        <div className="card p-4 h-fit flex flex-col gap-2 w-full">
+        <div className="card p-4 h-full flex flex-col gap-2 w-full">
+            <h3>Minimap</h3>
             {settings?.location?.map_id ? (
-                <ServerMapModelInner
-                    frozen={true}
-                    mapId={settings.location.map_id}
-                    partyId={party_id}
-                    mapRef={mapRef}
-                />
+                <div className="aspect-square">
+                    <ServerMapModelInner
+                        parentClassName="aspect-square"
+                        frozen={true}
+                        mapId={settings.location.map_id}
+                        partyId={party_id}
+                        mapRef={mapRef}
+                    />
+                </div>
             ) : (
                 <div className="text-secondary">No map selected</div>
             )}
