@@ -54,6 +54,26 @@ export const usePartyProgress = (party_id: string) => {
         return codesTried;
     }, [events]);
 
+    const triedCodesByUserId = useMemo(() => {
+        const codesTried = new Map<string, string[]>();
+
+        for (const page of events?.pages ?? []) {
+            for (const event of page) {
+                if (event.data.type === 'PartyCodesSubmitted') {
+                    const userCodes = codesTried.get(event.user_id) ?? [];
+
+                    for (const code of event.data.codes) {
+                        userCodes.push(code);
+                    }
+
+                    codesTried.set(event.user_id, userCodes);
+                }
+            }
+        }
+
+        return codesTried;
+    }, [events]);
+
     const totalCodes = codes.length;
 
     const percentages = useMemo(() => {
@@ -63,5 +83,6 @@ export const usePartyProgress = (party_id: string) => {
     return {
         percentages,
         triedCodes,
+        triedCodesByUserId,
     };
 };

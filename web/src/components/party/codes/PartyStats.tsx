@@ -1,9 +1,21 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 import { usePartyProgress } from '@/api/progress';
 
 export const PartyStats: FC<{ party_id: string }> = ({ party_id }) => {
-    const { percentages, triedCodes } = usePartyProgress(party_id);
+    const { percentages, triedCodes, triedCodesByUserId } = usePartyProgress(party_id);
+
+    const userTopCodes = useMemo(() => {
+        const userTopCodes: [string, number][] = [];
+
+        for (const [userId, codes] of triedCodesByUserId.entries()) {
+            userTopCodes.push([userId, codes.length]);
+        }
+
+        userTopCodes.sort((a, b) => b[1] - a[1]);
+
+        return userTopCodes;
+    }, [triedCodesByUserId]);
 
     return (
         <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumnEnd: '-2' }}>
@@ -22,6 +34,19 @@ export const PartyStats: FC<{ party_id: string }> = ({ party_id }) => {
                         Codes tried
                     </span>
                     <span>{triedCodes.size}</span>
+                </div>
+                <div>
+                    <span>
+                        Leaderboard
+                    </span>
+                    <ul className="border">
+                        {userTopCodes.map(([userId, codes]) => (
+                            <li key={userId} className="flex items-center justify-between">
+                                <span>{userId}</span>
+                                <span>{codes}</span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
             <div className="w-full h-4 bg-primary rounded-md border border-secondary overflow-hidden mb-2">
