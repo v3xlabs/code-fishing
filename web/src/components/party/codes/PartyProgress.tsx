@@ -1,6 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { FC,useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { usePartyCodes, usePartyProgress } from '@/api/progress';
 import { Tooltip } from '@/components/helpers/Tooltip';
@@ -12,8 +12,6 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     const codes = orderedCodes;
 
     const parentRef = useRef<HTMLDivElement>(null);
-
-    const progress = 5;
 
     // Constants for item sizing
     const ITEM_WIDTH = 64;
@@ -135,29 +133,6 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
             <p className="text-secondary">
                 These are all the codes you have entered and you have left to explore.
             </p>
-            <div>
-                <div>
-                    {JSON.stringify(percentages)}%
-                </div>
-                <div>
-                    {
-                        Array.from(triedCodes.entries()).map(([code, events]) => (
-                            <div key={code}>
-                                {code}
-                                <div>
-                                    {
-                                        events.map((event) => (
-                                            <div key={event.event_id} className="border w-fit text-sm">
-                                                {event.user_id}
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                            </div>
-                        ))
-                    }
-                </div>
-            </div>
             <div
                 ref={parentRef}
                 className="max-h-[300px] overflow-auto w-full"
@@ -189,7 +164,7 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
                                     <div
                                         className={cx(
                                             'flex justify-center items-center w-full h-full rounded-sm text-[0.8rem]',
-                                            cell.cellIndex < progress
+                                            triedCodes.has(cell.code)
                                                 ? 'bg-accent text-primary'
                                                 : 'bg-tertiary text-secondary'
                                         )}
