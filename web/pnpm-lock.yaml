@@ -84,8 +84,8 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       openapi-hooks:
-        specifier: 0.0.3-alpha.3
-        version: 0.0.3-alpha.3(jiti@1.21.7)(postcss@8.5.1)(typescript@5.7.3)(yaml@2.7.0)
+        specifier: 0.0.6
+        version: 0.0.6(jiti@1.21.7)(postcss@8.5.1)(typescript@5.7.3)(yaml@2.7.0)
       postcss:
         specifier: ^8.5.1
         version: 8.5.1
@@ -2652,8 +2652,8 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
-  openapi-hooks@0.0.3-alpha.3:
-    resolution: {integrity: sha512-oNplzxcM3a7vEkM2WFwBDZDfNbI5spUumiPoY1vGi/YIIZ6EfeP59oRFbI2SaWnjTSv9q+XuZR8pq62r6rUhtg==}
+  openapi-hooks@0.0.6:
+    resolution: {integrity: sha512-hbjstHygUGeX6engI5sj04OSSx2cNCCPSj4O6dmp5Le+ScozQMFK7pIrNnhbGP1k/cdI3lsoLi9QO9hbVhCLCQ==}
 
   openapi-typescript@7.6.1:
     resolution: {integrity: sha512-F7RXEeo/heF3O9lOXo2bNjCOtfp7u+D6W3a3VNEH2xE6v+fxLtn5nq0uvUcA1F5aT+CMhNeC5Uqtg5tlXFX/ag==}
@@ -5882,7 +5882,7 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  openapi-hooks@0.0.3-alpha.3(jiti@1.21.7)(postcss@8.5.1)(typescript@5.7.3)(yaml@2.7.0):
+  openapi-hooks@0.0.6(jiti@1.21.7)(postcss@8.5.1)(typescript@5.7.3)(yaml@2.7.0):
     dependencies:
       tsup: 8.4.0(jiti@1.21.7)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0)
       tsx: 4.19.2

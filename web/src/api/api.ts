@@ -7,17 +7,13 @@ import { paths } from './schema.gen';
 
 export const baseUrl = new URL('/api/', window.location.origin);
 
-const tokenProxy = {
-    get value() {
-        return authStore.getSnapshot().context.token;
-    },
-};
-
 export const useApi = createFetch<paths>({
     baseUrl,
-    get headers() {
+    async headers() {
+        const { token } = authStore.getSnapshot().context;
+        
         return {
-            Authorization: `Bearer ${tokenProxy.value}`,
+            Authorization: `Bearer ${token}`,
         };
     },
     onError(error: { status: number }) {
