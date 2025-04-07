@@ -777,8 +777,8 @@ export interface components {
          *       "name": "John D.",
          *       "avatar_url": "https://avatars.akamai.steamstatic.com/0000000000000000.jpg",
          *       "profile_url": "https://steamcommunity.com/id/john_doe",
-         *       "created_at": "2025-04-03T15:03:07.630953033+00:00",
-         *       "updated_at": "2025-04-03T15:03:07.630954883+00:00"
+         *       "created_at": "2025-04-07T18:00:03.515625376+00:00",
+         *       "updated_at": "2025-04-07T18:00:03.515627916+00:00"
          *     }
          */
         User: {

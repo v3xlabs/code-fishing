@@ -1,10 +1,11 @@
 import { FC, useMemo, useState } from 'react';
 import { LuArrowBigRight, LuCheck } from 'react-icons/lu';
 
-import { NotImplemented , Tooltip } from '@/components';
+import { usePartyEventSubmit } from '@/api/party';
+import { NotImplemented, Tooltip } from '@/components';
 import { LISTS, setifyList } from '@/util/lists';
 
-export const CodeEntryMod: FC = () => {
+export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {
     const [codeCount, setCodeCount] = useState(5);
     const codes = useMemo(() => setifyList(LISTS.flatMap((list) => list.codes)), []);
     const results = codes.slice(0, codeCount);
@@ -35,30 +36,7 @@ export const CodeEntryMod: FC = () => {
             <div className="w-full -mx-4 px-4 box-content bg-primary py-2 grow">
                 <ul className="space-y-1">
                     {results.map((code) => (
-                        <li key={code} className="flex items-center justify-between">
-                            <div className="flex gap-0.5 items-center">
-                                {Array.from({ length: 4 }).map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className="bg-tertiary px-1 py-0.5 flex gap-0.5 rounded-sm"
-                                    >
-                                        <p className="text-primary">{code.toString()[i]}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="bg-secondary px-0.5 py-0.5 flex gap-0.5 rounded-md">
-                                <NotImplemented>
-                                    <button className="button">
-                                        <LuCheck />
-                                    </button>
-                                </NotImplemented>
-                                <NotImplemented>
-                                    <button className="button">
-                                        <LuArrowBigRight />
-                                    </button>
-                                </NotImplemented>
-                            </div>
-                        </li>
+                        <IndividualCodeEntry key={code} code={code} party_id={party_id} />
                     ))}
                 </ul>
             </div>
@@ -79,5 +57,41 @@ export const CodeEntryMod: FC = () => {
                 </div>
             )}
         </div>
+    );
+};
+
+const IndividualCodeEntry: FC<{ code: string; party_id: string }> = ({ code, party_id }) => {
+    const { mutate: submitCode } = usePartyEventSubmit(party_id);
+
+    return (
+        <li key={code} className="flex items-center justify-between">
+            <div className="flex gap-0.5 items-center">
+                {Array.from({ length: 4 }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="bg-tertiary px-1 py-0.5 flex gap-0.5 rounded-sm"
+                    >
+                        <p className="text-primary">{code.toString()[i]}</p>
+                    </div>
+                ))}
+            </div>
+            <div className="bg-secondary px-0.5 py-0.5 flex gap-0.5 rounded-md">
+                    <button className="button" onClick={() => {
+                        submitCode({
+                            type: 'PartyCodesSubmitted',
+                            codes: [code],
+                            // TODO: figure out if duplicate (cuz event automatically has author id)
+                            user_id: '1',
+                        });
+                    }}>
+                        <LuCheck />
+                    </button>
+                <NotImplemented>
+                    <button className="button">
+                        <LuArrowBigRight />
+                    </button>
+                </NotImplemented>
+            </div>
+        </li>
     );
 };

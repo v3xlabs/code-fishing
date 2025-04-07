@@ -2,40 +2,14 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { FC,useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { usePartyListOrder } from '@/api/party';
+import { usePartyCodes, usePartyProgress } from '@/api/progress';
 import { Tooltip } from '@/components/helpers/Tooltip';
-import { LISTS, setifyList } from '@/util/lists';
 
 export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
-    const { data: listOrder } = usePartyListOrder(party_id);
-
-    // sort LISTS by listOrder and unwrap it to
-    const orderedCodes = useMemo(() => {
-        // If listOrder doesn't exist yet, just use LISTS as is
-        if (!listOrder) {
-            return setifyList(LISTS.flatMap((list) => list.codes));
-        }
-
-        // Create a map for quick lookup of lists by name
-        const listsByName = new Map(LISTS.map((list) => [list.name, list]));
-
-        // Collect all codes in the specified order, applying reversals where needed
-        const allCodes = listOrder.flatMap((entry) => {
-            const list = listsByName.get(entry.name);
-
-            if (!list) return []; // Skip if list doesn't exist
-
-            // Return the codes array, reversed if needed
-            return entry.reverse ? [...list.codes].reverse() : list.codes;
-        });
-
-        // Return the deduplicated list of codes
-        return setifyList(allCodes);
-    }, [listOrder]);
+    const { data: orderedCodes } = usePartyCodes(party_id);
+    const { triedCodes, percentages } = usePartyProgress(party_id);
 
     const codes = orderedCodes;
-
-    console.log('coderaid rerender', listOrder);
 
     const parentRef = useRef<HTMLDivElement>(null);
 
@@ -161,6 +135,29 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
             <p className="text-secondary">
                 These are all the codes you have entered and you have left to explore.
             </p>
+            <div>
+                <div>
+                    {JSON.stringify(percentages)}%
+                </div>
+                <div>
+                    {
+                        Array.from(triedCodes.entries()).map(([code, events]) => (
+                            <div key={code}>
+                                {code}
+                                <div>
+                                    {
+                                        events.map((event) => (
+                                            <div key={event.event_id} className="border w-fit text-sm">
+                                                {event.user_id}
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
             <div
                 ref={parentRef}
                 className="max-h-[300px] overflow-auto w-full"

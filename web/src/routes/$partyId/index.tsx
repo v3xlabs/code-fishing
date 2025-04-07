@@ -1,6 +1,8 @@
 import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
 
+import { usePartySettings } from '@/api/party';
 import {
     CodeEntryMod,
     CodeListOrder,
@@ -13,8 +15,6 @@ import {
 } from '@/components';
 import { MapPreview } from '@/components/party/management/MapPreview';
 import { PartySettings } from '@/components/party/management/PartySettings';
-import { usePartySettings } from '@/api/party';
-import { useState } from 'react';
 
 export const Route = createFileRoute('/$partyId/')({
     component: RouteComponent,
@@ -30,7 +30,7 @@ function RouteComponent() {
             <PartySettings party_id={partyId} />
             <MapPreview party_id={partyId} />
             <CodeListOrder party_id={partyId} />
-            <CodeEntryMod />
+            <CodeEntryMod party_id={partyId} />
             <PartyChat party_id={partyId} />
             <MusicRadio />
             <PartyProgress party_id={partyId} />
