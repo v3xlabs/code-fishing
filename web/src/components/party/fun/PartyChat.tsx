@@ -54,7 +54,7 @@ export const PartyChat: FC<{ party_id: string }> = ({ party_id }) => {
     }, []);
 
     return (
-        <div className="card md:col-span-2 space-y-2 text">
+        <div className="card md:col-span-2 space-y-2 text flex flex-col">
             <div className="flex gap-2 justify-between items-center">
                 <h3>Party Chat</h3>
                 <Tooltip>
@@ -62,7 +62,7 @@ export const PartyChat: FC<{ party_id: string }> = ({ party_id }) => {
                 </Tooltip>
             </div>
             <div
-                className="bg-primary w-full p-4 min-h-[160px] max-h-[420px] overflow-y-auto"
+                className="bg-primary w-full p-4 min-h-[160px] max-h-[420px] overflow-y-auto grow"
                 ref={chatWindowRef}
             >
                 <div className="flex flex-row items-center gap-1">

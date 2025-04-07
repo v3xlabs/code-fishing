@@ -13,6 +13,7 @@ import {
     PartyProgress,
     ServerFinder,
 } from '@/components';
+import { PartyStats } from '@/components/party/codes/PartyStats';
 import { MapPreview } from '@/components/party/management/MapPreview';
 import { PartySettings } from '@/components/party/management/PartySettings';
 
@@ -26,13 +27,14 @@ function RouteComponent() {
     // auto columns 300w min
     return (
         <div className="p-2 grid gap-2 grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:grid-flow-row-dense">
+            <MapPreview party_id={partyId} />
             <PartyInviteCard partyId={partyId} />
             <PartySettings party_id={partyId} />
-            <MapPreview party_id={partyId} />
-            <CodeListOrder party_id={partyId} />
+            <PartyStats party_id={partyId} />
             <CodeEntryMod party_id={partyId} />
             <PartyChat party_id={partyId} />
             <MusicRadio />
+            <CodeListOrder party_id={partyId} />
             <PartyProgress party_id={partyId} />
         </div>
     );
