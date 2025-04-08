@@ -1,14 +1,13 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { LuArrowBigRight, LuCheck } from 'react-icons/lu';
 
 import { usePartyEventSubmit } from '@/api/party';
+import { usePartyCursor } from '@/api/party/cursor';
 import { NotImplemented, Tooltip } from '@/components';
-import { LISTS, setifyList } from '@/util/lists';
 
 export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {
     const [codeCount, setCodeCount] = useState(5);
-    const codes = useMemo(() => setifyList(LISTS.flatMap((list) => list.codes)), []);
-    const results = codes.slice(0, codeCount);
+    const { codes } = usePartyCursor(party_id);
 
     return (
         <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumnEnd: '-1' }}>
@@ -35,12 +34,12 @@ export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {
             </div>
             <div className="w-full -mx-4 px-4 box-content bg-primary py-2 grow">
                 <ul className="space-y-1">
-                    {results.map((code) => (
+                    {codes.map((code) => (
                         <IndividualCodeEntry key={code} code={code} party_id={party_id} />
                     ))}
                 </ul>
             </div>
-            {results.length > 1 && (
+            {codes.length > 1 && (
                 <div className="w-full flex gap-1 justify-end">
                     <NotImplemented>
                         <button className="button flex items-center gap-1">
@@ -81,7 +80,7 @@ const IndividualCodeEntry: FC<{ code: string; party_id: string }> = ({ code, par
                             type: 'PartyCodesSubmitted',
                             codes: [code],
                             // TODO: figure out if duplicate (cuz event automatically has author id)
-                            user_id: '1',
+                            user_id: 'deprecated value',
                         });
                     }}>
                         <LuCheck />
