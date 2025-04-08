@@ -135,9 +135,9 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
             </p>
             <div
                 ref={parentRef}
-                className="max-h-[300px] overflow-auto w-full"
+                className="max-h-[80vh] overflow-auto w-full"
                 style={{
-                    height: '300px',
+                    height: '900px',
                     width: '100%',
                 }}
             >
