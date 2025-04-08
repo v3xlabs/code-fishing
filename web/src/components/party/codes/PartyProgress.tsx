@@ -5,10 +5,11 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PartyEvent } from '@/api/party/events';
 import { usePartyCodes, usePartyProgress } from '@/api/progress';
 import { Tooltip } from '@/components/helpers/Tooltip';
+import { backgroundColorBySeed } from '@/util/user';
 
 export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     const { data: orderedCodes } = usePartyCodes(party_id);
-    const { triedCodes, percentages } = usePartyProgress(party_id);
+    const { triedCodes } = usePartyProgress(party_id);
 
     const codes = orderedCodes;
 
@@ -181,11 +182,35 @@ export const PartyProgressList: FC<{
                                         className={cx(
                                             'flex justify-center items-center w-full h-full rounded-sm text-[0.8rem]',
                                             triedCodes.has(cell.code)
-                                                ? 'bg-accent text-primary'
+                                                ? 'bg-tertiary crossed-out text-tertiary'
                                                 : 'bg-tertiary text-secondary'
                                         )}
+                                        style={
+                                            triedCodes.has(cell.code)
+                                                ? {
+                                                      backgroundColor: backgroundColorBySeed(
+                                                          (triedCodes.get(cell.code) || [])[0]
+                                                              ?.user_id
+                                                      ),
+                                                  }
+                                                : {}
+                                        }
                                     >
-                                        {cell.code}
+                                        <div
+                                            style={
+                                                triedCodes.has(cell.code)
+                                                    ? {
+                                                          backgroundColor: backgroundColorBySeed(
+                                                              (triedCodes.get(cell.code) || [])[0]
+                                                                  ?.user_id
+                                                          ),
+                                                          borderRadius: '2px',
+                                                      }
+                                                    : {}
+                                            }
+                                        >
+                                            {cell.code}
+                                        </div>
                                     </div>
                                 </div>
                             )

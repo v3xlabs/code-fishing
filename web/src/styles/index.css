@@ -69,6 +69,28 @@
     font-size-adjust: 0.6;
 }
 
+.crossed-out {
+    background-image:
+        linear-gradient(
+            to bottom right,
+            transparent 0%,
+            transparent 48%,
+            #2d2b29 48%,
+            #2d2b29 52%,
+            transparent 52%,
+            transparent 100%
+        ),
+        linear-gradient(
+            to bottom left,
+            transparent 0%,
+            transparent 48%,
+            #2d2b29 48%,
+            #2d2b29 52%,
+            transparent 52%,
+            transparent 100%
+        );
+}
+
 html,
 body {
     @apply bg-tertiary text-primary;
