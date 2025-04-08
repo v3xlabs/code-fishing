@@ -45,9 +45,9 @@ export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {
                         <LuCheck />
                     </button>
                     <button className="button flex items-center gap-1 button-rust" onClick={() => nextCursor(false)}>
-                            Skip
-                            <LuArrowBigRight />
-                        </button>
+                        Skip
+                        <LuArrowBigRight />
+                    </button>
                 </div>
             )}
         </div>
@@ -70,16 +70,16 @@ const IndividualCodeEntry: FC<{ code: string; party_id: string }> = ({ code, par
                 ))}
             </div>
             <div className="bg-secondary px-0.5 py-0.5 flex gap-0.5 rounded-md">
-                    <button className="button" onClick={() => {
-                        submitCode({
-                            type: 'PartyCodesSubmitted',
-                            codes: [code],
-                            // TODO: figure out if duplicate (cuz event automatically has author id)
-                            user_id: 'deprecated value',
-                        });
-                    }}>
-                        <LuCheck />
-                    </button>
+                <button className="button" onClick={() => {
+                    submitCode({
+                        type: 'PartyCodesSubmitted',
+                        codes: [code],
+                        // TODO: figure out if duplicate (cuz event automatically has author id)
+                        user_id: 'deprecated value',
+                    });
+                }}>
+                    <LuCheck />
+                </button>
                 <NotImplemented>
                     <button className="button">
                         <LuArrowBigRight />

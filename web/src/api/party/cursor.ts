@@ -32,6 +32,8 @@ export const usePartyCursor = (party_id: string) => {
                 }
             }
 
+            console.log('remainingCodes', remainingCodes);
+
             submitEvent({
                 type: 'PartyCodesSubmitted',
                 codes: remainingCodes,
@@ -39,7 +41,11 @@ export const usePartyCursor = (party_id: string) => {
             });
         }
 
-        const nextCursor = cursor + codeCount;
+        let nextCursor = cursor + codeCount;
+
+        while (triedCodes.has(allCodes[nextCursor])) {
+            nextCursor++;
+        }
 
         console.log('nextCursor', nextCursor);
 

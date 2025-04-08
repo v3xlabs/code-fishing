@@ -2,6 +2,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { PartyEvent } from '@/api/party/events';
 import { usePartyCodes, usePartyProgress } from '@/api/progress';
 import { Tooltip } from '@/components/helpers/Tooltip';
 
@@ -10,6 +11,21 @@ export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     const { triedCodes, percentages } = usePartyProgress(party_id);
 
     const codes = orderedCodes;
+
+    return (
+        <>
+            <PartyProgressList party_id={party_id} orderedCodes={orderedCodes} triedCodes={triedCodes} percentages={percentages} codes={codes} />
+        </>
+    );
+};
+
+export const PartyProgressList: FC<{
+    party_id: string,
+    orderedCodes: string[],
+    triedCodes: Map<string, PartyEvent[]>,
+    percentages: Map<string, number>,
+    codes: string[]
+}> = ({ party_id, orderedCodes, triedCodes, percentages, codes }) => {
 
     const parentRef = useRef<HTMLDivElement>(null);
 
