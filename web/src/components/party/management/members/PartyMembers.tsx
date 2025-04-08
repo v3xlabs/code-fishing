@@ -7,10 +7,10 @@ import { Avatar } from '../../../auth/Avatar';
 import { PartyMemberPreview } from './PartyMemberPreview';
 
 export const PartyMembers = ({ party_id }: { party_id: string }) => {
-    const { data: events } = usePartyEvents(party_id);
+    const { events } = usePartyEvents(party_id, (event) => event.data.type === 'PartyJoinLeave');
 
     const members = new Set(
-        events?.pages.flatMap((page) => page.map((event) => event.user_id)).filter(Boolean)
+        events.map((event) => event.user_id).filter(Boolean)
     );
 
     return (

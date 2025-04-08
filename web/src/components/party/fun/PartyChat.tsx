@@ -1,21 +1,19 @@
 import { FC, useEffect,useRef, useState } from 'react';
 
 import { useUserById } from '@/api/auth';
-import { PartyEvent, usePartyEvents, usePartyEventSubmit } from '@/api/party';
+import { usePartyEvents } from '@/api/party';
+import { PartyEvent, usePartyEventSubmit } from '@/api/party/events';
 import { Avatar } from '@/components/auth/Avatar';
 import { Tooltip } from '@/components/helpers/Tooltip';
 
 export const PartyChat: FC<{ party_id: string }> = ({ party_id }) => {
     const { mutate: submitEvent } = usePartyEventSubmit(party_id);
-    const { data: events } = usePartyEvents(party_id);
+    const { events } = usePartyEvents(party_id, (event) => event.data.type == 'PartyChatMessage');
     const messageInputRef = useRef<HTMLInputElement>(null);
     const chatWindowRef = useRef<HTMLDivElement>(null);
     const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
 
-    const messages =
-        events?.pages
-            .flatMap((page) => page)
-            .filter((event) => event.data.type == 'PartyChatMessage') ?? [];
+    const messages = events;
 
     // Check if user is at bottom when messages change
     useEffect(() => {

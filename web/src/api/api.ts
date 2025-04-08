@@ -11,7 +11,7 @@ export const useApi = createFetch<paths>({
     baseUrl,
     async headers() {
         const { token } = authStore.getSnapshot().context;
-        
+
         return {
             Authorization: `Bearer ${token}`,
         };

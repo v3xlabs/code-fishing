@@ -36,17 +36,15 @@ export const usePartyCodes = (party_id: string) => {
 
 export const usePartyProgress = (party_id: string) => {
     const { data: codes } = usePartyCodes(party_id);
-    const { data: events } = usePartyEvents(party_id);
+    const { events } = usePartyEvents(party_id, (event) => event.data.type === 'PartyCodesSubmitted');
 
     const triedCodes = useMemo(() => {
         const codesTried = new Map<string, PartyEvent[]>();
 
-        for (const page of events?.pages ?? []) {
-            for (const event of page) {
-                if (event.data.type === 'PartyCodesSubmitted') {
-                    for (const code of event.data.codes) {
-                        codesTried.set(code, [...(codesTried.get(code) ?? []), event]);
-                    }
+        for (const event of events) {
+            if (event.data.type === 'PartyCodesSubmitted') {
+                for (const code of event.data.codes) {
+                    codesTried.set(code, [...(codesTried.get(code) ?? []), event]);
                 }
             }
         }
@@ -57,17 +55,15 @@ export const usePartyProgress = (party_id: string) => {
     const triedCodesByUserId = useMemo(() => {
         const codesTried = new Map<string, string[]>();
 
-        for (const page of events?.pages ?? []) {
-            for (const event of page) {
-                if (event.data.type === 'PartyCodesSubmitted') {
-                    const userCodes = codesTried.get(event.user_id) ?? [];
+        for (const event of events) {
+            if (event.data.type === 'PartyCodesSubmitted') {
+                const userCodes = codesTried.get(event.user_id) ?? [];
 
-                    for (const code of event.data.codes) {
-                        userCodes.push(code);
-                    }
-
-                    codesTried.set(event.user_id, userCodes);
+                for (const code of event.data.codes) {
+                    userCodes.push(code);
                 }
+
+                codesTried.set(event.user_id, userCodes);
             }
         }
 
