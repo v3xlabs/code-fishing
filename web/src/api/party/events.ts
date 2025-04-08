@@ -5,8 +5,14 @@ import { useApi } from '../api';
 import { components } from '../schema.gen';
 
 // Helper function to get localStorage key for a party's events
-const getPartyStorageKey = (partyId: string, cursor?: number): string => {
-  return `party_events_${partyId}_${cursor === undefined ? 'initial' : cursor}`;
+const getPartyStorageKey = (partyId: string, cursor?: number | string): string => {
+  if (cursor === undefined) {
+    return `party_events_${partyId}_initial`;
+  } else if (typeof cursor === 'string') {
+    return `party_events_${partyId}_${cursor}`;
+  } else {
+    return `party_events_${partyId}_${cursor}`;
+  }
 };
 
 // Standalone events fetcher with caching and throttling
@@ -21,6 +27,7 @@ class PartyEventsFetcher {
     seenEventIds: Set<number>; // Track which event IDs we've already seen
     retryCount: number;
     backoffDelay: number;
+    initialPageCached: boolean; // Track if we've cached the initial page
   }>();
   
   private THROTTLE_DELAY = 1000;
@@ -40,14 +47,11 @@ class PartyEventsFetcher {
       
       // Group keys by party ID
       const partyKeys = new Map<string, string[]>();
-
       storageKeys.forEach(key => {
         const partyId = key.split('_')[2];
-
         if (!partyKeys.has(partyId)) {
           partyKeys.set(partyId, []);
         }
-
         partyKeys.get(partyId)!.push(key);
       });
       
@@ -62,30 +66,37 @@ class PartyEventsFetcher {
             isLoading: false,
             seenEventIds: new Set(),
             retryCount: 0,
-            backoffDelay: this.THROTTLE_DELAY
+            backoffDelay: this.THROTTLE_DELAY,
+            initialPageCached: false
           });
         }
         
         const cacheEntry = this.cache.get(partyId)!;
+        let hasInitialPage = false;
         
         // Load pages from localStorage
         keys.forEach(key => {
           const storedData = localStorage.getItem(key);
-
           if (storedData) {
             try {
               const page = JSON.parse(storedData) as components['schemas']['PartyEvent'][];
-
               if (page.length > 0) {
+                // Check if this is the initial page
+                if (key.endsWith('_initial')) {
+                  hasInitialPage = true;
+                }
+                
                 // Add to pages if it's a full page
                 if (page.length === this.PAGE_SIZE) {
                   cacheEntry.pages.push(page);
                   // Update lastCursor if appropriate
                   const lastEventId = page[page.length - 1].event_id;
-
                   if (!cacheEntry.lastCursor || lastEventId > cacheEntry.lastCursor) {
                     cacheEntry.lastCursor = lastEventId;
                   }
+                } else if (key.endsWith('_current')) {
+                  // Add to current page if it's the current page
+                  cacheEntry.currentPage = page;
                 } else {
                   // Add to current page if not full
                   cacheEntry.currentPage = [...cacheEntry.currentPage, ...page];
@@ -100,6 +111,11 @@ class PartyEventsFetcher {
             }
           }
         });
+        
+        // Mark if we have the initial page cached
+        cacheEntry.initialPageCached = hasInitialPage;
+        
+        console.log(`Loaded cache for party ${partyId}, initialPageCached: ${cacheEntry.initialPageCached}`);
       });
       
       console.log('Loaded cached events from localStorage for', partyKeys.size, 'parties');
@@ -132,13 +148,11 @@ class PartyEventsFetcher {
     // If we have a last cursor but the last page wasn't full, use that cursor
     if (cacheEntry.lastCursor && cacheEntry.pages.length > 0) {
       const lastPage = cacheEntry.pages[cacheEntry.pages.length - 1];
-
       if (lastPage.length < this.PAGE_SIZE) {
         // Find the last page's first event's ID (or the one before it)
         if (cacheEntry.pages.length > 1) {
           // If we have more than one page, use the last event of the second-to-last page
           const previousPage = cacheEntry.pages[cacheEntry.pages.length - 2];
-
           return previousPage[previousPage.length - 1].event_id;
         } else if (lastPage.length > 0) {
           // Otherwise, use the first event's ID of the last page minus 1
@@ -150,6 +164,11 @@ class PartyEventsFetcher {
     // If we have a cursor but the last page was full, use that cursor
     if (cacheEntry.lastCursor) {
       return cacheEntry.lastCursor;
+    }
+    
+    // If we've already cached the initial page, we can use undefined
+    if (cacheEntry.initialPageCached) {
+      return undefined;
     }
     
     // Otherwise, start from the beginning
@@ -167,7 +186,8 @@ class PartyEventsFetcher {
         isLoading: false,
         seenEventIds: new Set(),
         retryCount: 0,
-        backoffDelay: this.THROTTLE_DELAY
+        backoffDelay: this.THROTTLE_DELAY,
+        initialPageCached: false
       });
     }
     
@@ -178,23 +198,24 @@ class PartyEventsFetcher {
     const requestKey = cursor === undefined ? 'initial' : cursor.toString();
     const storageKey = getPartyStorageKey(partyId, cursor);
     
-    // Check if we have this page in localStorage first (for completed pages)
-    if (cursor !== undefined) {
-      const storedData = localStorage.getItem(storageKey);
-
-      if (storedData) {
-        try {
-          const cachedEvents = JSON.parse(storedData) as components['schemas']['PartyEvent'][];
-
-          console.log(`Using ${cachedEvents.length} cached events from localStorage for cursor ${cursor}`);
-          
-          // Return the cached data without making an API call
-          return Promise.resolve(cachedEvents);
-        } catch (e) {
-          // If parsing fails, remove the corrupt data
-          console.error('Error parsing stored events:', e);
-          localStorage.removeItem(storageKey);
+    // Check if we have this page in localStorage first
+    const storedData = localStorage.getItem(storageKey);
+    if (storedData) {
+      try {
+        const cachedEvents = JSON.parse(storedData) as components['schemas']['PartyEvent'][];
+        console.log(`Using ${cachedEvents.length} cached events from localStorage for cursor ${cursor === undefined ? 'initial' : cursor}`);
+        
+        // Mark initial page as cached if this is the initial request
+        if (cursor === undefined) {
+          cacheEntry.initialPageCached = true;
         }
+        
+        // Return the cached data without making an API call
+        return Promise.resolve(cachedEvents);
+      } catch (e) {
+        // If parsing fails, remove the corrupt data
+        console.error('Error parsing stored events:', e);
+        localStorage.removeItem(storageKey);
       }
     }
     
@@ -214,7 +235,7 @@ class PartyEventsFetcher {
     cacheEntry.lastFetchTime = now;
     cacheEntry.isLoading = true;
     
-    console.log(`Fetching events for party ${partyId} with cursor: ${cursor}, backoff: ${cacheEntry.backoffDelay}ms`);
+    console.log(`Fetching events for party ${partyId} with cursor: ${cursor === undefined ? 'initial' : cursor}, backoff: ${cacheEntry.backoffDelay}ms`);
     
     const promise = useApi('/party/{party_id}/events', 'get', {
       path: { party_id: partyId },
@@ -223,7 +244,7 @@ class PartyEventsFetcher {
       .then((res) => {
         const events = res.data as components['schemas']['PartyEvent'][];
         
-        console.log(`Received ${events.length} events for cursor ${cursor}`);
+        console.log(`Received ${events.length} events for cursor ${cursor === undefined ? 'initial' : cursor}`);
         
         // Reset backoff on success
         cacheEntry.retryCount = 0;
@@ -252,10 +273,13 @@ class PartyEventsFetcher {
           
           // Cache this page in localStorage
           try {
-            const pageStorageKey = getPartyStorageKey(partyId, cursor);
-
-            localStorage.setItem(pageStorageKey, JSON.stringify(finalizedPage));
-            console.log(`Cached page in localStorage with key: ${pageStorageKey}`);
+            localStorage.setItem(storageKey, JSON.stringify(finalizedPage));
+            console.log(`Cached page in localStorage with key: ${storageKey}`);
+            
+            // Mark initial page as cached if this is the initial request
+            if (cursor === undefined) {
+              cacheEntry.initialPageCached = true;
+            }
           } catch (e) {
             console.error('Failed to cache page in localStorage:', e);
           }
@@ -266,13 +290,19 @@ class PartyEventsFetcher {
           // Update the cursor to the last event_id of the finalized page
           cacheEntry.lastCursor = finalizedPage[finalizedPage.length - 1].event_id;
           console.log(`New cursor will be: ${cacheEntry.lastCursor}`);
-        } else if (cacheEntry.currentPage.length > 0 && newEvents.length > 0) {
-          // If we got new events but not enough for a full page, store them in localStorage too
+        } else if (cacheEntry.currentPage.length > 0) {
+          // Store current page in localStorage even if not full
           try {
             const currentPageKey = getPartyStorageKey(partyId, 'current');
-
             localStorage.setItem(currentPageKey, JSON.stringify(cacheEntry.currentPage));
             console.log(`Cached current page in localStorage with ${cacheEntry.currentPage.length} events`);
+            
+            // Also cache the initial result if this is the initial query
+            if (cursor === undefined) {
+              localStorage.setItem(storageKey, JSON.stringify(events));
+              console.log(`Cached initial page response in localStorage`);
+              cacheEntry.initialPageCached = true;
+            }
           } catch (e) {
             console.error('Failed to cache current page in localStorage:', e);
           }
@@ -288,7 +318,6 @@ class PartyEventsFetcher {
           cacheEntry.retryCount++;
           // Exponential backoff with jitter
           const jitter = Math.random() * 1000;
-
           cacheEntry.backoffDelay = Math.min(
             this.MAX_BACKOFF_DELAY,
             Math.pow(2, cacheEntry.retryCount) * this.THROTTLE_DELAY + jitter
@@ -418,7 +447,6 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
       if (!fetchingRef.current) {
         // For refetch triggered by event submission, get the cursor for the last page
         const refreshCursor = fetcher.getRefreshCursor(partyId);
-
         loadEvents(refreshCursor);
       }
     };
@@ -492,7 +520,6 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
       if (!fetchingRef.current && mountedRef.current) {
         // For polling, get the cursor for the last page to check for updates
         const refreshCursor = fetcher.getRefreshCursor(partyId);
-
         loadEvents(refreshCursor);
       }
     }, 10000); // Reduced polling frequency to 10 seconds
@@ -511,7 +538,6 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
     refetch: () => {
       // For manual refetch, get the cursor for the last page
       const refreshCursor = fetcher.getRefreshCursor(partyId);
-
       loadEvents(refreshCursor);
     }
   };
