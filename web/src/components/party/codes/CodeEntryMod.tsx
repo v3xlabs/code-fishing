@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { LuArrowBigRight, LuCheck } from 'react-icons/lu';
 
 import { usePartyCursor } from '@/api/party/cursor';
@@ -6,13 +6,12 @@ import { usePartyEventSubmit } from '@/api/party/events';
 import { NotImplemented, Tooltip } from '@/components';
 
 export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {
-    const [codeCount, setCodeCount] = useState(5);
-    const { codes } = usePartyCursor(party_id);
+    const { codes, codeCount, setCodeCount, nextCursor } = usePartyCursor(party_id);
 
     return (
         <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumnEnd: '-1' }}>
             <div className="flex items-center justify-between">
-                <h3 className="text-primary text">Code Entry (WIP)</h3>
+                <h3 className="text-primary text">Code List</h3>
                 <div className="flex items-center gap-1">
                     <input
                         type="number"
@@ -41,18 +40,14 @@ export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {
             </div>
             {codes.length > 1 && (
                 <div className="w-full flex gap-1 justify-end">
-                    <NotImplemented>
-                        <button className="button flex items-center gap-1">
-                            Next
-                            <LuCheck />
-                        </button>
-                    </NotImplemented>
-                    <NotImplemented>
-                        <button className="button flex items-center gap-1 button-rust">
+                    <button className="button flex items-center gap-1" onClick={() => nextCursor(true)}>
+                        Next
+                        <LuCheck />
+                    </button>
+                    <button className="button flex items-center gap-1 button-rust" onClick={() => nextCursor(false)}>
                             Skip
                             <LuArrowBigRight />
                         </button>
-                    </NotImplemented>
                 </div>
             )}
         </div>

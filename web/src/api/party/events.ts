@@ -47,11 +47,14 @@ class PartyEventsFetcher {
       
       // Group keys by party ID
       const partyKeys = new Map<string, string[]>();
+
       storageKeys.forEach(key => {
         const partyId = key.split('_')[2];
+
         if (!partyKeys.has(partyId)) {
           partyKeys.set(partyId, []);
         }
+
         partyKeys.get(partyId)!.push(key);
       });
       
@@ -77,9 +80,11 @@ class PartyEventsFetcher {
         // Load pages from localStorage
         keys.forEach(key => {
           const storedData = localStorage.getItem(key);
+
           if (storedData) {
             try {
               const page = JSON.parse(storedData) as components['schemas']['PartyEvent'][];
+
               if (page.length > 0) {
                 // Check if this is the initial page
                 if (key.endsWith('_initial')) {
@@ -91,6 +96,7 @@ class PartyEventsFetcher {
                   cacheEntry.pages.push(page);
                   // Update lastCursor if appropriate
                   const lastEventId = page[page.length - 1].event_id;
+
                   if (!cacheEntry.lastCursor || lastEventId > cacheEntry.lastCursor) {
                     cacheEntry.lastCursor = lastEventId;
                   }
@@ -148,11 +154,13 @@ class PartyEventsFetcher {
     // If we have a last cursor but the last page wasn't full, use that cursor
     if (cacheEntry.lastCursor && cacheEntry.pages.length > 0) {
       const lastPage = cacheEntry.pages[cacheEntry.pages.length - 1];
+
       if (lastPage.length < this.PAGE_SIZE) {
         // Find the last page's first event's ID (or the one before it)
         if (cacheEntry.pages.length > 1) {
           // If we have more than one page, use the last event of the second-to-last page
           const previousPage = cacheEntry.pages[cacheEntry.pages.length - 2];
+
           return previousPage[previousPage.length - 1].event_id;
         } else if (lastPage.length > 0) {
           // Otherwise, use the first event's ID of the last page minus 1
@@ -200,9 +208,11 @@ class PartyEventsFetcher {
     
     // Check if we have this page in localStorage first
     const storedData = localStorage.getItem(storageKey);
+
     if (storedData) {
       try {
         const cachedEvents = JSON.parse(storedData) as components['schemas']['PartyEvent'][];
+
         console.log(`Using ${cachedEvents.length} cached events from localStorage for cursor ${cursor === undefined ? 'initial' : cursor}`);
         
         // Mark initial page as cached if this is the initial request
@@ -294,13 +304,14 @@ class PartyEventsFetcher {
           // Store current page in localStorage even if not full
           try {
             const currentPageKey = getPartyStorageKey(partyId, 'current');
+
             localStorage.setItem(currentPageKey, JSON.stringify(cacheEntry.currentPage));
             console.log(`Cached current page in localStorage with ${cacheEntry.currentPage.length} events`);
             
             // Also cache the initial result if this is the initial query
             if (cursor === undefined) {
               localStorage.setItem(storageKey, JSON.stringify(events));
-              console.log(`Cached initial page response in localStorage`);
+              console.log('Cached initial page response in localStorage');
               cacheEntry.initialPageCached = true;
             }
           } catch (e) {
@@ -318,6 +329,7 @@ class PartyEventsFetcher {
           cacheEntry.retryCount++;
           // Exponential backoff with jitter
           const jitter = Math.random() * 1000;
+
           cacheEntry.backoffDelay = Math.min(
             this.MAX_BACKOFF_DELAY,
             Math.pow(2, cacheEntry.retryCount) * this.THROTTLE_DELAY + jitter
@@ -447,6 +459,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
       if (!fetchingRef.current) {
         // For refetch triggered by event submission, get the cursor for the last page
         const refreshCursor = fetcher.getRefreshCursor(partyId);
+
         loadEvents(refreshCursor);
       }
     };
@@ -520,6 +533,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
       if (!fetchingRef.current && mountedRef.current) {
         // For polling, get the cursor for the last page to check for updates
         const refreshCursor = fetcher.getRefreshCursor(partyId);
+
         loadEvents(refreshCursor);
       }
     }, 10000); // Reduced polling frequency to 10 seconds
@@ -538,6 +552,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
     refetch: () => {
       // For manual refetch, get the cursor for the last page
       const refreshCursor = fetcher.getRefreshCursor(partyId);
+
       loadEvents(refreshCursor);
     }
   };
