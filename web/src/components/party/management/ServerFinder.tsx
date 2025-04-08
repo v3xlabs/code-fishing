@@ -137,6 +137,8 @@ export const ServerMapModelInner = ({
     const { data: map } = useMap(mapId);
     const { data: partySettings } = usePartySettings(partyId);
 
+    console.log('map', map);
+
     // Handle map initialization and manually create our TileLayer
     const handleMapCreated = (mapInstance: L.Map) => {
         mapRef.current = mapInstance;

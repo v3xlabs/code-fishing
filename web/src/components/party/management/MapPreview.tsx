@@ -7,6 +7,8 @@ import { ServerMapModelInner } from './ServerFinder';
 export const MapPreview = ({ party_id }: { party_id: string }) => {
     const { data: settings } = usePartySettings(party_id);
 
+    console.log('settings', settings);
+
     const mapRef = useRef<L.Map | null>(null);
 
     return (

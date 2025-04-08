@@ -205,7 +205,13 @@ export const usePartySettings = (party_id: string) => {
                 }
             }
 
-            setLocalSettings(settings);
+            
+            // do a deep check for settings if theyre the same otherwise skip
+            if (JSON.stringify(settings) !== JSON.stringify(localSettings)) {
+                console.log('Updating party settings', settings);
+                
+                setLocalSettings(settings);
+            }
         }
     }, [events, setLocalSettings]);
 

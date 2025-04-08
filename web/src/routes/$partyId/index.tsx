@@ -24,6 +24,8 @@ export const Route = createFileRoute('/$partyId/')({
 function RouteComponent() {
     const { partyId } = Route.useParams();
 
+    console.log('route');
+
     // auto columns 300w min
     return (
         <div className="p-2 grid gap-2 grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:grid-flow-row-dense">
