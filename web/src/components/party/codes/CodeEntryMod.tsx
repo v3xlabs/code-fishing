@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
 import { LuArrowBigRight, LuCheck } from 'react-icons/lu';
 
-import { usePartyEventSubmit } from '@/api/party';
 import { usePartyCursor } from '@/api/party/cursor';
+import { usePartyEventSubmit } from '@/api/party/events';
 import { NotImplemented, Tooltip } from '@/components';
 
 export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {

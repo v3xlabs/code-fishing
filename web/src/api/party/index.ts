@@ -8,11 +8,10 @@ import * as React from 'react';
 import { useMemo, useState } from 'react';
 
 import { LISTS } from '@/util/lists';
-import { queryClient } from '@/util/query';
 
 import { useApi } from '../api';
 import { components } from '../schema.gen';
-import { usePartyEvents } from './events';
+import { usePartyEvents, usePartyEventSubmit } from './events';
 
 export { usePartyEvents };
 
@@ -56,25 +55,6 @@ export const useParty = (party_id: string) => {
     });
 };
 
-export type PartyEventData = components['schemas']['PartyEventData'];
-export type PartyEvent = components['schemas']['PartyEvent'];
-
-export const usePartyEventSubmit = (party_id: string) =>
-    useMutation({
-        mutationFn: async (body: PartyEventData) => {
-            const response = await useApi('/party/{party_id}/events', 'post', {
-                path: { party_id },
-                contentType: 'application/json; charset=utf-8',
-                data: body,
-            });
-
-            // queryClient.invalidateQueries({ queryKey: ['party', party_id, 'events'] });
-            queryClient.refetchQueries({ queryKey: ['party', party_id, 'events'] });
-
-            return response.data;
-        },
-    });
-
 export type CodeListEntry = {
     name: string; // name of the list
     reverse: boolean; // whether to reverse the list
@@ -96,7 +76,7 @@ export const usePartyListOrder = (
     reset: () => void;
     isDefault: boolean;
 } => {
-    const { data: events } = usePartyEvents(party_id);
+    const { events } = usePartyEvents(party_id, (event) => event.data.type == 'PartyListOrderChanged');
     const { mutate: submitEvent } = usePartyEventSubmit(party_id);
     const [localOrder, setLocalOrder] = useState<CodeListOrder>(defaultListOrder);
     const isDefault = useMemo(() => {
@@ -110,9 +90,7 @@ export const usePartyListOrder = (
     // todo update order based on recent party events
     React.useEffect(() => {
         if (events) {
-            const fEvents = events.pages
-                .flatMap((page) => page)
-                .filter((event) => event.data.type == 'PartyListOrderChanged');
+            const fEvents = events;
 
             // console.log('fEvents', fEvents);
             // @ts-ignore
@@ -165,7 +143,9 @@ export type PartySettings = {
 };
 
 export const usePartySettings = (party_id: string) => {
-    const { data: events } = usePartyEvents(party_id);
+    const { events } = usePartyEvents(party_id, (event) => event.data.type == 'PartySettingChanged');
+
+    console.log('events', events);
 
     const { mutate: submitEvent } = usePartyEventSubmit(party_id);
 
@@ -175,10 +155,8 @@ export const usePartySettings = (party_id: string) => {
     });
 
     React.useEffect(() => {
-        if (events) {
-            const fEvents = events.pages
-                .flatMap((page) => page)
-                .filter((event) => event.data.type == 'PartySettingChanged');
+        if (events) {       
+            const fEvents = events;
 
             const settings: PartySettings = {
                 private: false,
