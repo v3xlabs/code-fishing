@@ -26,7 +26,7 @@ export const PartyStats: FC<{ party_id: string }> = ({ party_id }) => {
                         Total
                     </span>
                     <span>
-                        {percentages}%
+                        {Math.floor(percentages * 100) / 100}%
                     </span>
                 </div>
                 <div className="flex items-center justify-between">

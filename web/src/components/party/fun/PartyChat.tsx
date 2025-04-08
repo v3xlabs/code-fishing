@@ -80,9 +80,15 @@ export const PartyChat: FC<{ party_id: string }> = ({ party_id }) => {
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
+                        const message = messageInputRef.current?.value.trim() ?? '';
+
+                        if (message == '') {
+                            return;
+                        }
+
                         submitEvent({
                             type: 'PartyChatMessage',
-                            message: messageInputRef.current?.value ?? '',
+                            message,
                         });
 
                         if (messageInputRef.current) {
