@@ -18,7 +18,7 @@ export const PartyStats: FC<{ party_id: string }> = ({ party_id }) => {
     }, [triedCodesByUserId]);
 
     return (
-        <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumnEnd: '-2' }}>
+        <div className="card w-full flex flex-col gap-2 !pb-2 md:-col-end-2">
             <h3 className="text-primary text">Stats</h3>
             <div className="flex gap-1 flex-col grow">
                 <div className="flex items-center justify-between">
