@@ -80,5 +80,6 @@ export const usePartyProgress = (party_id: string) => {
         percentages,
         triedCodes,
         triedCodesByUserId,
+        totalCodes,
     };
 };

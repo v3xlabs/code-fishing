@@ -32,10 +32,10 @@ class PartyEventsFetcher {
     isRateLimited: boolean; // Tracks if we've been rate limited
   }>();
 
-  private THROTTLE_DELAY = 500;
+  private THROTTLE_DELAY = 100;
   private INITIAL_THROTTLE_DELAY = 5000; // Longer delay for initial requests
   private MAX_BACKOFF_DELAY = 30000; // Maximum backoff delay (30 seconds)
-  private PAGE_SIZE = 10;
+  private PAGE_SIZE = 20;
   private REQUEST_TIMEOUT = 30000; // 30 second safety timeout for stuck requests
 
   constructor() {
@@ -260,6 +260,7 @@ class PartyEventsFetcher {
       
       if (now - cacheEntry.lastFetchTime < throttleDelay) {
         const reason = cacheEntry.isRateLimited ? 'rate limited' : 'within throttle window';
+
         console.log(`Throttling request for party ${partyId}, cursor ${cursor === undefined ? 'initial' : cursor} - ${reason}`);
         
         // If we have a pending promise, return it
@@ -346,7 +347,7 @@ class PartyEventsFetcher {
           // Update the cursor to the last event_id of the finalized page
           cacheEntry.lastCursor = finalizedPage[finalizedPage.length - 1].event_id;
           console.log(`New cursor will be: ${cacheEntry.lastCursor}`);
-        } else if (cacheEntry.currentPage.length > 0) {
+        } else if (cacheEntry.currentPage.length > this.PAGE_SIZE) {
           // Store current page in localStorage even if not full
           try {
             const currentPageKey = getPartyStorageKey(partyId, 'current');
@@ -511,6 +512,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
         // For refetch triggered by event submission, get the cursor for the last page
         // and bypass throttling (but still respect rate limits)
         const refreshCursor = fetcher.getRefreshCursor(partyId);
+
         loadEvents(refreshCursor, true); // true = bypass throttle
       }
     };
@@ -540,7 +542,8 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
   const loadEvents = useCallback(async (cursor?: number, bypassThrottle = false) => {
     if (fetchingRef.current) {
       // If a request is already in progress, mark this cursor as pending
-      loadEventsRef.current.pendingCursors.add({cursor, bypassThrottle});
+      loadEventsRef.current.pendingCursors.add({ cursor, bypassThrottle });
+
       return;
     }
 
@@ -575,7 +578,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
           const nextCursor = fetcher.getNextCursor(partyId);
 
           // Instead of using setTimeout, add to pending cursors
-          loadEventsRef.current.pendingCursors.add({cursor: nextCursor, bypassThrottle: false});
+          loadEventsRef.current.pendingCursors.add({ cursor: nextCursor, bypassThrottle: false });
         }
       }
     } catch (err) {
@@ -590,6 +593,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
         // Take the first cursor from the set
         const pendingCursors = Array.from(loadEventsRef.current.pendingCursors);
         const nextRequest = pendingCursors[0];
+
         loadEventsRef.current.pendingCursors.delete(nextRequest);
         
         // Schedule it with a delay
@@ -616,6 +620,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
         if (!fetcher.isPartyRateLimited(partyId)) {
           // For polling, get the cursor for the last page to check for updates
           const refreshCursor = fetcher.getRefreshCursor(partyId);
+
           loadEvents(refreshCursor);
         } else {
           console.log(`Skipping poll for party ${partyId} - rate limited`);
@@ -643,6 +648,7 @@ export function usePartyEvents<T extends components['schemas']['PartyEvent'] = c
     refetch: () => {
       // For manual refetch, get the cursor for the last page
       const refreshCursor = fetcher.getRefreshCursor(partyId);
+
       loadEvents(refreshCursor);
     }
   };

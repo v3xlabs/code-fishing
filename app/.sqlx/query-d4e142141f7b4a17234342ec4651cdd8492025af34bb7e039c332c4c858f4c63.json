@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO parties (party_id, owner_id, created_at) VALUES ($1, $2, $3) RETURNING *",
+  "query": "INSERT INTO parties (party_id, owner_id, created_at, party_secret) VALUES ($1, $2, $3, $4) RETURNING *",
   "describe": {
     "columns": [
       {
@@ -17,20 +17,27 @@
         "ordinal": 2,
         "name": "created_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "party_secret",
+        "type_info": "Text"
       }
     ],
     "parameters": {
       "Left": [
         "Text",
         "Text",
-        "Timestamptz"
+        "Timestamptz",
+        "Text"
       ]
     },
     "nullable": [
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "eac7e8548c72f13bb8a9644405fd9d3679149a811ed91d683ebf26cd694ca12f"
+  "hash": "d4e142141f7b4a17234342ec4651cdd8492025af34bb7e039c332c4c858f4c63"
 }

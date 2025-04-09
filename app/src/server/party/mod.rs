@@ -4,7 +4,7 @@ use poem_openapi::{payload::Json, Object, OpenApi};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
-use crate::models::party::event::{PartyEvent, PartyEventData};
+use crate::models::party::event::{PartyEvent, PartyEventData, PartyEventJoinLeave, PartyEventSettingChanged};
 use crate::models::party::Party;
 use crate::server::ApiTags;
 use crate::state::AppState;
@@ -51,16 +51,22 @@ impl PartyApi {
         }))
     }
 
-    /// /party/:party_id
+    /// /party/:party_id/join
     ///
-    /// Get a party by ID
-    #[oai(path = "/party/:party_id", method = "get", tag = "ApiTags::Party")]
-    async fn get(
+    /// Join a party
+    #[oai(
+        path = "/party/:party_id/join",
+        method = "post",
+        tag = "ApiTags::Party"
+    )]
+    async fn join(
         &self,
         state: Data<&AppState>,
+        user: AuthUser,
         #[oai(style = "simple")] party_id: Path<String>,
-    ) -> Result<Json<Party>> {
+    ) -> Result<Json<serde_json::Value>> {
         tracing::info!("{:?}", party_id.0);
+        let user = user.require_user()?;
 
         let party = Party::get_by_id(&party_id.0, state.0).await.map_err(|e| {
             tracing::error!("Error getting party: {:?}", e);
@@ -68,7 +74,70 @@ impl PartyApi {
         })?;
 
         if let Some(party) = party {
-            Ok(Json(party))
+            if Party::get_user_is_in_party(&user.user_id, &party_id.0, state.0)
+                .await
+                .map_err(|e| {
+                    tracing::error!("Error getting user is in party: {:?}", e);
+                    poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+                })?
+            {
+                return Err(poem::Error::from_status(StatusCode::CONFLICT));
+            }
+
+            let event = PartyEvent::create(
+                &party_id.0,
+                &user.user_id,
+                PartyEventData::PartyJoinLeave(PartyEventJoinLeave {
+                    user_id: user.user_id.clone(),
+                    is_join: true,
+                }),
+                state.0,
+            )
+            .await
+            .map_err(|e| {
+                tracing::error!("Error creating event: {:?}", e);
+                poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+            })?;
+
+            if event.data.requires_cache_invalidation() {
+                tracing::info!("Invalidating cache for party: {:?}", party_id.0);
+                state.cache.party_state.invalidate(&party_id.0).await;
+            }
+        }
+
+        Ok(Json(serde_json::json!({})))
+    }
+
+    /// /party/:party_id
+    ///
+    /// Get a party by ID
+    #[oai(path = "/party/:party_id", method = "get", tag = "ApiTags::Party")]
+    async fn get(
+        &self,
+        state: Data<&AppState>,
+        user: AuthUser,
+        #[oai(style = "simple")] party_id: Path<String>,
+    ) -> Result<Json<Party>> {
+        tracing::info!("{:?}", party_id.0);
+        let user = user.require_user()?;
+
+        let party = Party::get_by_id(&party_id.0, state.0).await.map_err(|e| {
+            tracing::error!("Error getting party: {:?}", e);
+            poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+        })?;
+
+        if let Some(party) = party {
+            if Party::get_user_is_in_party(&user.user_id, &party_id.0, state.0)
+                .await
+                .map_err(|e| {
+                    tracing::error!("Error getting user is in party: {:?}", e);
+                    poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+                })?
+            {
+                Ok(Json(party))
+            } else {
+                Err(poem::Error::from_status(StatusCode::FORBIDDEN))
+            }
         } else {
             Err(poem::Error::from_status(StatusCode::NOT_FOUND))
         }
@@ -77,42 +146,85 @@ impl PartyApi {
     /// /party/:party_id/events
     ///
     /// Get events for a party
-    #[oai(path = "/party/:party_id/events", method = "get", tag = "ApiTags::Party")]
+    #[oai(
+        path = "/party/:party_id/events",
+        method = "get",
+        tag = "ApiTags::Party"
+    )]
     async fn get_events(
         &self,
         state: Data<&AppState>,
+        user: AuthUser,
         #[oai(style = "simple")] party_id: Path<String>,
         #[oai(style = "simple")] cursor: Query<Option<i32>>,
     ) -> Result<Json<Vec<PartyEvent>>> {
         tracing::info!("{:?}", party_id.0);
 
+        let user = user.require_user()?;
+
+        if !Party::get_user_is_in_party(&user.user_id, &party_id.0, state.0)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting user is in party: {:?}", e);
+                poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+            })?
+        {
+            return Err(poem::Error::from_status(StatusCode::FORBIDDEN));
+        }
+
         let cursor = cursor.unwrap_or(0);
 
-        let events = PartyEvent::get_events_by_event_cursor(&party_id.0, cursor, state.0).await.map_err(|e| {
-            tracing::error!("Error getting events: {:?}", e);
-            poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
-        })?;
+        let events = PartyEvent::get_events_by_event_cursor(&party_id.0, cursor, state.0)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting events: {:?}", e);
+                poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+            })?;
 
         Ok(Json(events))
     }
 
     /// /party/:party_id/events
-    /// 
+    ///
     /// Submit an event to a party
-    #[oai(path = "/party/:party_id/events", method = "post", tag = "ApiTags::Party")]
-    async fn submit_event(&self,
+    #[oai(
+        path = "/party/:party_id/events",
+        method = "post",
+        tag = "ApiTags::Party"
+    )]
+    async fn submit_event(
+        &self,
         state: Data<&AppState>,
         user: AuthUser,
         #[oai(style = "simple")] party_id: Path<String>,
-        body: Json<PartyEventData>) -> Result<Json<PartyEvent>> {
+        body: Json<PartyEventData>,
+    ) -> Result<Json<PartyEvent>> {
         tracing::info!("{:?}", party_id.0);
 
         let user = user.require_user()?;
 
-        let event = PartyEvent::create(&party_id.0, &user.user_id, body.0, state.0).await.map_err(|e| {
-            tracing::error!("Error creating event: {:?}", e);
-            poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
-        })?;
+        if !Party::get_user_is_in_party(&user.user_id, &party_id.0, state.0)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting user is in party: {:?}", e);
+                poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+            })?
+        {
+            return Err(poem::Error::from_status(StatusCode::FORBIDDEN));
+        }
+
+        // check event data
+        if body.0.requires_cache_invalidation() {
+            tracing::info!("Invalidating cache for party: {:?}", party_id.0);
+            state.cache.party_state.invalidate(&party_id.0).await;
+        }
+
+        let event = PartyEvent::create(&party_id.0, &user.user_id, body.0, state.0)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error creating event: {:?}", e);
+                poem::Error::from_status(StatusCode::INTERNAL_SERVER_ERROR)
+            })?;
 
         Ok(Json(event))
     }

@@ -46,13 +46,11 @@ export const getParty = (party_id: string) =>
 
             return response.data;
         },
+        retry: false,
     });
 
 export const useParty = (party_id: string) => {
-    return useQuery({
-        queryKey: ['party', party_id],
-        queryFn: () => getParty(party_id),
-    });
+    return useQuery(getParty(party_id));
 };
 
 export type CodeListEntry = {
@@ -155,7 +153,7 @@ export const usePartySettings = (party_id: string) => {
     });
 
     React.useEffect(() => {
-        if (events) {       
+        if (events) {
             const fEvents = events;
 
             const settings: PartySettings = {
@@ -183,11 +181,11 @@ export const usePartySettings = (party_id: string) => {
                 }
             }
 
-            
+
             // do a deep check for settings if theyre the same otherwise skip
             if (JSON.stringify(settings) !== JSON.stringify(localSettings)) {
                 console.log('Updating party settings', settings);
-                
+
                 setLocalSettings(settings);
             }
         }
@@ -204,3 +202,26 @@ export const usePartySettings = (party_id: string) => {
         },
     };
 };
+
+export const usePartyMembers = (party_id: string) => {
+    const { events } = usePartyEvents(party_id, (event) => event.data.type === 'PartyJoinLeave');
+
+    const members = new Set(
+        events.map((event) => event.user_id).filter(Boolean)
+    );
+
+    return { data: members };
+};
+
+
+export const usePartyJoin = () => useMutation({
+    mutationFn: async (party_id: string) => {
+        const response = await useApi('/party/{party_id}/join', 'post', {
+            path: {
+                party_id,
+            },
+        });
+
+        return response.data;
+    },
+});

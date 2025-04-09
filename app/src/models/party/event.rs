@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
 use poem_openapi::{Object, Union};
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
 use serde_json;
+use sqlx::prelude::FromRow;
 
 use crate::state::AppState;
 
@@ -60,6 +60,12 @@ pub enum PartyEventData {
     PartySettingChanged(PartyEventSettingChanged),
 }
 
+impl PartyEventData {
+    pub fn requires_cache_invalidation(&self) -> bool {
+        matches!(self, PartyEventData::PartySettingChanged(_) | PartyEventData::PartyJoinLeave(_))
+    }
+}
+
 /// Auto generated event when a party is created
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct PartyEventCreated {
@@ -112,10 +118,15 @@ pub struct PartyEventSettingChanged {
 }
 
 impl PartyEvent {
-    pub async fn create(party_id: &str, user_id: &str, data: PartyEventData, state: &AppState) -> Result<Self, sqlx::Error> {
+    pub async fn create(
+        party_id: &str,
+        user_id: &str,
+        data: PartyEventData,
+        state: &AppState,
+    ) -> Result<Self, sqlx::Error> {
         // Serialize the data to a JSON string for storage in the database
-        let data_json = serde_json::to_string(&data)
-            .expect("Failed to serialize PartyEventData to JSON");
+        let data_json =
+            serde_json::to_string(&data).expect("Failed to serialize PartyEventData to JSON");
 
         let db_event = sqlx::query_as!(
             PartyEventDb,
@@ -130,11 +141,15 @@ impl PartyEvent {
         // Convert from DB model to domain model
         Ok(db_event.into())
     }
-    
-    pub async fn get_events_by_event_cursor(party_id: &str, event_cursor: i32, state: &AppState) -> Result<Vec<Self>, sqlx::Error> {
+
+    pub async fn get_events_by_event_cursor(
+        party_id: &str,
+        event_cursor: i32,
+        state: &AppState,
+    ) -> Result<Vec<Self>, sqlx::Error> {
         let events = sqlx::query_as!(
             PartyEventDb,
-            "SELECT * FROM events WHERE party_id = $1 AND event_id > $2 ORDER BY event_id ASC LIMIT 10",
+            "SELECT * FROM events WHERE party_id = $1 AND event_id > $2 ORDER BY event_id ASC LIMIT 20",
             party_id,
             event_cursor
         )
@@ -142,5 +157,22 @@ impl PartyEvent {
         .await?;
 
         Ok(events.into_iter().map(|e| e.into()).collect())
+    }
+
+    pub async fn get_join_leave_events(
+        party_id: &str,
+        state: &AppState,
+    ) -> Result<Vec<Self>, sqlx::Error> {
+        let events = sqlx::query_as!(
+            PartyEventDb,
+            "SELECT * FROM events WHERE party_id = $1",
+            party_id
+        )
+        .fetch_all(&state.database.pool)
+        .await?;
+
+        let events: Vec<PartyEvent> = events.into_iter().map(|e| e.into()).collect();
+
+        Ok(events)
     }
 }

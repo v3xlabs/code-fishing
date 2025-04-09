@@ -19,7 +19,7 @@ export const PartyMembers = ({ party_id }: { party_id: string }) => {
                 <h3>Members</h3>
                 <span className="text-secondary">{members.size}</span>
             </div>
-            <ul className="px-2 pb-2">
+            <ul className="px-2 pb-2 max-h-[420px] overflow-y-auto">
                 {Array.from(members).map((member) => (
                     <li key={member}>
                         <PartyMember user_id={member} />

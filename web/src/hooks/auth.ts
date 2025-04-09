@@ -77,6 +77,7 @@ export const authStore = createStore({
 
             // Notify listeners of state change
             setTimeout(() => authEvents.notify(), 0);
+            queryClient.clear();
 
             return result;
         },

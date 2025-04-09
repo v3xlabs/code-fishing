@@ -46,6 +46,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/party/{party_id}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * /party/:party_id/join
+         * @description Join a party
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    party_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": unknown;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/party/{party_id}": {
         parameters: {
             query?: never;
@@ -607,6 +647,7 @@ export interface components {
         Party: {
             party_id: string;
             owner_id: string;
+            party_secret?: string;
             /** Format: date-time */
             created_at: string;
         };
@@ -777,8 +818,8 @@ export interface components {
          *       "name": "John D.",
          *       "avatar_url": "https://avatars.akamai.steamstatic.com/0000000000000000.jpg",
          *       "profile_url": "https://steamcommunity.com/id/john_doe",
-         *       "created_at": "2025-04-08T17:26:11.165146101+00:00",
-         *       "updated_at": "2025-04-08T17:26:11.165148821+00:00"
+         *       "created_at": "2025-04-09T01:04:16.289611048+00:00",
+         *       "updated_at": "2025-04-09T01:04:16.289614158+00:00"
          *     }
          */
         User: {

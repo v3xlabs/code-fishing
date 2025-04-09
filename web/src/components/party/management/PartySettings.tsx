@@ -40,7 +40,6 @@ export const PartySettings: FC<{ party_id: string }> = ({ party_id }) => {
                     </li>
                 </ul>
             </div>
-            <PartyMembers party_id={party_id} />
         </div>
     );
 };

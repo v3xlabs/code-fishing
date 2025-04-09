@@ -1,9 +1,10 @@
 import { FC, useMemo } from 'react';
 
 import { usePartyProgress } from '@/api/progress';
+import { getColor } from '@/util/color';
 
 export const PartyStats: FC<{ party_id: string }> = ({ party_id }) => {
-    const { percentages, triedCodes, triedCodesByUserId } = usePartyProgress(party_id);
+    const { percentages, triedCodes, triedCodesByUserId, totalCodes } = usePartyProgress(party_id);
 
     const userTopCodes = useMemo(() => {
         const userTopCodes: [string, number][] = [];
@@ -49,12 +50,13 @@ export const PartyStats: FC<{ party_id: string }> = ({ party_id }) => {
                     </ul>
                 </div>
             </div>
-            <div className="w-full h-4 bg-primary rounded-md border border-secondary overflow-hidden mb-2">
-                <div className="h-full bg-accent" style={{ width: `${percentages}%` }}>
-
-                </div>
+            <div className="w-full h-4 bg-primary rounded-md border border-secondary overflow-hidden mb-2 flex gap-0 items-stretch justify-start">
+                {
+                    Array.from(triedCodesByUserId.entries()).sort((a, b) => b[1].length - a[1].length).map(([userId, codes]) => (
+                        <div key={userId} className="h-full bg-accent" style={{ width: `${codes.length / totalCodes * 100}%`, background: getColor(userId) }}></div>
+                    ))
+                }
             </div>
         </div>
-
     );
 };
