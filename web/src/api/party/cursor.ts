@@ -21,7 +21,7 @@ export const usePartyCursor = (party_id: string) => {
         setCodes(new_codes);
     }, [allCodes, codeCount, cursor]);
 
-    const nextCursor = useCallback(async (complete: boolean | undefined = false) => {
+    const nextCursor = useCallback((complete: boolean | undefined = false) => {
         if (complete) {
             // go through every of the current codes and mark them as complete
             const remainingCodes = [];
@@ -59,7 +59,7 @@ export const usePartyCursor = (party_id: string) => {
         });
 
         return nextCursor;
-    }, [cursor, codeCount, submitEvent, triedCodes]);
+    }, [cursor, codeCount, submitEvent, triedCodes, codes]);
 
     return { cursor, setCursor, codes, codeCount, setCodeCount, nextCursor };
 };
