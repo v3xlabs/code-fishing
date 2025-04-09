@@ -1,33 +1,38 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import cx from 'classnames';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { PartyEvent } from '@/api/party/events';
+import { PartyEvent, usePartyEvents } from '@/api/party/events';
 import { usePartyCodes, usePartyProgress } from '@/api/progress';
 import { Tooltip } from '@/components/helpers/Tooltip';
-import { backgroundColorBySeed } from '@/util/user';
+
+import { ProgressCell } from './ProgressCell';
 
 export const PartyProgress: FC<{ party_id: string }> = ({ party_id }) => {
     const { data: orderedCodes } = usePartyCodes(party_id);
-    const { triedCodes } = usePartyProgress(party_id);
+    const { triedCodes, percentages } = usePartyProgress(party_id);
 
     const codes = orderedCodes;
 
     return (
         <>
-            <PartyProgressList party_id={party_id} orderedCodes={orderedCodes} triedCodes={triedCodes} percentages={percentages} codes={codes} />
+            <PartyProgressList
+                party_id={party_id}
+                orderedCodes={orderedCodes}
+                triedCodes={triedCodes}
+                percentages={percentages}
+                codes={codes}
+            />
         </>
     );
 };
 
 export const PartyProgressList: FC<{
-    party_id: string,
-    orderedCodes: string[],
-    triedCodes: Map<string, PartyEvent[]>,
-    percentages: Map<string, number>,
-    codes: string[]
+    party_id: string;
+    orderedCodes: string[];
+    triedCodes: Map<string, PartyEvent[]>;
+    percentages: Map<string, number>;
+    codes: string[];
 }> = ({ party_id, orderedCodes, triedCodes, percentages, codes }) => {
-
     const parentRef = useRef<HTMLDivElement>(null);
 
     // Constants for item sizing
@@ -106,6 +111,20 @@ export const PartyProgressList: FC<{
         [columnCount]
     );
 
+    const visibleCodes: Map<string, string[]> = new Map();
+
+    usePartyEvents(party_id, (event) => {
+        return event.data.type === 'PartyCursorUpdate';
+    }).events.forEach((event) => {
+        if (event.data.type === 'PartyCursorUpdate') {
+            const cursor = parseInt(event.data.cursor, 10);
+            const { size } = event.data;
+            const codes = orderedCodes.slice(cursor, cursor + size);
+
+            visibleCodes.set(event.user_id, codes);
+        }
+    });
+
     // Memoize virtual cells to prevent unnecessary re-renders
     const virtualCells = useMemo(() => {
         return rowVirtualizer.getVirtualItems().flatMap(
@@ -178,40 +197,11 @@ export const PartyProgressList: FC<{
                                         height: `${ITEM_HEIGHT}px`,
                                     }}
                                 >
-                                    <div
-                                        className={cx(
-                                            'flex justify-center items-center w-full h-full rounded-sm text-[0.8rem]',
-                                            triedCodes.has(cell.code)
-                                                ? 'bg-tertiary crossed-out text-tertiary'
-                                                : 'bg-tertiary text-secondary'
-                                        )}
-                                        style={
-                                            triedCodes.has(cell.code)
-                                                ? {
-                                                      backgroundColor: backgroundColorBySeed(
-                                                          (triedCodes.get(cell.code) || [])[0]
-                                                              ?.user_id
-                                                      ),
-                                                  }
-                                                : {}
-                                        }
-                                    >
-                                        <div
-                                            style={
-                                                triedCodes.has(cell.code)
-                                                    ? {
-                                                          backgroundColor: backgroundColorBySeed(
-                                                              (triedCodes.get(cell.code) || [])[0]
-                                                                  ?.user_id
-                                                          ),
-                                                          borderRadius: '2px',
-                                                      }
-                                                    : {}
-                                            }
-                                        >
-                                            {cell.code}
-                                        </div>
-                                    </div>
+                                    <ProgressCell
+                                        visibleCodes={visibleCodes}
+                                        code={cell.code}
+                                        triedCodes={triedCodes}
+                                    />
                                 </div>
                             )
                     )}
