@@ -1,8 +1,7 @@
 import cx from 'classnames';
 import { FC } from 'react';
 
-import { usePartyCursor } from '@/api/party/cursor';
-import { PartyEvent, usePartyEvents } from '@/api/party/events';
+import { PartyEvent } from '@/api/party/events';
 import { backgroundColorBySeed } from '@/util/user';
 
 export const ProgressCell: FC<{
@@ -19,15 +18,17 @@ export const ProgressCell: FC<{
         <div
             className={cx(
                 'flex justify-center items-center w-full h-full rounded-sm text-[0.8rem]',
-                triedCodes.has(code)
-                    ? 'bg-tertiary crossed-out text-tertiary'
-                    : 'bg-tertiary text-secondary'
+                triedCodes.has(code) ? 'bg-tertiary text-white' : 'bg-tertiary text-secondary'
             )}
             style={{
                 ...(triedCodes.has(code)
                     ? {
                           backgroundColor: backgroundColorBySeed(
-                              (triedCodes.get(code) || [])[0]?.user_id
+                              (triedCodes.get(code) || [])[0]?.user_id,
+                              {
+                                  saturation: 25,
+                                  lightness: 40,
+                              }
                           ),
                       }
                     : {}),
@@ -43,7 +44,11 @@ export const ProgressCell: FC<{
                     triedCodes.has(code)
                         ? {
                               backgroundColor: backgroundColorBySeed(
-                                  (triedCodes.get(code) || [])[0]?.user_id
+                                  (triedCodes.get(code) || [])[0]?.user_id,
+                                  {
+                                      saturation: 25,
+                                      lightness: 40,
+                                  }
                               ),
                               borderRadius: '2px',
                           }
