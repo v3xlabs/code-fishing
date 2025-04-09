@@ -17,7 +17,7 @@ export const ProgressCell: FC<{
     return (
         <div
             className={cx(
-                'flex justify-center items-center w-full h-full rounded-sm text-[0.8rem]',
+                'flex justify-center items-center w-full h-full rounded-sm text-[0.8rem] box-border',
                 triedCodes.has(code) ? 'bg-tertiary text-white' : 'bg-tertiary text-secondary'
             )}
             style={{
@@ -39,24 +39,7 @@ export const ProgressCell: FC<{
                     : {}),
             }}
         >
-            <div
-                style={
-                    triedCodes.has(code)
-                        ? {
-                              backgroundColor: backgroundColorBySeed(
-                                  (triedCodes.get(code) || [])[0]?.user_id,
-                                  {
-                                      saturation: 25,
-                                      lightness: 40,
-                                  }
-                              ),
-                              borderRadius: '2px',
-                          }
-                        : {}
-                }
-            >
-                {code}
-            </div>
+            {code}
         </div>
     );
 };
