@@ -818,8 +818,8 @@ export interface components {
          *       "name": "John D.",
          *       "avatar_url": "https://avatars.akamai.steamstatic.com/0000000000000000.jpg",
          *       "profile_url": "https://steamcommunity.com/id/john_doe",
-         *       "created_at": "2025-04-09T14:24:33.977349865+00:00",
-         *       "updated_at": "2025-04-09T14:24:33.977352725+00:00"
+         *       "created_at": "2026-04-15T15:51:17.108674250+00:00",
+         *       "updated_at": "2026-04-15T15:51:17.108676230+00:00"
          *     }
          */
         User: {

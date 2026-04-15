@@ -78,7 +78,7 @@ export const PartyCreateButton = () => {
     const { data: user } = useUser();
     const { mutate, isPending } = usePartyCreate({
         onMutate() {
-            console.log('mutate');
+            console.log('mutatez');
         },
         onSuccess(data) {
             console.log('success');
