@@ -9,7 +9,7 @@ export const CodeEntryMod: FC<{ party_id: string }> = ({ party_id }) => {
     const { codes, codeCount, setCodeCount, nextCursor } = usePartyCursor(party_id);
 
     return (
-        <div className="card w-full flex flex-col gap-2 !pb-2" style={{ gridColumnEnd: '-1' }}>
+        <div className="card w-full flex flex-col gap-2 !pb-2">
             <div className="flex items-center justify-between">
                 <h3 className="text-primary text">Code List</h3>
                 <div className="flex items-center gap-1">

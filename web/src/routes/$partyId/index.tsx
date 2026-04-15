@@ -103,17 +103,17 @@ const SteamOnly: FC<{ partyId: string }> = ({ partyId }) => {
 const PartyDashboard: FC<{ partyId: string }> = ({ partyId }) => {
     return (
         <div className="p-2 grid gap-2 grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:grid-flow-row-dense">
+            <PartyStats party_id={partyId} />
+            <CodeEntryMod party_id={partyId} />
+            <PartyChat party_id={partyId} />
+            <MusicRadio />
             <MapPreview party_id={partyId} />
             <div className="flex flex-col gap-2">
                 <PartyInviteCard partyId={partyId} />
                 <PartySettings party_id={partyId} />
             </div>
-            <PartyStats party_id={partyId} />
-            <CodeEntryMod party_id={partyId} />
-            <MusicRadio />
-            <PartyChat party_id={partyId} />
             <PartyMembers party_id={partyId} />
-            <CodeListOrder party_id={partyId} />
+            {/* <CodeListOrder party_id={partyId} /> */}
             <PartyProgress party_id={partyId} />
         </div>
     );
